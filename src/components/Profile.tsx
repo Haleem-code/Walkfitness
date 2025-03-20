@@ -70,7 +70,7 @@ export default function ComingSoonProfilePage() {
           Coming Soon
         </div>
         <p className="text-muted-foreground max-w-md mx-auto">
-          We're working hard to bring you an amazing profile experience. Stay tuned for updates!
+          We&apos;re working hard to bring you an amazing profile experience. Stay tuned for updates!
         </p>
       </div>
 
