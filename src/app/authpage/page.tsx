@@ -28,9 +28,6 @@ const AuthPage = () => {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen p-6 bg-cover bg-center bg-no-repeat"
-      style={{
-        backgroundImage: "url(/images/authpage.jpg)",
-      }}
     >
       <div className="mb-12">
         <Image src="/images/logo.svg" alt="Logo" width={120} height={48} className="h-12 w-auto" />
