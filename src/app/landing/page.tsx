@@ -1,179 +1,491 @@
 "use client"
 
-import { useRouter } from "next/navigation"
-import Image from "next/image"
 import { useState } from "react"
+import Link from "next/link"
+import { motion } from "framer-motion"
+import { ChevronDown, Trophy, Store, DollarSign, Twitter, Instagram, Youtube } from "lucide-react"
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import Image from "next/image"
 
-const LandingPage = () => {
-  const router = useRouter()
-  const [isButtonHovered, setIsButtonHovered] = useState(false)
-  const [hoveredIcon, setHoveredIcon] = useState<string | null>(null)
+export default function WalkfitLanding() {
+  const [expandedFaq, setExpandedFaq] = useState<number | null>(0)
 
-  const handleLaunchApp = () => {
-    router.push("/authpage")
+  const toggleFaq = (index: number) => {
+    setExpandedFaq(expandedFaq === index ? null : index)
   }
 
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
+    },
+  }
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+      },
+    },
+  }
+
+  const fadeIn = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: { duration: 0.6 },
+    },
+  }
+
+  const faqs = [
+    {
+      question: "What is Eclipse L2?",
+      answer:
+        "Eclipse L2 is a high-performance Layer 2 scaling solution that provides fast, secure, and low-cost transactions. It enhances the capabilities of the base layer while maintaining security and decentralization.",
+    },
+    {
+      question: "What is Walkfit?",
+      answer:
+        "Walkfit is a move-to-earn platform that rewards users with cryptocurrency for physical activity. Track your steps and earn rewards while staying fit.",
+    },
+    {
+      question: "What benefits do I get by using Walkfit?",
+      answer:
+        "Walkfit rewards you with cryptocurrency for staying active, lets you compete with friends, join tournaments, and access an exclusive marketplace for digital and physical goods.",
+    },
+    {
+      question: "Team behind Walkfit?",
+      answer:
+        "Walkfit is developed by a team of blockchain and fitness enthusiasts dedicated to promoting healthy lifestyles through innovative technology.",
+    },
+    {
+      question: "How do I get started?",
+      answer:
+        "Download the Walkfit app, create an account, connect your wallet, and start walking to earn rewards. It's that simple!",
+    },
+    {
+      question: "How does Walkfit ensure security?",
+      answer:
+        "Walkfit uses advanced encryption and blockchain technology to ensure all transactions and user data are secure and transparent.",
+    },
+  ]
+
   return (
-    <div className="flex flex-col min-h-screen relative overflow-hidden">
-      {/* Top purple section */}
-      <div
-        className="w-full flex flex-col items-center justify-center relative"
-        style={{
-          height: "50vh",
-          background: "linear-gradient(to bottom, #C0B6FF, #9F92FF)",
-          zIndex: 3,
+    <div className="min-h-screen bg-black text-white overflow-hidden">
+      {/* Animated background gradient */}
+      <motion.div
+        className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-black to-black pointer-events-none"
+        animate={{
+          opacity: [0.5, 0.7, 0.5],
         }}
-      >
-        <Image src="/images/logo.svg" alt="Logo" width={200} height={200} className="animate-pulse-slow" />
-      </div>
+        transition={{
+          duration: 8,
+          repeat: Number.POSITIVE_INFINITY,
+          repeatType: "reverse",
+        }}
+      />
 
-      {/* Curved division with shoe image */}
-      <div className="absolute w-full flex justify-center" style={{ top: "calc(50vh - 100px)", zIndex: 10 }}>
-        <div className="relative">
-          <div
-            className="w-[200px] h-[200px] rounded-full bg-gradient-to-br from-[#C0B6FF] to-[#9F92FF] flex items-center justify-center shadow-xl"
-            style={{
-              boxShadow: "0 8px 32px rgba(0, 0, 0, 0.2)",
-              border: "6px solid #000",
-            }}
+      {/* Navigation */}
+      <motion.nav
+        className="relative z-10 flex justify-between items-center p-4 max-w-7xl mx-auto border-b border-gray-600"
+        initial={{ y: -20, opacity: 0 }}
+        animate={{ y: 0, opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <div className="flex items-center">
+          <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-white">
+          <Image src={"/images/logo2.svg"} width={120} height={80} alt="Logo"/>
+          </motion.div>
+        </div>
+        <div className="hidden md:flex space-x-6 border border-gray-600 rounded-full px-6 py-4">
+          <Link href="#" className="hover:text-green-400 transition-colors">
+            Tournaments
+          </Link>
+          <Link href="#" className="hover:text-green-400 transition-colors">
+            Developer
+          </Link>
+          <Link href="#" className="hover:text-green-400 transition-colors">
+            Marketplace
+          </Link>
+          <Link href="#" className="hover:text-green-400 transition-colors">
+            Blog
+          </Link>
+          <Link href="#" className="hover:text-green-400 transition-colors">
+            FAQs
+          </Link>
+        </div>
+        <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+          <Button className="bg-purple-600 hover:bg-purple-700 text-white">Get Started</Button>
+        </motion.div>
+      </motion.nav>
+
+      {/* Hero Section */}
+      <section className="relative z-10 pt-10 pb-20 px-4 max-w-7xl mx-auto">
+        <motion.div className="text-center mb-4" initial="hidden" animate="visible" variants={fadeInUp}>
+          <motion.div
+        className="inline-flex items-center bg-purple-900/50 rounded-full px-3 py-1 mb-6 border border-purple-500"
+        whileHover={{ scale: 1.05 }}
           >
-            <Image src="/images/sneaker.svg" alt="Shoe" width={140} height={140} className="animate-pulse" />
-          </div>
-        </div>
-      </div>
+        <span className="bg-purple-600 text-xs px-2 py-0.5 rounded-full mr-2">NEW</span>
+        <span className="text-sm">We have integrated new Sneakers for web</span>
+          </motion.div>
+        </motion.div>
 
-      {/* Wave separator */}
-      <div className="absolute w-full" style={{ top: "45vh", zIndex:2 }}>
-        <svg viewBox="0 0 1440 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M0 0L60 10C120 20 240 40 360 50C480 60 600 60 720 50C840 40 960 20 1080 10C1200 0 1320 0 1380 0H1440V100H1380C1320 100 1200 100 1080 100C960 100 840 100 720 100C600 100 480 100 360 100C240 100 120 100 60 100H0V0Z"
-            fill="black"
-          />
-        </svg>
-      </div>
-
-      {/* Main black section */}
-      <div
-        className="flex-1 flex flex-col items-center justify-start pt-24 px-4 md:px-8 lg:px-16"
-        style={{
-          background: "linear-gradient(to bottom, #000000, #121212)",
-          color: "#CEFF67",
-          textAlign: "center",
-          zIndex: 1,
-        }}
-      >
-        <h1
-          className="text-2xl md:text-3xl lg:text-4xl mb-6 mt-16 font-bold max-w-3xl"
-          style={{ lineHeight: "1.2", color: "#fff" }}
+        <motion.h1
+          className="text-5xl md:text-6xl font-bold text-center mb-4"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.2 }}
         >
-          Step Up Your Fitness Game, Step into Crypto Wealth with
-          <span className="text-[#CEFF67] ml-2 relative">
-            WALKFIT
-            <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#CEFF67] opacity-70"></span>
-          </span>
-        </h1>
+          Step into Crypto
+        </motion.h1>
 
-        <p className="text-base md:text-lg max-w-2xl" style={{ marginTop: "2rem", color: "#fff", opacity: 0.9 }}>
-          Earn crypto with every step, combining fitness and finance seamlessly. Join now and turn your movement into
-          rewards. Walk to earn with WALKFIT.
-        </p>
-
-        <button
-          onClick={handleLaunchApp}
-          onMouseEnter={() => setIsButtonHovered(true)}
-          onMouseLeave={() => setIsButtonHovered(false)}
-          className="px-8 py-4 text-xl font-bold bg-black text-white rounded-md transition-all duration-300"
-          style={{
-            margin: "3rem 0",
-            border: "1px solid #CEFF67",
-            boxShadow: isButtonHovered ? "4px 6px 0 0 #CEFF67" : "2px 4px 0 0 #CEFF67",
-            transform: isButtonHovered ? "translate(-2px, -2px)" : "translate(0, 0)",
-          }}
+        <motion.h1
+          className="text-5xl md:text-6xl font-bold text-center mb-8"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.4 }}
         >
-          Launch App
-        </button>
+          with <span className="text-green-400">Walkfitness..</span>
+        </motion.h1>
 
-        <div className="flex space-x-6 mb-12">
-          {[
-            { name: "x", url: "https://x.com/WalkFit_xyz", icon: "/icons/x-icon.svg" },
-            { name: "telegram", url: "https://t.me/your_profile", icon: "/icons/telegram-icon.svg" },
-            { name: "youtube", url: "https://www.youtube.com/your_profile", icon: "/icons/youtube-icon.svg" },
-            { name: "medium", url: "https://medium.com/@your_profile", icon: "/icons/medium-icon.svg" },
-          ].map((social) => (
-            <a
-              key={social.name}
-              href={social.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              onMouseEnter={() => setHoveredIcon(social.name)}
-              onMouseLeave={() => setHoveredIcon(null)}
-              className="relative group"
+        <motion.p
+          className="text-center text-gray-300 max-w-2xl mx-auto mb-8"
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.7, delay: 0.6 }}
+        >
+          Earn crypto with every step - challenge friends, stay fit,
+          <br />
+          and get rewarded with WALKFIT. Walk to earn!
+        </motion.p>
+
+        <motion.div
+          className="flex justify-center mb-16"
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, delay: 0.8 }}
+        >
+            <Link href="/authpage">
+            <motion.button
+              className="bg-white text-black font-medium px-6 py-2 rounded-full"
+              whileHover={{ scale: 1.05, backgroundColor: "#f0f0f0" }}
+              whileTap={{ scale: 0.95 }}
             >
-              <div className="absolute inset-0 bg-[#CEFF67] rounded-full opacity-0 scale-0 transition-all duration-300 group-hover:opacity-20 group-hover:scale-150"></div>
-              <Image
-                src={social.icon || "/placeholder.svg"}
-                alt={social.name}
-                width={36}
-                height={36}
-                className="transition-transform duration-300"
-                style={{
-                  transform: hoveredIcon === social.name ? "scale(1.2)" : "scale(1)",
-                }}
-              />
-            </a>
-          ))}
-        </div>
+              Launch Beta
+            </motion.button>
+            </Link>
+        </motion.div>
 
-        <h2 className="text-2xl mb-6 font-bold relative inline-block" style={{ color: "#CEFF67" }}>
-          ROADMAP
-          <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[#CEFF67] opacity-70"></span>
-        </h2>
-
-        <div className="bg-black bg-opacity-50 text-white p-6 rounded-lg mb-12 max-w-3xl w-full border border-gray-800 backdrop-blur-sm">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="transition-transform duration-300 hover:scale-105">
-              <figure className="relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#CEFF67]/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                <Image src="/images/july.svg" alt="July" width={300} height={300} className="w-full h-auto" />
-              </figure>
-            </div>
-            <div className="transition-transform duration-300 hover:scale-105">
-              <figure className="relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#CEFF67]/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                <Image src="/images/aug.svg" alt="August" width={300} height={300} className="w-full h-auto" />
-              </figure>
-            </div>
-            <div className="transition-transform duration-300 hover:scale-105">
-              <figure className="relative">
-                <div className="absolute inset-0 bg-gradient-to-b from-[#CEFF67]/10 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 rounded-lg"></div>
-                <Image src="/images/sept.svg" alt="September" width={300} height={300} className="w-full h-auto" />
-              </figure>
-            </div>
-          </div>
-        </div>
-
-        <a
-          href="#"
-          className="px-8 py-4 text-xl font-bold bg-black text-white rounded-md transition-all duration-300 mb-16"
-          style={{
-            border: "1px solid #CEFF67",
-            boxShadow: "2px 4px 0 0 #CEFF67",
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.transform = "translate(-2px, -2px)"
-            e.currentTarget.style.boxShadow = "4px 6px 0 0 #CEFF67"
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.transform = "translate(0, 0)"
-            e.currentTarget.style.boxShadow = "2px 4px 0 0 #CEFF67"
-          }}
+        {/* App Preview */}
+        <motion.div
+          className="relative max-w-4xl mx-auto"
+          initial={{ opacity: 0, y: 40 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 1 }}
         >
-          Whitepaper
-        </a>
-      </div>
+          <Image 
+        src={"/images/hero-img.svg"} 
+        width={1800} 
+        height={600} 
+        alt="Hero Image"
+        className="mx-auto" 
+          />
+          <div className="flex justify-center mt-4">
+        <Image 
+          src={"/images/eclipse.svg"} 
+          width={120} 
+          height={40} 
+          alt="Eclipse"
+          className="mx-auto" 
+        />
+          </div>
+        </motion.div>
+      </section>
+
+      {/* Features Section */}
+      <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          className=" mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
+          <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
+            WALKFIT - Move, Compete, Earn
+          </motion.h2>
+          <motion.p className="text-gray-300" variants={fadeInUp}>
+            Your steps unlock rewards, your movement fuels the game.
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          className="grid md:grid-cols-2 gap-6"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+        >
+          {/* Feature 1 */}
+          <motion.div
+            className="bg-black/50 border border-gray-800 rounded-xl p-6"
+            variants={fadeInUp}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="mb-4 bg-yellow-900/30 w-16 h-16 rounded-lg flex items-center justify-center">
+              <Trophy className="w-8 h-8 text-yellow-500" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Tournaments</h3>
+            <p className="text-gray-400 text-sm">
+              Compete in step challenges against others and win crypto rewards. The more you move, the closer you are to
+              the top.
+            </p>
+          </motion.div>
+
+          {/* Feature 2 */}
+          <motion.div
+            className="bg-black/50 border border-gray-800 rounded-xl p-6"
+            variants={fadeInUp}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="mb-4 bg-red-900/30 w-16 h-16 rounded-lg flex items-center justify-center">
+              <Store className="w-8 h-8 text-red-400" />
+            </div>
+            <h3 className="text-xl font-bold mb-2">Marketplace</h3>
+            <p className="text-gray-400 text-sm">
+              Buy, sell, or trade sneakers. Whether you're upgrading or cashing out, the marketplace keeps your fitness
+              journey flexible and rewarding.
+            </p>
+          </motion.div>
+
+          {/* Feature 3 */}
+          <motion.div
+            className="bg-black/50 border border-gray-800 rounded-xl p-6"
+            variants={fadeInUp}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="mb-4 bg-blue-900/30 w-16 h-16 rounded-lg flex items-center justify-center">
+              <div className="relative">
+                <motion.div
+                  className="absolute -left-4 w-6 h-6 rounded-full bg-orange-400"
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 0 }}
+                />
+                <motion.div
+                  className="absolute left-0 w-6 h-6 rounded-full bg-blue-400"
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 0.3 }}
+                />
+                <motion.div
+                  className="absolute left-4 w-6 h-6 rounded-full bg-green-400"
+                  animate={{ y: [0, -3, 0] }}
+                  transition={{ duration: 2, repeat: Number.POSITIVE_INFINITY, delay: 0.6 }}
+                />
+              </div>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Community</h3>
+            <p className="text-gray-400 text-sm">
+              Exclusive games designed for fitness communities. Walk, play, and connect while earning in fun and
+              engaging ways.
+            </p>
+          </motion.div>
+
+          {/* Feature 4 */}
+          <motion.div
+            className="bg-black/50 border border-gray-800 rounded-xl p-6"
+            variants={fadeInUp}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="mb-4 bg-green-900/30 w-16 h-16 rounded-lg flex items-center justify-center">
+              <motion.div
+                className="relative"
+                animate={{ rotate: [0, 10, 0, -10, 0] }}
+                transition={{ duration: 5, repeat: Number.POSITIVE_INFINITY }}
+              >
+                <DollarSign className="w-8 h-8 text-yellow-400" />
+              </motion.div>
+            </div>
+            <h3 className="text-xl font-bold mb-2">Point System</h3>
+            <p className="text-gray-400 text-sm">
+              Earn points for every action—steps, wins, and achievements. Boost your points and unlock powerful future
+              rewards.
+            </p>
+          </motion.div>
+        </motion.div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          className="mb-12"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
+          <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
+            FAQs
+          </motion.h2>
+          <motion.p className="text-gray-300" variants={fadeInUp}>
+            Frequently asked questions
+          </motion.p>
+        </motion.div>
+
+        <motion.div
+          className="space-y-4 max-w-3xl mx-auto"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={staggerContainer}
+        >
+          {faqs.map((faq, index) => (
+            <motion.div key={index} className="border-b border-gray-800 pb-2" variants={fadeInUp}>
+              <motion.button
+                className="flex justify-between items-center w-full py-4 text-left"
+                onClick={() => toggleFaq(index)}
+                whileHover={{ x: 5 }}
+              >
+                <div className="flex items-center">
+                  <div className="w-6 h-6 rounded-full bg-green-500 mr-3 flex items-center justify-center text-black">
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${expandedFaq === index ? "rotate-180" : ""}`}
+                    />
+                  </div>
+                  <span className="font-medium">{faq.question}</span>
+                </div>
+              </motion.button>
+
+              <motion.div
+                initial={false}
+                animate={{
+                  height: expandedFaq === index ? "auto" : 0,
+                  opacity: expandedFaq === index ? 1 : 0,
+                  marginBottom: expandedFaq === index ? 16 : 0,
+                }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden pl-9 text-gray-400 text-sm"
+              >
+                <p>{faq.answer}</p>
+              </motion.div>
+            </motion.div>
+          ))}
+        </motion.div>
+      </section>
+
+      {/* Newsletter Section */}
+      <section className="relative z-10 py-20 px-4 max-w-4xl mx-auto">
+        <motion.div
+          className="bg-purple-900/20 border border-purple-800/30 rounded-xl p-12 text-center"
+          initial={{ opacity: 0, y: 40 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.8 }}
+        >
+          <motion.h2
+            className="text-4xl font-bold mb-4"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            Walkfit <span className="text-purple-400">for</span>
+            <br />
+            everyone.
+          </motion.h2>
+
+          <motion.div
+            className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto mt-8"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <Input type="email" placeholder="Your email" className="bg-black/50 border-gray-700 text-white" />
+            <Button className="bg-white text-black hover:bg-gray-200">Join waitlist</Button>
+          </motion.div>
+
+          <motion.p
+            className="text-sm text-gray-400 mt-6"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            Get Latest updates on new game - walkfit team
+          </motion.p>
+        </motion.div>
+      </section>
+
+      {/* Footer */}
+      <footer className="relative z-10 py-12 px-4 border-t border-gray-800">
+        <div className="max-w-7xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <div className="text-2xl font-bold mb-4"><Image src={"/images/logo2.svg"} width={120} height={40} alt="Walkfit Logo" className="mx-auto" /></div>
+            <motion.div
+          className="flex justify-center space-x-6 mt-12"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.4 }}
+        >
+          <motion.a href="#" whileHover={{ y: -3, color: "#1DA1F2" }} className="text-gray-400 hover:text-white">
+            <Twitter className="w-5 h-5" />
+          </motion.a>
+          <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
+            <Instagram className="w-5 h-5" />
+          </motion.a>
+          <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
+            <Youtube className="w-5 h-5" />
+          </motion.a>
+        </motion.div>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.1 }}
+            className="space-y-2"
+          >
+            <h4 className="font-medium mb-3">Product</h4>
+            <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Features</p>
+            <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Developers</p>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="space-y-2"
+          >
+            <h4 className="font-medium mb-3">Resources</h4>
+            <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Tournaments</p>
+            <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Documentation</p>
+            <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Marketplace</p>
+            <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Whitepaper</p>
+          </motion.div>
+
+          
+        </div>
+
+        
+      </footer>
     </div>
   )
 }
-
-export default LandingPage
-
