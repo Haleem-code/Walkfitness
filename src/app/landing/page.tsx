@@ -60,7 +60,7 @@ export default function WalkfitLanding() {
     {
       question: "What is Walkfit?",
       answer:
-        "Walkfit is a move-to-earn platform that rewards users with cryptocurrency for physical activity. Track your steps and earn rewards while staying fit.",
+        "Walkfit is a walk-to-earn platform that rewards users with cryptocurrency for physical activity. Track your steps and earn rewards while staying fit.",
     },
     {
       question: "What benefits do I get by using Walkfit?",
