@@ -3,7 +3,7 @@
 import "../styles/globals.css";
 import React, { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
-import { Poppins } from "@next/font/google";
+import { Poppins } from "next/font/google";
 
 import ClientOnly from "../components/ClientOnly";
 import TopNavbar from "../components/TopNav";
@@ -15,6 +15,7 @@ import { NetworkProvider } from "@/hooks/useNetwork";
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "700"],
+   variable: '--font-poppins'
 });
 
 interface LayoutProps {
@@ -46,7 +47,7 @@ export default function RootLayout({ children }: LayoutProps) {
       <head>
         <link rel="icon" href="/images/logo2.svg" type="image/svg+xml" />
       </head>
-      <body className={`bg-black min-h-screen flex flex-col ${poppins.className}`}>
+      <body className={`bg-black min-h-screen flex flex-col ${poppins.variable}`}>
         <NetworkProvider>
           <WalletProvider>
             <SessionProvider>
