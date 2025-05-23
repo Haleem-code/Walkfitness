@@ -9,7 +9,6 @@ body {
 
 body {
   display: flex;
-  font-family: poppins, sans-serif;
   flex-direction: column;
 }
 
