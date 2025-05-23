@@ -7,9 +7,18 @@ import { ChevronDown, Trophy, Store, DollarSign, Twitter, Instagram, Youtube } f
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogFooter,
+} from "@/components/ui/dialog"
 
 export default function WalkfitLanding() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0)
+  const [showGetStartedDialog, setShowGetStartedDialog] = useState(false)
 
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index)
@@ -66,7 +75,7 @@ export default function WalkfitLanding() {
     {
       question: "How do I get started?",
       answer:
-        "Download the Walkfit app, create an account, connect your wallet, and start walking to earn rewards. It's that simple!",
+        "Download the fitbit app on your mobile device, create an account, connect your fitbit account to walkfit, and start walking to earn rewards through points and tournaments. It's that simple!",
     },
     {
       question: "How does Walkfit ensure security?",
@@ -99,7 +108,7 @@ export default function WalkfitLanding() {
       >
         <div className="flex items-center">
           <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-white">
-          <Image src={"/images/logo2.svg"} width={120} height={80} alt="Logo"/>
+            <Image src={"/images/logo2.svg"} width={120} height={80} alt="Logo" />
           </motion.div>
         </div>
         <div className="hidden md:flex space-x-6 border border-gray-600 rounded-full px-6 py-4">
@@ -120,7 +129,12 @@ export default function WalkfitLanding() {
           </Link>
         </div>
         <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white">Get Started</Button>
+          <Button
+            className="bg-purple-600 hover:bg-purple-700 text-white"
+            onClick={() => setShowGetStartedDialog(true)}
+          >
+            Get Started
+          </Button>
         </motion.div>
       </motion.nav>
 
@@ -128,11 +142,11 @@ export default function WalkfitLanding() {
       <section className="relative z-10 pt-10 pb-20 px-4 max-w-7xl mx-auto">
         <motion.div className="text-center mb-4" initial="hidden" animate="visible" variants={fadeInUp}>
           <motion.div
-        className="inline-flex items-center bg-purple-900/50 rounded-full px-3 py-1 mb-6 border border-purple-500"
-        whileHover={{ scale: 1.05 }}
+            className="inline-flex items-center bg-purple-900/50 rounded-full px-3 py-1 mb-6 border border-purple-500"
+            whileHover={{ scale: 1.05 }}
           >
-        <span className="bg-purple-600 text-xs px-2 py-0.5 rounded-full mr-2">NEW</span>
-        <span className="text-sm">We have integrated new Sneakers for web</span>
+            <span className="bg-purple-600 text-xs px-2 py-0.5 rounded-full mr-2">NEW</span>
+            <span className="text-sm">We have integrated new Sneakers</span>
           </motion.div>
         </motion.div>
 
@@ -171,7 +185,7 @@ export default function WalkfitLanding() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.8 }}
         >
-            <Link href="/authpage">
+          <Link href="/authpage">
             <motion.button
               className="bg-white text-black font-medium px-6 py-2 rounded-full"
               whileHover={{ scale: 1.05, backgroundColor: "#f0f0f0" }}
@@ -179,7 +193,7 @@ export default function WalkfitLanding() {
             >
               Launch Beta
             </motion.button>
-            </Link>
+          </Link>
         </motion.div>
 
         {/* App Preview */}
@@ -189,21 +203,9 @@ export default function WalkfitLanding() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 1 }}
         >
-          <Image 
-        src={"/images/hero-img.svg"} 
-        width={1800} 
-        height={600} 
-        alt="Hero Image"
-        className="mx-auto" 
-          />
+          <Image src={"/images/hero-img.svg"} width={1800} height={600} alt="Hero Image" className="mx-auto" />
           <div className="flex justify-center mt-4">
-        <Image 
-          src={"/images/eclipse.svg"} 
-          width={120} 
-          height={40} 
-          alt="Eclipse"
-          className="mx-auto" 
-        />
+            <Image src={"/images/eclipse.svg"} width={120} height={40} alt="Eclipse" className="mx-auto" />
           </div>
         </motion.div>
       </section>
@@ -261,8 +263,8 @@ export default function WalkfitLanding() {
             </div>
             <h3 className="text-xl font-bold mb-2">Marketplace</h3>
             <p className="text-gray-400 text-sm">
-              Buy, sell, or trade sneakers. Whether you &apos;re upgrading or cashing out, the marketplace keeps your fitness
-              journey flexible and rewarding.
+              Buy, sell, or trade sneakers. Whether you &apos;re upgrading or cashing out, the marketplace keeps your
+              fitness journey flexible and rewarding.
             </p>
           </motion.div>
 
@@ -435,24 +437,26 @@ export default function WalkfitLanding() {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <div className="text-2xl font-bold mb-4"><Image src={"/images/logo2.svg"} width={120} height={40} alt="Walkfit Logo" className="mx-auto" /></div>
+            <div className="text-2xl font-bold mb-4">
+              <Image src={"/images/logo2.svg"} width={120} height={40} alt="Walkfit Logo" className="mx-auto" />
+            </div>
             <motion.div
-          className="flex justify-center space-x-6 mt-12"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <motion.a href="#" whileHover={{ y: -3, color: "#1DA1F2" }} className="text-gray-400 hover:text-white">
-            <Twitter className="w-5 h-5" />
-          </motion.a>
-          <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
-            <Instagram className="w-5 h-5" />
-          </motion.a>
-          <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
-            <Youtube className="w-5 h-5" />
-          </motion.a>
-        </motion.div>
+              className="flex justify-center space-x-6 mt-12"
+              initial={{ opacity: 0 }}
+              whileInView={{ opacity: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, delay: 0.4 }}
+            >
+              <motion.a href="#" whileHover={{ y: -3, color: "#1DA1F2" }} className="text-gray-400 hover:text-white">
+                <Twitter className="w-5 h-5" />
+              </motion.a>
+              <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
+                <Instagram className="w-5 h-5" />
+              </motion.a>
+              <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
+                <Youtube className="w-5 h-5" />
+              </motion.a>
+            </motion.div>
           </motion.div>
 
           <motion.div
@@ -480,12 +484,78 @@ export default function WalkfitLanding() {
             <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Marketplace</p>
             <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Whitepaper</p>
           </motion.div>
-
-          
         </div>
-
-        
       </footer>
+      {/* Get Started Dialog */}
+      <Dialog open={showGetStartedDialog} onOpenChange={setShowGetStartedDialog}>
+        <DialogContent className="bg-black border border-purple-600 text-white max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl font-bold text-green-400">Welcome to Walkfit</DialogTitle>
+            <DialogDescription className="text-gray-300">
+              Follow these simple steps to begin your fitness journey
+            </DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 py-4">
+            <div className="flex items-start gap-3">
+              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                1
+              </div>
+              <div>
+                <h4 className="font-medium text-white">Sign up with Google</h4>
+                <p className="text-sm text-gray-300">
+                  Create your account quickly and securely using your Google credentials.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                2
+              </div>
+              <div>
+                <h4 className="font-medium text-white">Connect Fitbit</h4>
+                <p className="text-sm text-gray-300">
+                  Authorize Walkfit to access your Fitbit data to track your steps and activities.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                3
+              </div>
+              <div>
+                <h4 className="font-medium text-white">Download Fitbit App</h4>
+                <p className="text-sm text-gray-300">
+                  Install the Fitbit app on your mobile device using the same account you connected to Walkfit.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+                4
+              </div>
+              <div>
+                <h4 className="font-medium text-white">Start Your Journey</h4>
+                <p className="text-sm text-gray-300">
+                  Join tournaments, compete with friends, and earn rewards as you improve your fitness.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button
+              className="w-full bg-green-500 hover:bg-green-600 text-black font-medium"
+              onClick={() => setShowGetStartedDialog(false)}
+            >
+              Got it!
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }

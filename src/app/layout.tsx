@@ -43,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps) {
   return (
     <html lang="en">
       <link rel="icon" href="/images/logo2.svg" type="image/svg+xml" />
-      <body style={poppins.style} className={`bg-black min-h-screen flex flex-col ${poppins.className}`}>
+      <body className={`bg-black min-h-screen flex flex-col ${poppins.className}`}>
         <NetworkProvider>
           <WalletProvider>
             <SessionProvider>
