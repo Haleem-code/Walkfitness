@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
 import "../styles/globals.css";
-import React, { type ReactNode, useEffect, useState } from "react";
+import React, { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
+import { Poppins } from "@next/font/google";
+
 import ClientOnly from "../components/ClientOnly";
 import TopNavbar from "../components/TopNav";
 import BottomNav from "../components/BottomNav";
-import { Poppins } from '@next/font/google';
 import { SessionProvider } from "next-auth/react";
 import { WalletProvider } from "@/providers/WalletConnect";
 import { NetworkProvider } from "@/hooks/useNetwork";
-// import { auth } from "@/backend/auth"; 
 
 const poppins = Poppins({
-  subsets: ['latin'],
-  weight: ['400', '700'],
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 interface LayoutProps {
@@ -23,7 +23,7 @@ interface LayoutProps {
 
 export default function RootLayout({ children }: LayoutProps) {
   const pathname = usePathname();
-  const showNavbars = pathname !== "/logo" && pathname !== "/landing";
+  const showNavbars = !["/logo", "/landing"].includes(pathname);
 
   const [pointData, setPointData] = useState<number | null>(null);
 
@@ -37,12 +37,15 @@ export default function RootLayout({ children }: LayoutProps) {
         console.error("Error fetching points:", error);
       }
     };
+
     fetchPoints();
   }, []);
 
   return (
     <html lang="en">
-      <link rel="icon" href="/images/logo2.svg" type="image/svg+xml" />
+      <head>
+        <link rel="icon" href="/images/logo2.svg" type="image/svg+xml" />
+      </head>
       <body className={`bg-black min-h-screen flex flex-col ${poppins.className}`}>
         <NetworkProvider>
           <WalletProvider>
