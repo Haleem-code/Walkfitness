@@ -6,7 +6,7 @@ export default function Home() {
   const router = useRouter();
 
   useEffect(() => {
-    router.push("/logo");
+    router.push("/landing");
   }, [router]);
 
   return null;
