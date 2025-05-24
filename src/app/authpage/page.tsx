@@ -86,12 +86,12 @@ const AuthPage = () => {
         }}
       />
 
-      {/* Background decorative elements */}
+      {/* Background decorative elements - hidden on mobile */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 0.1, y: 0 }}
+        animate={{ opacity: 0.7, y: 0 }}
         transition={{ duration: 1, delay: 0.5 }}
-        className="absolute top-20 -right-20 w-96 h-96"
+        className="absolute top-10 md:top-20 -right-5 md:-right-2 w-48 h-48 md:w-72 lg:w-96 md:h-72 lg:h-96  md:block"
       >
         <Image
           src="/images/footer-sneak.png"
@@ -104,9 +104,9 @@ const AuthPage = () => {
 
       <motion.div
         initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 0.1, y: 0 }}
+        animate={{ opacity: 0.7, y: 0 }}
         transition={{ duration: 1, delay: 0.7 }}
-        className="absolute bottom-20 -left-20 w-96 h-96"
+        className="absolute bottom-10 md:bottom-20 -left-5 md:-left-10 w-48 h-48 md:w-72 lg:w-96 md:h-72 lg:h-96  md:block"
       >
         <Image
           src="/images/blue-sneak.png"
@@ -117,10 +117,15 @@ const AuthPage = () => {
         />
       </motion.div>
 
-      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-6">
-        <motion.div className="w-full max-w-md" initial="hidden" animate="visible" variants={staggerContainer}>
+      <div className="relative z-10 flex flex-col items-center justify-center min-h-screen p-4 md:p-6">
+        <motion.div
+          className="w-full max-w-sm md:max-w-md"
+          initial="hidden"
+          animate="visible"
+          variants={staggerContainer}
+        >
           {/* Logo */}
-          <motion.div className="mb-12 text-center" variants={fadeInUp}>
+          <motion.div className="mb-8 md:mb-12 text-center" variants={fadeInUp}>
             <motion.div whileHover={{ scale: 1.05 }} transition={{ type: "spring", stiffness: 300 }}>
               <Image
                 src="/images/logo.svg"
@@ -134,14 +139,14 @@ const AuthPage = () => {
 
           {/* Welcome text */}
           <motion.div className="text-center mb-8" variants={fadeInUp}>
-            <h1 className="text-3xl md:text-4xl font-bold mb-4">
+            <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
               Welcome to <span className="text-green-400">Walkfit</span>
             </h1>
           </motion.div>
 
           {/* Auth Card */}
           <motion.div
-            className="bg-black/60 backdrop-blur-sm rounded-2xl border border-green-400/30 p-8 w-full"
+            className="bg-black/60 backdrop-blur-sm rounded-2xl border border-green-400/30 p-6 md:p-8 w-full"
             variants={fadeInUp}
             whileHover={{
               borderColor: "rgba(206, 255, 103, 0.5)",
@@ -149,14 +154,14 @@ const AuthPage = () => {
             }}
             transition={{ duration: 0.3 }}
           >
-            <motion.div className="text-center mb-8" variants={fadeInUp}>
-              <div className="inline-flex items-center bg-purple-900/50 rounded-full px-4 py-2 mb-6 border border-purple-500/50">
+            <motion.div className="text-center mb-6 md:mb-8" variants={fadeInUp}>
+              <div className="inline-flex items-center bg-purple-900/50 rounded-full px-3 md:px-4 py-2 mb-4 md:mb-6 border border-purple-500/50">
                 <span className="bg-green-500 text-xs px-2 py-0.5 rounded-full mr-2 text-black font-medium">SYNC</span>
-                <span className="text-sm text-gray-300">Connect your Fitbit</span>
+                <span className="text-xs md:text-sm text-gray-300">Connect your Fitbit</span>
               </div>
 
-              <p className="text-gray-300 text-sm leading-relaxed">
-                We &apos;ll sync your profile and activity data from Fitbit to track your steps and reward your fitness
+              <p className="text-gray-300 text-xs md:text-sm leading-relaxed px-2 md:px-0">
+                We'll sync your profile and activity data from Fitbit to track your steps and reward your fitness
                 journey
               </p>
             </motion.div>
@@ -168,7 +173,7 @@ const AuthPage = () => {
                 onClick={() => signIn("fitbit", { callbackUrl: "/walk" })}
                 onMouseEnter={() => setIsButtonHovered(true)}
                 onMouseLeave={() => setIsButtonHovered(false)}
-                className="w-full bg-black/80 text-white p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"
+                className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"
                 whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 style={{
@@ -218,8 +223,8 @@ const AuthPage = () => {
           </motion.div>
 
           {/* Terms and Privacy */}
-          <motion.div className="text-center mt-6" variants={fadeInUp}>
-            <p className="text-gray-400 text-xs leading-relaxed">
+          <motion.div className="text-center mt-4 md:mt-6" variants={fadeInUp}>
+            <p className="text-gray-400 text-xs leading-relaxed px-2 md:px-0">
               By connecting your account, you agree to our{" "}
               <Link
                 href="#"
@@ -238,7 +243,7 @@ const AuthPage = () => {
           </motion.div>
 
           {/* Back to Home */}
-          <motion.div className="text-center mt-8" variants={fadeInUp}>
+          <motion.div className="text-center mt-6 md:mt-8" variants={fadeInUp}>
             <Link
               href="/"
               className="text-gray-500 hover:text-gray-300 text-sm transition-colors inline-flex items-center"
