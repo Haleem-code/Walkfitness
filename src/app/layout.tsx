@@ -6,8 +6,8 @@ import { usePathname } from "next/navigation";
 import { Poppins } from "next/font/google";
 
 import ClientOnly from "../components/ClientOnly";
-import TopNavbar from "../components/TopNav";
-import BottomNav from "../components/BottomNav";
+import TopNavbar from "@/components/TopNav";
+import BottomNav from "@/components/BottomNav";
 import { SessionProvider } from "next-auth/react";
 import { WalletProvider } from "@/providers/WalletConnect";
 import { NetworkProvider } from "@/hooks/useNetwork";
@@ -52,7 +52,7 @@ export default function RootLayout({ children }: LayoutProps) {
           <WalletProvider>
             <SessionProvider>
               <ClientOnly>
-                {showNavbars && <TopNavbar points={pointData ?? 0} />}
+                {showNavbars && <TopNavbar/>}
                 <main className="flex-grow">{children}</main>
                 {showNavbars && <BottomNav />}
               </ClientOnly>

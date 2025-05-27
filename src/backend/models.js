@@ -141,9 +141,117 @@ TournamentSchema.index(
   }
 );
 
+
+const GameSchema = new mongoose.Schema(
+  {
+    _id: {
+      type: String,
+      required: true,
+      default: () => nanoid(10),
+    },
+    name: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 50,
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+      maxlength: 200,
+    },
+    image: {
+      type: String,
+      default: "",
+    },
+    type: {
+      type: String,
+      required: true,
+      enum: ["public", "private", "sponsored"],
+    },
+    code: {
+      type: String,
+      required: function () {
+        return this.type === "private"
+      },
+      default: function () {
+        return this.type === "private" ? nanoid(8).toUpperCase() : undefined
+      },
+      unique: true,
+      sparse: true,
+    },
+    days: {
+      type: Number,
+      required: true,
+      min: 1,
+      max: 365,
+    },
+    steps: {
+      type: Number,
+      required: true,
+      min: 100,
+    },
+    maxPlayers: {
+      type: Number,
+      required: true,
+      min: 2,
+      max: 1000,
+    },
+    entryFee: {
+      type: Number,
+      required: true,
+      min: 0,
+    },
+    reward: {
+      type: Number,
+      default: 0,
+    },
+    createdBy: {
+      type: String,
+      required: true,
+    },
+    createdByEmail: {
+      type: String,
+      required: true,
+    },
+    participants: [
+      {
+        email: String,
+        username: String,
+        joinedAt: { type: Date, default: Date.now },
+      },
+    ],
+    status: {
+      type: String,
+      enum: ["active", "completed", "cancelled"],
+      default: "active",
+    },
+    startDate: {
+      type: Date,
+      default: Date.now,
+    },
+    endDate: {
+      type: Date,
+      required: true,
+    },
+  },
+  {
+    timestamps: true,
+  },
+)
+
+// Indexes
+GameSchema.index({ type: 1, status: 1 })
+GameSchema.index({ code: 1 }, { unique: true, sparse: true })
+GameSchema.index({ createdBy: 1 })
+
+
+
 export const Tournament = mongoose.models.Tournament || mongoose.model("Tournament", TournamentSchema);
 export const Referral = mongoose.models.Referral || mongoose.model('Referral', ReferralSchema);
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
 export const Steps = mongoose.models.Steps || mongoose.model("Steps", stepsSchema);
 export const Point = mongoose.models.Point || mongoose.model("Point", pointSchema);
 export const StepData = mongoose.models.StepData || mongoose.model("StepData", StepDataSchema);
+export const Game = mongoose.models.Game || mongoose.model("Game", GameSchema);

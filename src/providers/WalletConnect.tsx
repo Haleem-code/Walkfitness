@@ -174,7 +174,7 @@ export function CustomWalletMultiButton({ isModal = false }: CustomWalletMultiBu
                     className="w-full px-8 py-4 bg-black border border-[#CEFF67] rounded-md hover:bg-gray-900 hover:border-[#B9E94C] hover:shadow-lg hover:shadow-[#CEFF67]/20 transition-all font-poppins font-medium text-sm flex items-center gap-4"
                   >
                     <div className="flex gap-2 items-center justify-center bg-white/10 rounded-full p-1.5 overflow-hidden">
-                      <img
+                      <Image
                         src={wallet.adapter.icon}
                         alt={wallet.adapter.name}
                         className="w-6 h-6 rounded-full filter brightness-125"
@@ -201,7 +201,7 @@ export function CustomWalletMultiButton({ isModal = false }: CustomWalletMultiBu
             className="w-full px-4 py-2 bg-black border border-[#CEFF67] rounded-md hover:bg-gray-900 hover:border-[#B9E94C] hover:shadow-lg hover:shadow-[#CEFF67]/20 transition-all font-poppins text-sm flex items-center justify-center gap-2"
           >
             <div className="flex items-center justify-center rounded-full p-1 bg-white/10">
-              <img
+              <Image
                 src={wallet.adapter.icon}
                 alt={wallet.adapter.name}
                 className="w-5 h-5 filter brightness-125"

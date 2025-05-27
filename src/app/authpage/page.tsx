@@ -161,7 +161,7 @@ const AuthPage = () => {
               </div>
 
               <p className="text-gray-300 text-xs md:text-sm leading-relaxed px-2 md:px-0">
-                We'll sync your profile and activity data from Fitbit to track your steps and reward your fitness
+                We&apos;ll sync your profile and activity data from Fitbit to track your steps and reward your fitness
                 journey
               </p>
             </motion.div>
