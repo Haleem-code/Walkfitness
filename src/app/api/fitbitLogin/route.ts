@@ -12,15 +12,17 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing Fitbit API credentials" }, { status: 500 })
     }
 
-    const redirect_uri = `http://localhost:3000/api/auth/callback/fitbit`
+    const redirect_uri = `${process.env.NEXTAUTH_URI}/api/auth/callback/fitbit`
 
 
+    console.log("NEXTAUTH_URI:", process.env.NEXTAUTH_URI);
+    console.log("Redirect URI:", redirect_uri);
     const scope = "activity profile"
 
-    
+    // Generate authorization URL
     const authUrl = `https://www.fitbit.com/oauth2/authorize?response_type=code&client_id=${client_id}&redirect_uri=${encodeURIComponent(redirect_uri)}&scope=${encodeURIComponent(scope)}&expires_in=604800`
 
-
+    // Return the authorization URL to the client
     return NextResponse.json({ url: authUrl })
   } catch (error) {
     console.error("Error generating login URL:", error)
