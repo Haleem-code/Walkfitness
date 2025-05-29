@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import "dotenv/config";
+import { Keypair } from "@solana/web3.js";
+import bs58 from "bs58";
 
 const connection = {};
 
@@ -21,7 +23,7 @@ export const connectToDb = async () => {
 export const generateCodeVerifier = () => {
   const array = new Uint32Array(56 / 2);
   crypto.getRandomValues(array);
-  return Array.from(array, (dec) => ("0" + dec.toString(16)).substr(-2)).join(
+  return Array.from(array, (dec) => (`0${dec.toString(16)}`).substr(-2)).join(
     ""
   );
 };
@@ -91,6 +93,14 @@ export const deleteUserProfile = async (userId) => {
     console.error("Error deleting user profile:", error);
     throw new Error("Error deleting user profile");
   }
+};
+
+export const generateKeypair = () => {
+  const keypair = Keypair.generate();
+  return {
+    publicKey: keypair.publicKey.toBase58(),
+    privateKey:  bs58.encode(keypair.secretKey),
+  };
 };
 
 const pointsSchema = new mongoose.Schema({

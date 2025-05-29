@@ -1,0 +1,10 @@
+export const FITBIT_ID = process.env.FITBIT_ID;
+export const FITBIT_SECRET = process.env.FITBIT_SECRET;
+export const NEXTAUTH_URI = process.env.NEXTAUTH_URI;
+export const MONGODB_URI = process.env.MONGODB_URI;
+export const GOOGLE_CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
+export const GOOGLE_CLIENT_SECRET = process.env.GOOGLE_CLIENT_SECRET;
+export const AUTH_SECRET = process.env.AUTH_SECRET;
+export const NEXT_AUTH_SECRET = process.env.NEXT_AUTH_SECRET;
+export const NEXT_PUBLIC_APP_URL = process.env.NEXT_PUBLIC_APP_URL;
+export const AUTH_TRUST_HOST = process.env.AUTH_TRUST_HOST;

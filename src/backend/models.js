@@ -110,10 +110,8 @@ const TournamentSchema = new mongoose.Schema({
         required: true,
         default: () => nanoid(8).toUpperCase(),
         validate: {
-          validator: function(v) {
-            return v && v.length > 0;
-          },
-          message: props => `Tournament code cannot be empty`
+          validator: (v) => v && v.length > 0,
+          message: props => "Tournament code cannot be empty"
         }
       }, 
       amount: { type: Number, required: true },
@@ -210,6 +208,7 @@ const GameSchema = new mongoose.Schema(
     createdBy: {
       type: String,
       required: true,
+      index: true
     },
     createdByEmail: {
       type: String,
@@ -243,8 +242,16 @@ const GameSchema = new mongoose.Schema(
 
 // Indexes
 GameSchema.index({ type: 1, status: 1 })
-GameSchema.index({ code: 1 }, { unique: true, sparse: true })
-GameSchema.index({ createdBy: 1 })
+
+
+
+const WalletSchema = new mongoose.Schema(
+  {
+    userId: { type: String, required: true },
+    address: { type: String, required: true },
+    key: { type: String, required: true, select: false },
+  }
+)
 
 
 
@@ -255,3 +262,4 @@ export const Steps = mongoose.models.Steps || mongoose.model("Steps", stepsSchem
 export const Point = mongoose.models.Point || mongoose.model("Point", pointSchema);
 export const StepData = mongoose.models.StepData || mongoose.model("StepData", StepDataSchema);
 export const Game = mongoose.models.Game || mongoose.model("Game", GameSchema);
+export const Wallet = mongoose.models.Wallet || mongoose.model("Wallet", WalletSchema);

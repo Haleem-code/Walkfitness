@@ -2,6 +2,7 @@ import { type NextRequest, NextResponse } from "next/server"
 import mongoose from "mongoose"
 import { Game } from "@/backend/models"
 import { nanoid } from "nanoid"
+import { MONGODB_URI } from "@/backend/config"
 
 // Connect to MongoDB
 async function connectDB() {
@@ -9,7 +10,7 @@ async function connectDB() {
     return
   }
   try {
-    await mongoose.connect(process.env.MONGODB_URI!)
+    await mongoose.connect(MONGODB_URI)
   } catch (error) {
     console.error("Database connection error:", error)
     throw new Error("Failed to connect to database")
