@@ -15,7 +15,10 @@ const AuthPage = () => {
   useEffect(() => {
     if (status === "authenticated") {
       console.log(session)
-      router.push("/walk")
+      // Redirect to the "walk" page after 2 seconds if authenticated
+      setTimeout(() => {
+        router.push("/walk")
+      }, 2000)
     }
   }, [session, status, router])
 
@@ -37,6 +40,31 @@ const AuthPage = () => {
       },
     },
   }
+
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("/api/fitbitLogin", {
+        method: "POST", 
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      console.log("response", response);
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("data", data.url);
+        if (data.url) {
+          // Redirect to the URL provided by signIn
+          window.location.href = data.url;
+        }
+      } else {
+        console.error("Login failed:", await response.json());
+      }
+    } catch (error) {
+      console.error("Error during login:", error);
+    }
+  };
 
   if (status === "loading") {
     return (
@@ -157,20 +185,65 @@ const AuthPage = () => {
             <motion.div className="text-center mb-6 md:mb-8" variants={fadeInUp}>
               <div className="inline-flex items-center bg-purple-900/50 rounded-full px-3 md:px-4 py-2 mb-4 md:mb-6 border border-purple-500/50">
                 <span className="bg-green-500 text-xs px-2 py-0.5 rounded-full mr-2 text-black font-medium">SYNC</span>
-                <span className="text-xs md:text-sm text-gray-300">Connect your Fitbit</span>
+                <span className="text-xs md:text-sm text-gray-300">Connect your accounts</span>
               </div>
 
               <p className="text-gray-300 text-xs md:text-sm leading-relaxed px-2 md:px-0">
-                We&apos;ll sync your profile and activity data from Fitbit to track your steps and reward your fitness
-                journey
+                We&apos;ll sync your profile and activity data to track your steps and reward your fitness journey
               </p>
             </motion.div>
+            
+            {/* Google Connect Button */}
+            <motion.div className="mb-4" variants={fadeInUp}>
+              <motion.button
+                type="button"
+                onClick={() => signIn("google", { callbackUrl: "/walk" })}
+                onMouseEnter={() => setIsButtonHovered(true)}
+                onMouseLeave={() => setIsButtonHovered(false)}
+                className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                style={{
+                  boxShadow: isButtonHovered
+                    ? "0 8px 25px rgba(206, 255, 103, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.1)"
+                    : "0 4px 15px rgba(206, 255, 103, 0.2)",
+                }}
+              >
+                <motion.div
+                  className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-purple-600/10"
+                  initial={{ x: "-100%" }}
+                  whileHover={{ x: "100%" }}
+                  transition={{ duration: 0.6 }}
+                />
 
-            {/* Fitbit Connect Button */}
+                <div className="relative flex items-center justify-center">
+                  <Image
+                    src="/images/google.svg"
+                    alt="Connect with Google"
+                    width={140}
+                    height={40}
+                    className="h-8 w-auto"
+                  />
+                </div>
+
+                <motion.div
+                  className="absolute inset-0 border-2 border-green-400 rounded-xl"
+                  initial={{ opacity: 0 }}
+                  whileHover={{ opacity: 1 }}
+                  transition={{ duration: 0.3 }}
+                  style={{
+                    background:
+                      "linear-gradient(45deg, transparent 30%, rgba(206, 255, 103, 0.1) 50%, transparent 70%)",
+                  }}
+                />
+              </motion.button>
+            </motion.div>
+
+            {/* Fitbit Connect Button with new handleLogin function */}
             <motion.div className="mb-8" variants={fadeInUp}>
               <motion.button
                 type="button"
-                onClick={() => signIn("fitbit", { callbackUrl: "/walk" })}
+                onClick={handleLogin}
                 onMouseEnter={() => setIsButtonHovered(true)}
                 onMouseLeave={() => setIsButtonHovered(false)}
                 className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"

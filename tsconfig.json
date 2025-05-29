@@ -35,7 +35,7 @@
     ".next/types/**/*.ts",
     "src/app/api/tournaments/route.ts",
     "src/app/api/tournaments/join/route.js"
-  ],
+, "src/app/api/fitbitLogin/route.js"  ],
   "exclude": [
     "node_modules"
   ]

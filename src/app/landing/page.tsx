@@ -670,12 +670,14 @@ export default function WalkfitLanding() {
           </div>
 
           <DialogFooter>
-            <Button
-              className="w-full bg-green-500 hover:bg-green-600 text-black font-medium"
-              onClick={() => setShowGetStartedDialog(false)}
-            >
-              Got it!
-            </Button>
+            <Link href="/authpage" className="text-white">
+              <Button
+                className="w-full bg-green-500 hover:bg-green-600 text-black font-medium"
+                onClick={() => setShowGetStartedDialog(false)}
+              >
+                Got it!
+              </Button>
+            </Link>
           </DialogFooter>
         </DialogContent>
       </Dialog>

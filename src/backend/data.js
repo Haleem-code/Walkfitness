@@ -132,7 +132,7 @@
 //   }
 // }
 
-import { Steps, User, Point, Tournament } from "./models"
+import { Steps, User, Point, Tournament,Game } from "./models"
 import { connectToDb } from "./utils"
 import { unstable_noStore as noStore } from "next/cache"
 import { auth } from "./auth"
@@ -217,64 +217,66 @@ export const getSession = async () => {
   }
 }
 
-export async function getTournaments() {
-  await connectToDb()
 
+export async function getGames(type = "public") {
   try {
-    // Find all tournaments
-    const tournamentDocuments = await Tournament.find({})
+    await connectToDb()
 
-    // Flatten the tournaments array from all documents
-    const allTournaments = tournamentDocuments.flatMap((doc) =>
-      doc.tournaments.map((t) => ({
-        _id: t._id.toString(),
-        name: t.name,
-        tournamentsteps: t.tournamentsteps,
-        duration: t.duration,
-        amount: t.amount,
-        code: t.code,
-        createdBy: t.createdBy,
-        participants: t.participants,
-      })),
-    )
+    const games = await Game.find({
+      gameType: type,
+      endDate: { $gt: new Date() }, // Only return active games
+    })
+      .sort({ createdAt: -1 })
+      .limit(50)
 
-    return allTournaments
+    return JSON.parse(JSON.stringify(games))
   } catch (error) {
-    console.error("Error getting tournaments:", error)
+    console.error("Error fetching games:", error)
     return []
   }
 }
 
-export async function getUserTournaments() {
-  await connectToDb()
-
+export async function getGameByCode(code) {
   try {
-    const session = await auth()
-    if (!session?.user?.email) return []
+    await connectToDb()
 
-    // Find tournaments where the user is a participant
-    const tournamentDocuments = await Tournament.find({})
+    const game = await Game.findOne({ code })
 
-    // Flatten and filter tournaments where user is a participant
-    const userTournaments = tournamentDocuments.flatMap((doc) =>
-      doc.tournaments
-        .filter((t) => t.participants.includes(session.user.email))
-        .map((t) => ({
-          _id: t._id.toString(),
-          name: t.name,
-          tournamentsteps: t.steps,
-          duration: t.duration,
-          amount: t.amount,
-          code: t.code,
-          createdBy: t.createdBy,
-          participants: t.participants,
-        })),
-    )
+    if (!game) {
+      return null
+    }
 
-    return userTournaments
+    return JSON.parse(JSON.stringify(game))
   } catch (error) {
-    console.error("Error getting user tournaments:", error)
-    return []
+    console.error("Error fetching game by code:", error)
+    return null
   }
 }
 
+export async function joinGame(code, userEmail) {
+  try {
+    await connectToDb()
+
+    const game = await Game.findOne({ code })
+
+    if (!game) {
+      throw new Error("Game not found")
+    }
+
+    if (new Date() > game.endDate) {
+      throw new Error("This game has ended")
+    }
+
+    if (game.participants.includes(userEmail)) {
+      throw new Error("You are already a participant in this game")
+    }
+
+    game.participants.push(userEmail)
+    await game.save()
+
+    return true
+  } catch (error) {
+    console.error("Error joining game:", error)
+    throw error
+  }
+}

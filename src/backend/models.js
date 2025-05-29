@@ -99,159 +99,74 @@ const ReferralSchema = new Schema({
   referredUsers: [ReferredUserSchema],
 });
 
-const TournamentSchema = new mongoose.Schema({
-  email: { type: String, required: true },
-  tournaments: [
-    {
-      _id: { type: String, required: true },
-      createdBy: { type: String, required: true },
-      code: { 
-        type: String, 
-        required: true,
-        default: () => nanoid(8).toUpperCase(),
-        validate: {
-          validator: function(v) {
-            return v && v.length > 0;
-          },
-          message: props => `Tournament code cannot be empty`
-        }
-      }, 
-      amount: { type: Number, required: true },
-      duration: { type: Number, required: true },
-      tournamentsteps: { type: Number, required: true },
-      name: { type: String, required: true },
-      participants: [{ type: String }],
-      createdAt: { type: Date, default: Date.now },
-      walletId: { type: String, default: "" },
-    },
-  ],
+// Game schema
+// Define the Game schema
+const gameSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  gameSteps: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+  duration: {
+    type: Number,
+    required: true,
+    min: 1,
+  },
+  entryPrice: {
+    type: Number,
+    required: true,
+    default: 0,
+  },
+  gameType: {
+    type: String,
+    required: true,
+    enum: ["public", "private", "sponsored"],
+    default: "public",
+  },
+  code: {
+    type: String,
+    sparse: true, // Allow null/undefined values but enforce uniqueness for non-null values
+    trim: true,
+  },
+  creator: {
+    type: String, // Email of the creator
+    required: true,
+  },
+  participants: {
+    type: [String], // Array of participant emails
+    default: [],
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+  startDate: {
+    type: Date,
+    required: true,
+  },
+  endDate: {
+    type: Date,
+    required: true,
+  },
+  image: {
+    type: String, // URL to the game image
+  },
 })
 
-// Remove previous indexes
-TournamentSchema.index({ email: 1 });
-
-// Only create the unique index on non-null values with a proper partial filter expression
-TournamentSchema.index(
-  { "tournaments.code": 1 }, 
-  { 
-    unique: true, 
-    partialFilterExpression: { 
-      "tournaments.code": { $type: "string", $ne: "" } 
-    } 
-  }
-);
+// Create indexes
+gameSchema.index({ code: 1 }, { unique: true, sparse: true })
+gameSchema.index({ gameType: 1 })
+gameSchema.index({ endDate: 1 })
 
 
-const GameSchema = new mongoose.Schema(
-  {
-    _id: {
-      type: String,
-      required: true,
-      default: () => nanoid(10),
-    },
-    name: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 50,
-    },
-    description: {
-      type: String,
-      required: true,
-      trim: true,
-      maxlength: 200,
-    },
-    image: {
-      type: String,
-      default: "",
-    },
-    type: {
-      type: String,
-      required: true,
-      enum: ["public", "private", "sponsored"],
-    },
-    code: {
-      type: String,
-      required: function () {
-        return this.type === "private"
-      },
-      default: function () {
-        return this.type === "private" ? nanoid(8).toUpperCase() : undefined
-      },
-      unique: true,
-      sparse: true,
-    },
-    days: {
-      type: Number,
-      required: true,
-      min: 1,
-      max: 365,
-    },
-    steps: {
-      type: Number,
-      required: true,
-      min: 100,
-    },
-    maxPlayers: {
-      type: Number,
-      required: true,
-      min: 2,
-      max: 1000,
-    },
-    entryFee: {
-      type: Number,
-      required: true,
-      min: 0,
-    },
-    reward: {
-      type: Number,
-      default: 0,
-    },
-    createdBy: {
-      type: String,
-      required: true,
-    },
-    createdByEmail: {
-      type: String,
-      required: true,
-    },
-    participants: [
-      {
-        email: String,
-        username: String,
-        joinedAt: { type: Date, default: Date.now },
-      },
-    ],
-    status: {
-      type: String,
-      enum: ["active", "completed", "cancelled"],
-      default: "active",
-    },
-    startDate: {
-      type: Date,
-      default: Date.now,
-    },
-    endDate: {
-      type: Date,
-      required: true,
-    },
-  },
-  {
-    timestamps: true,
-  },
-)
-
-// Indexes
-GameSchema.index({ type: 1, status: 1 })
-GameSchema.index({ code: 1 }, { unique: true, sparse: true })
-GameSchema.index({ createdBy: 1 })
-
-
-
-export const Tournament = mongoose.models.Tournament || mongoose.model("Tournament", TournamentSchema);
 export const Referral = mongoose.models.Referral || mongoose.model('Referral', ReferralSchema);
 export const User = mongoose.models.User || mongoose.model("User", userSchema);
 export const Steps = mongoose.models.Steps || mongoose.model("Steps", stepsSchema);
 export const Point = mongoose.models.Point || mongoose.model("Point", pointSchema);
 export const StepData = mongoose.models.StepData || mongoose.model("StepData", StepDataSchema);
-export const Game = mongoose.models.Game || mongoose.model("Game", GameSchema);
+export const Game = mongoose.models.Game || mongoose.model("Game", gameSchema)

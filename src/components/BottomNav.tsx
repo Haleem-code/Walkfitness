@@ -19,7 +19,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ pendingTaskCount = 0 }) => {
   if (!showNavbar) return null
 
   const navItems = [
-    { name: "Tournament", href: "/tournaments", icon: "/images/tournament-icon.svg" },
+    { name: "Tournament", href: "/games", icon: "/images/tournament-icon.svg" },
     { name: "Groups", href: "/groups", icon: "/images/group-icon.svg" },
     { name: "Walk", href: "/walk", icon: "/icons/walk.svg" },
     { name: "Marketplace", href: "/marketplace", icon: "/icons/marketplace.svg" },

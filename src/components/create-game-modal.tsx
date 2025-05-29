@@ -3,303 +3,339 @@
 import type React from "react"
 
 import { useState } from "react"
+import { useRouter } from "next/navigation"
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
+import { useToast } from "@/hooks/use-toast"
+import { Loader2, Upload } from "lucide-react"
+import { useForm } from "react-hook-form"
+import { useSession } from "next-auth/react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
-import { X } from "lucide-react"
-import { toast } from "@/hooks/use-toast"
-import Image from "next/image"
+import { nanoid } from "nanoid"
+import GameCodeDisplay from "@/components/game-code-display"
 
 interface CreateGameModalProps {
   isOpen: boolean
   onClose: () => void
-  onGameCreated: (game: any) => void
-  userEmail: string
-  username: string
 }
 
-export default function CreateGameModal({ isOpen, onClose, onGameCreated, userEmail, username }: CreateGameModalProps) {
-  const [formData, setFormData] = useState({
-    name: "",
-    description: "",
-    image: "",
-    type: "public",
-    days: "",
-    steps: "",
-    maxPlayers: "",
-    entryFee: "",
-    reward: "",
-  })
+type FormData = {
+  name: string
+  gameSteps: number
+  duration: number
+  entryPrice: number
+  gameType: "public" | "private" | "sponsored"
+  image?: FileList
+}
+
+export default function CreateGameModal({ isOpen, onClose }: CreateGameModalProps) {
+  const { data: session, status } = useSession()
   const [isLoading, setIsLoading] = useState(false)
+  const [success, setSuccess] = useState(false)
+  const [generatedCode, setGeneratedCode] = useState("")
+  const [error, setError] = useState("")
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const { toast } = useToast()
+  const router = useRouter()
 
-  const handleInputChange = (field: string, value: string) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: value,
-    }))
-  }
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+    reset,
+    setValue,
+  } = useForm<FormData>({
+    defaultValues: {
+      name: "",
+      gameSteps: 10000,
+      duration: 7,
+      entryPrice: 0,
+      gameType: "public",
+    },
+  })
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const gameType = watch("gameType")
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
       const reader = new FileReader()
-      reader.onload = (e) => {
-        setFormData((prev) => ({
-          ...prev,
-          image: e.target?.result as string,
-        }))
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string)
       }
       reader.readAsDataURL(file)
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+  const onSubmit = async (data: FormData) => {
+    if (status !== "authenticated") {
+      toast({
+        title: "Authentication Error",
+        description: "Please sign in to create a game",
+      })
+      return
+    }
+
     setIsLoading(true)
+    setError("")
 
     try {
+      // Generate a unique code for private games
+      const gameCode = data.gameType === "private" ? nanoid(8).toUpperCase() : null
+
+      // Format data for API
+      const formData = new FormData()
+      formData.append("name", data.name)
+      formData.append("gameSteps", data.gameSteps.toString())
+      formData.append("duration", data.duration.toString())
+      formData.append("entryPrice", data.entryPrice.toString())
+      formData.append("gameType", data.gameType)
+
+      if (gameCode) {
+        formData.append("code", gameCode)
+      }
+
+      if (data.image && data.image[0]) {
+        formData.append("image", data.image[0])
+      }
+
       const response = await fetch("/api/games", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...formData,
-          createdBy: username,
-          createdByEmail: userEmail,
-        }),
+        body: formData,
       })
 
-      const data = await response.json()
-
-      if (data.success) {
-        toast({
-          title: "Game Created!",
-          description:
-            data.game.type === "private"
-              ? `Private game created with code: ${data.game.code}`
-              : "Your game has been created successfully",
-        })
-        onGameCreated(data.game)
-        onClose()
-        // Reset form
-        setFormData({
-          name: "",
-          description: "",
-          image: "",
-          type: "public",
-          days: "",
-          steps: "",
-          maxPlayers: "",
-          entryFee: "",
-          reward: "",
-        })
-      } else {
-        toast({
-          title: "Error",
-          description: data.error || "Failed to create game",
-          
-        })
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.message || `Error: ${response.status}`)
       }
-    } catch (error) {
+
+      const responseData = await response.json()
+
+      // Set success state with the generated code for private games
+      setSuccess(true)
+      if (gameCode) {
+        setGeneratedCode(gameCode)
+      }
+
+      toast({
+        title: "Success",
+        description: "Game created successfully!",
+      })
+
+      // Reset form after success
+      reset()
+      setImagePreview(null)
+
+      // Refresh the games list
+      router.refresh()
+    } catch (err: unknown) {
+      console.error("Error creating game:", err)
+
+      let errorMessage = "An error occurred while creating the game. Please try again."
+      if (err instanceof Error) {
+        errorMessage = err.message
+      }
+
+      setError(errorMessage)
+
       toast({
         title: "Error",
-        description: "Failed to create game",
-    
+        description: errorMessage,
       })
-    } finally {
-      setIsLoading(false)
     }
+
+    setIsLoading(false)
   }
 
   return (
-    <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[500px] bg-gray-900 border-gray-700 text-white max-h-[90vh] overflow-y-auto">
+    <Dialog open={isOpen} onOpenChange={(open) => !isLoading && !open && onClose()}>
+      <DialogContent className="max-w-md mx-auto">
         <DialogHeader>
-          <DialogTitle className="text-xl font-bold text-center">Create New Game</DialogTitle>
+          <DialogTitle className="text-xl font-semibold text-center">Create New Game</DialogTitle>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          {/* Game Type Selection */}
-          <div className="space-y-3">
-            <Label className="text-sm font-medium">Game Type</Label>
-            <RadioGroup
-              value={formData.type}
-              onValueChange={(value) => handleInputChange("type", value)}
-              className="flex flex-col space-y-2"
-            >
-              <div className="flex items-center space-x-2 p-3 rounded-lg border border-gray-600 hover:border-green-500 transition-colors">
-                <RadioGroupItem value="public" id="public" />
-                <Label htmlFor="public" className="flex-1 cursor-pointer">
-                  <div className="font-medium">Public Game</div>
-                  <div className="text-sm text-gray-400">Anyone can join this game</div>
+        {status === "authenticated" ? (
+          <form onSubmit={handleSubmit(onSubmit)} className="mt-2">
+            <div className="space-y-6 py-3">
+              <div className="space-y-2">
+                <Label htmlFor="name" className="text-sm font-medium">
+                  Game Name
                 </Label>
-              </div>
-              <div className="flex items-center space-x-2 p-3 rounded-lg border border-gray-600 hover:border-purple-500 transition-colors">
-                <RadioGroupItem value="private" id="private" />
-                <Label htmlFor="private" className="flex-1 cursor-pointer">
-                  <div className="font-medium">Private Game</div>
-                  <div className="text-sm text-gray-400">Invite-only with game code</div>
-                </Label>
-              </div>
-              <div className="flex items-center space-x-2 p-3 rounded-lg border border-gray-600 hover:border-blue-500 transition-colors">
-                <RadioGroupItem value="sponsored" id="sponsored" />
-                <Label htmlFor="sponsored" className="flex-1 cursor-pointer">
-                  <div className="font-medium">Sponsored Game</div>
-                  <div className="text-sm text-gray-400">Featured game with rewards</div>
-                </Label>
-              </div>
-            </RadioGroup>
-          </div>
-
-          {/* Game Name */}
-          <div className="space-y-2">
-            <Label htmlFor="name">Game Name</Label>
-            <Input
-              id="name"
-              value={formData.name}
-              onChange={(e) => handleInputChange("name", e.target.value)}
-              placeholder="Enter game name"
-              className="bg-gray-800 border-gray-600 text-white"
-              required
-            />
-          </div>
-
-          {/* Description */}
-          <div className="space-y-2">
-            <Label htmlFor="description">Description</Label>
-            <Textarea
-              id="description"
-              value={formData.description}
-              onChange={(e) => handleInputChange("description", e.target.value)}
-              placeholder="Describe your game..."
-              className="bg-gray-800 border-gray-600 text-white min-h-[80px]"
-              required
-            />
-          </div>
-
-          {/* Image Upload */}
-          <div className="space-y-2">
-            <Label>Game Image</Label>
-            <div className="flex items-center space-x-3">
-              <div className="flex-1">
                 <Input
-                  type="file"
-                  accept="image/*"
-                  onChange={handleImageUpload}
-                  className="bg-gray-800 border-gray-600 text-white file:bg-gray-700 file:text-white file:border-0"
+                  id="name"
+                  placeholder="Enter a unique game name"
+                  {...register("name", { required: "Game name is required" })}
+                  className={`w-full ${errors.name ? "border-red-500" : ""}`}
                 />
+                {errors.name && <p className="text-xs text-red-500">{errors.name.message}</p>}
               </div>
-              {formData.image && (
-                <div className="relative w-16 h-16">
-                  <Image
-                    src={formData.image || "/placeholder.svg"}
-                    alt="Preview"
-                    className="w-full h-full object-cover rounded-lg"
+
+              <div className="space-y-2">
+                <Label htmlFor="gameType" className="text-sm font-medium">
+                  Game Type
+                </Label>
+                <RadioGroup
+                  defaultValue="public"
+                  onValueChange={(value) => setValue("gameType", value as "public" | "private" | "sponsored")}
+                  className="flex flex-col space-y-2"
+                >
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="public" id="public" />
+                    <Label htmlFor="public">Public - Anyone can join</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="private" id="private" />
+                    <Label htmlFor="private">Private - Join with code only</Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <RadioGroupItem value="sponsored" id="sponsored" />
+                    <Label htmlFor="sponsored">Sponsored - Featured game</Label>
+                  </div>
+                </RadioGroup>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gameImage" className="text-sm font-medium">
+                  Game Image
+                </Label>
+                <div className="flex items-center gap-4">
+                  <div className="w-16 h-16 rounded-md bg-gray-100 flex items-center justify-center overflow-hidden">
+                    {imagePreview ? (
+                      <img
+                        src={imagePreview || "/placeholder.svg"}
+                        alt="Preview"
+                        className="w-full h-full object-cover"
+                      />
+                    ) : (
+                      <Upload className="h-6 w-6 text-gray-400" />
+                    )}
+                  </div>
+                  <Input
+                    id="gameImage"
+                    type="file"
+                    accept="image/*"
+                    {...register("image")}
+                    onChange={handleImageChange}
+                    className="flex-1"
                   />
-                  <button
-                    type="button"
-                    onClick={() => handleInputChange("image", "")}
-                    className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1"
-                  >
-                    <X className="w-3 h-3" />
-                  </button>
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="gameSteps" className="text-sm font-medium">
+                  Target Steps
+                </Label>
+                <Input
+                  id="gameSteps"
+                  type="number"
+                  placeholder="Total steps to achieve during the game"
+                  {...register("gameSteps", {
+                    required: "Target steps is required",
+                    min: { value: 1, message: "Steps must be greater than 0" },
+                  })}
+                  className={`w-full ${errors.gameSteps ? "border-red-500" : ""}`}
+                />
+                {errors.gameSteps && <p className="text-xs text-red-500">{errors.gameSteps.message}</p>}
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label htmlFor="duration" className="text-sm font-medium">
+                    Duration (days)
+                  </Label>
+                  <Input
+                    id="duration"
+                    type="number"
+                    placeholder="Number of days"
+                    {...register("duration", {
+                      required: "Duration is required",
+                      min: { value: 1, message: "Duration must be at least 1 day" },
+                    })}
+                    className={`w-full ${errors.duration ? "border-red-500" : ""}`}
+                  />
+                  {errors.duration && <p className="text-xs text-red-500">{errors.duration.message}</p>}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="entryPrice" className="text-sm font-medium">
+                    Entry Fee
+                  </Label>
+                  <Input
+                    id="entryPrice"
+                    type="number"
+                    placeholder="0 for free games"
+                    {...register("entryPrice", {
+                      required: "Entry fee is required",
+                      min: { value: 0, message: "Fee cannot be negative" },
+                    })}
+                    className={`w-full ${errors.entryPrice ? "border-red-500" : ""}`}
+                    step="0.01"
+                  />
+                  {errors.entryPrice && <p className="text-xs text-red-500">{errors.entryPrice.message}</p>}
+                </div>
+              </div>
+
+              {success && gameType === "private" && generatedCode && (
+                <div className="mt-4 p-4 bg-green-50 border border-green-200 rounded-md">
+                  <Label className="block font-medium text-green-800 mb-2">Game Code</Label>
+                  <GameCodeDisplay code={generatedCode} />
+                  <p className="mt-2 text-xs text-green-700">
+                    Share this code with participants so they can join your game.
+                  </p>
                 </div>
               )}
+
+              {error && (
+                <div className="p-3 bg-red-50 border border-red-200 rounded-md text-red-600 text-sm">{error}</div>
+              )}
+            </div>
+
+            <div className="flex justify-end items-center gap-4 pt-4 border-t border-gray-200">
+              {success && <div className="text-green-600 flex items-center text-sm">Created successfully!</div>}
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={isLoading}
+                className="border-gray-300"
+              >
+                Cancel
+              </Button>
+              <Button
+                type="submit"
+                disabled={isLoading}
+                className="bg-[#CEFF67] text-black hover:bg-[#B9E94C] border-2 border-double border-black"
+              >
+                {isLoading ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    Creating...
+                  </>
+                ) : (
+                  "Create Game"
+                )}
+              </Button>
+            </div>
+          </form>
+        ) : (
+          <div className="py-8 text-center">
+            <div className="inline-block p-3 mb-4 rounded-full bg-gray-100">
+              <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                <span className="text-gray-500">🔒</span>
+              </div>
+            </div>
+            <h3 className="text-lg font-medium mb-2">Sign In Required</h3>
+            <p className="mb-6 text-gray-500 text-sm">Please sign in to create and manage games.</p>
+            <div className="space-y-3">
+              <Button variant="outline" onClick={onClose} className="w-full">
+                Cancel
+              </Button>
             </div>
           </div>
-
-          {/* Game Settings Grid */}
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="days">Duration (Days)</Label>
-              <Input
-                id="days"
-                type="number"
-                value={formData.days}
-                onChange={(e) => handleInputChange("days", e.target.value)}
-                placeholder="7"
-                min="1"
-                max="365"
-                className="bg-gray-800 border-gray-600 text-white"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="steps">Target Steps</Label>
-              <Input
-                id="steps"
-                type="number"
-                value={formData.steps}
-                onChange={(e) => handleInputChange("steps", e.target.value)}
-                placeholder="10000"
-                min="100"
-                className="bg-gray-800 border-gray-600 text-white"
-                required
-              />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label htmlFor="maxPlayers">Max Players</Label>
-              <Input
-                id="maxPlayers"
-                type="number"
-                value={formData.maxPlayers}
-                onChange={(e) => handleInputChange("maxPlayers", e.target.value)}
-                placeholder="100"
-                min="2"
-                max="1000"
-                className="bg-gray-800 border-gray-600 text-white"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <Label htmlFor="entryFee">Entry Fee</Label>
-              <Input
-                id="entryFee"
-                type="number"
-                value={formData.entryFee}
-                onChange={(e) => handleInputChange("entryFee", e.target.value)}
-                placeholder="0"
-                min="0"
-                step="0.01"
-                className="bg-gray-800 border-gray-600 text-white"
-                required
-              />
-            </div>
-          </div>
-
-          {/* Reward for sponsored games */}
-          {formData.type === "sponsored" && (
-            <div className="space-y-2">
-              <Label htmlFor="reward">Reward Amount</Label>
-              <Input
-                id="reward"
-                type="number"
-                value={formData.reward}
-                onChange={(e) => handleInputChange("reward", e.target.value)}
-                placeholder="100"
-                min="0"
-                step="0.01"
-                className="bg-gray-800 border-gray-600 text-white"
-              />
-            </div>
-          )}
-
-          {/* Submit Button */}
-          <Button
-            type="submit"
-            disabled={isLoading}
-            className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-3"
-          >
-            {isLoading ? "Creating Game..." : "Create Game"}
-          </Button>
-        </form>
+        )}
       </DialogContent>
     </Dialog>
   )

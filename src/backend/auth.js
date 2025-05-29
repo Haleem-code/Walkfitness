@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import "dotenv/config";
 import { connectToDb } from "./utils";
-import { User, Steps, Point, Tournament } from "./models";
+import { User, Steps, Point, Game} from "./models";
 import { updateStepData } from "./updateSteps";
 
 export const {
@@ -98,14 +98,14 @@ export const {
               await pointEntry.save();
             }
 
-            // Initialize tournament
-            let tournamentEntry = await Tournament.findOne({ email: token.userId });
-            if (!tournamentEntry) {
-              tournamentEntry = new Tournament({
+            // Initialize game
+            let gameEntry = await Game.findOne({ email: token.userId });
+            if (!gameEntry) {
+              gameEntry = new Game({
                 email: token.userId,
-                tournaments: [] 
+                participants: []
               });
-              await tournamentEntry.save();
+              await gameEntry.save();
             }
 
             // Fetch step data
@@ -143,3 +143,4 @@ export const {
     error: "/authpage",
   },
 });
+
