@@ -1,21 +1,22 @@
 // app/api/auth/fitbitLogin/route.ts
 
+import { FITBIT_ID, FITBIT_SECRET, NEXTAUTH_URI } from "@/backend/config"
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function POST(request: NextRequest) {
   try {
     // Get Fitbit authentication credentials from environment variables
-    const client_id = process.env.FITBIT_ID
-    const client_secret = process.env.FITBIT_SECRET
+    const client_id = FITBIT_ID
+    const client_secret = FITBIT_SECRET
 
     if (!client_id || !client_secret) {
       return NextResponse.json({ error: "Missing Fitbit API credentials" }, { status: 500 })
     }
 
-    const redirect_uri = `${process.env.NEXTAUTH_URI}/api/auth/callback/fitbit`
+    const redirect_uri = `${NEXTAUTH_URI}/api/auth/callback/fitbit`
 
 
-    console.log("NEXTAUTH_URI:", process.env.NEXTAUTH_URI);
+    console.log("NEXTAUTH_URI:", NEXTAUTH_URI);
     console.log("Redirect URI:", redirect_uri);
     const scope = "activity profile"
 

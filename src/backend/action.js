@@ -9,7 +9,7 @@ export const updateSteps = async (stepsData) => {
 
   try {
     await connectToDb();
-    let existingUserSteps = await Steps.findOne({ userId });
+    const existingUserSteps = await Steps.exists({ userId });
     if (!existingUserSteps) {
       const newUserSteps = new Steps({
         totalSteps,
