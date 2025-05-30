@@ -63,7 +63,7 @@ export default async function GameList({ type }: GameListProps) {
               <span className={`text-sm ${game.entryPrice > 0 ? "text-purple-400" : "text-green-400"}`}>
                 {game.entryPrice > 0 ? `$${game.entryPrice}` : "FREE"}
               </span>
-              <form action={`/api/games/${game._id}/join`} method="POST">
+              <form action={`https://walkfit.vercel.app/api/games/${game._id}/join`} method="POST">
                 <Button
                   type="submit"
                   size="sm"

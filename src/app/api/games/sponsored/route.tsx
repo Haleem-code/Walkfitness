@@ -61,7 +61,7 @@ function renderGames(games: any[]) {
           </div>
           <div class="flex items-center gap-2">
             <span class="text-sm text-yellow-400">$${(game.entryPrice * game.participants.length * 0.8).toFixed(2)}</span>
-            <form action="/api/games/${game._id}/join" method="POST">
+            <form action="https://walkfit.vercel.app/api/games/${game._id}/join" method="POST">
               <button 
                 type="submit"
                 class="bg-green-500 hover:bg-green-600 text-white rounded-full px-4 py-1 text-xs"

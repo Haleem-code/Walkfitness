@@ -102,7 +102,7 @@ export default function CreateGameModal({ isOpen, onClose }: CreateGameModalProp
         formData.append("image", data.image[0])
       }
 
-      const response = await fetch("/api/games", {
+      const response = await fetch("https://walkfit.vercel.app/api/games", {
         method: "POST",
         body: formData,
       })

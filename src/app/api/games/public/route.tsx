@@ -59,7 +59,7 @@ function renderGames(games: any[]) {
             <span class="text-sm ${game.entryPrice > 0 ? "text-purple-400" : "text-green-400"}">
               ${game.entryPrice > 0 ? `$${game.entryPrice}` : "FREE"}
             </span>
-            <form action="/api/games/${game._id}/join" method="POST">
+            <form action="https://walkfit.vercel.app/api/games/${game._id}/join" method="POST">
               <button 
                 type="submit"
                 class="bg-green-500 hover:bg-green-600 text-white rounded-full px-4 py-1 text-xs"

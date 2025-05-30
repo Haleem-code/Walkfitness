@@ -156,7 +156,7 @@ export default function WalkPage() {
                 <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
             }>
-              <iframe src="/api/games/public" className="w-full h-[500px] border-none"></iframe>
+              <iframe src="https://walkfit.vercel.app/api/games/public" className="w-full h-[500px] border-none"></iframe>
             </Suspense>
           </TabsContent>
           <TabsContent value="sponsored">
@@ -165,7 +165,7 @@ export default function WalkPage() {
                 <Loader2 className="h-8 w-8 animate-spin text-gray-400" />
               </div>
             }>
-              <iframe src="/api/games/sponsored" className="w-full h-[500px] border-none"></iframe>
+              <iframe src="https://walkfit.vercel.app/api/games/sponsored" className="w-full h-[500px] border-none"></iframe>
             </Suspense>
           </TabsContent>
         </Tabs>
