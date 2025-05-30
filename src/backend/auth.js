@@ -97,17 +97,7 @@ export const {
               });
               await pointEntry.save();
             }
-
-            // Initialize game
-            let gameEntry = await Game.findOne({ email: token.userId });
-            if (!gameEntry) {
-              gameEntry = new Game({
-                email: token.userId,
-                participants: []
-              });
-              await gameEntry.save();
-            }
-
+    
             // Fetch step data
             if (account.access_token) {
               await updateStepData(token.userId, account.access_token);

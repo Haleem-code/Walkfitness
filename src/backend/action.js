@@ -30,7 +30,7 @@ export const updateSteps = async (stepsData) => {
       );
     }
     
-    // Update steps in active tournaments
+    // Update steps in active Games
     await updateGameSteps(userId, presentDaySteps);
 
   } catch (err) {
