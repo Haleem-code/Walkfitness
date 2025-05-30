@@ -54,82 +54,183 @@ const updateGameSteps = async (userId, steps) => {
   }
 };
 
+
 export const createGame = async (gameData) => {
   "use server";
-
-  const { name, targetSteps, duration, amount, code, createdBy } = gameData;
-
+  
+  const { name, gameSteps, duration, entryPrice, gameType, code, creator, startDate, image } = gameData;
+  
+  // Validation
+  if (!name || !gameSteps || !duration || !creator || !startDate) {
+    return { error: "Missing required fields" };
+  }
+  
+  // Validate gameType
+  if (!["public", "private", "sponsored"].includes(gameType)) {
+    return { error: "Invalid game type" };
+  }
+  
+  // Private games must have a code
+  if (gameType === "private" && !code) {
+    return { error: "Private games must have a code" };
+  }
+  
   try {
     await connectToDb();
+    
+    // Check if game code already exists (for private games)
+    if (code) {
+      const existingGame = await Game.findOne({ code });
+      if (existingGame) {
+        return { error: "Game code already exists" };
+      }
+    }
+    
+    const startDateObj = new Date(startDate);
+    const endDateObj = new Date(startDateObj.getTime() + duration * 24 * 60 * 60 * 1000);
+    
     const newGame = new Game({
       name,
-      targetSteps,
+      gameSteps,
       duration,
-      amount,
-      code,
-      createdBy,
-      participants: [{ userId: createdBy, steps: 0 }],
+      entryPrice: entryPrice || 0,
+      gameType: gameType || "public",
+      code: gameType === "private" ? code : undefined,
+      creator,
+      participants: [creator], // Add creator as first participant
       createdAt: new Date(),
-      endDate: new Date(Date.now() + duration * 24 * 60 * 60 * 1000),
+      startDate: startDateObj,
+      endDate: endDateObj,
+      image: image || null,
     });
+    
     await newGame.save();
     console.log("Game created and saved to db");
-    return newGame;
+    return { success: true, game: newGame };
   } catch (err) {
     console.error("Error creating game:", err);
     return { error: "Failed to create game" };
   }
 };
 
-export const joinGame = async (userId, gameCode) => {
+export const joinGame = async (email, gameCode) => {
   "use server";
-
+  
+  // Validation
+  if (!email || !gameCode) {
+    return { error: "Missing required fields" };
+  }
+  
   try {
     await connectToDb();
     const game = await Game.findOne({ code: gameCode });
-
+    
     if (!game) {
       return { error: "Game not found" };
     }
-
-    if (!game.participants.some(p => p.userId === userId)) {
-      game.participants.push({ userId, steps: 0 });
+    
+    // Check if game has ended
+    if (game.endDate < new Date()) {
+      return { error: "Game has already ended" };
+    }
+    
+    // Check if game has started
+    if (game.startDate > new Date()) {
+      return { error: "Game has not started yet" };
+    }
+    
+    if (!game.participants.includes(email)) {
+      game.participants.push(email);
       await game.save();
       console.log("User joined game successfully");
+      return { success: true, game };
     } else {
-      console.log("User already in game");
+      return { success: true, message: "User already in game", game };
     }
-
-    return game;
   } catch (err) {
     console.error("Error joining game:", err);
-    return { error: "Failed to join game  " };
+    return { error: "Failed to join game" };
   }
 };
 
-export const getGames = async () => {
+export const getGamesByType = async (gameType) => {
   "use server";
-
+  
+  // Validation
+  if (!["public", "private", "sponsored"].includes(gameType)) {
+    return { error: "Invalid game type" };
+  }
+  
   try {
     await connectToDb();
-    const games = await Game.find();
-    return games ;
+    const games = await Game.find({ 
+      gameType,
+      endDate: { $gt: new Date() } // Only active games
+    }).sort({ createdAt: -1 });
+    
+    return { success: true, games };
   } catch (err) {
     console.error("Error fetching games:", err);
     return { error: "Failed to fetch games" };
   }
 };
 
-export const getUserGames = async (userId) => {
+export const getGames = async () => {
   "use server";
-
+  
   try {
     await connectToDb();
-    const games = await Game.find({ "participants.userId": userId });
-    return games ;
+    const games = await Game.find({
+      endDate: { $gt: new Date() } // Only active games
+    }).sort({ createdAt: -1 });
+    
+    return { success: true, games };
+  } catch (err) {
+    console.error("Error fetching games:", err);
+    return { error: "Failed to fetch games" };
+  }
+};
+
+export const getUserGames = async (email) => {
+  "use server";
+  
+  // Validation
+  if (!email) {
+    return { error: "Email is required" };
+  }
+  
+  try {
+    await connectToDb();
+    const games = await Game.find({ 
+      participants: email 
+    }).sort({ createdAt: -1 });
+    
+    return { success: true, games };
   } catch (err) {
     console.error("Error fetching user games:", err);
     return { error: "Failed to fetch user games" };
+  }
+};
+
+export const getGameByCode = async (code) => {
+  "use server";
+  
+  if (!code) {
+    return { error: "Game code is required" };
+  }
+  
+  try {
+    await connectToDb();
+    const game = await Game.findOne({ code });
+    
+    if (!game) {
+      return { error: "Game not found" };
+    }
+    
+    return { success: true, game };
+  } catch (err) {
+    console.error("Error fetching game:", err);
+    return { error: "Failed to fetch game" };
   }
 };
 

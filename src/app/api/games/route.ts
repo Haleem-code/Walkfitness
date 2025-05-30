@@ -1,25 +1,35 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { connectToDb } from "@/backend/utils"
-import { Game } from "@/backend/models"
+import { getGames, createGame } from '@/backend/action';
 
+export const dynamic = "force-dynamic";
 
-export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
+// GET /api/games - Get all active games
+export async function GET() {
   try {
-    const code = params.code
-
-    // Connect to database
-    await connectToDb()
-
-    // Find game by code
-    const game = await Game.findOne({ code })
-
-    if (!game) {
-      return NextResponse.json({ message: "Game not found" }, { status: 404 })
+    const result = await getGames();
+    
+    if (result.error) {
+      return Response.json({ error: result.error }, { status: 500 });
     }
+    
+    return Response.json(result);
+  } catch (error) {
+    console.error("Error in GET /api/games:", error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
+  }
+}
 
-    return NextResponse.json(game)
-  } catch (error: any) {
-    console.error("Error fetching game:", error)
-    return NextResponse.json({ message: error.message || "Failed to fetch game" }, { status: 500 })
+export async function POST(req) {
+  try {
+    const gameData = await req.json();
+    const result = await createGame(gameData);
+    
+    if (result.error) {
+      return Response.json({ error: result.error }, { status: 400 });
+    }
+    
+    return Response.json(result, { status: 201 });
+  } catch (error) {
+    console.error("Error in POST /api/games:", error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -1,24 +1,21 @@
-import { type NextRequest, NextResponse } from "next/server"
-import { connectToDb } from "@/backend/utils"
-import { Game } from "@/backend/models"
+import { getGameByCode } from '@/backend/action';
 
-export async function GET(req: NextRequest, { params }: { params: { code: string } }) {
+export const dynamic = "force-dynamic";
+
+export async function GET(req, { params }) {
   try {
-    const code = params.code
-
-    // Connect to database
-    await connectToDb()
-
-    // Find game by code
-    const game = await Game.findOne({ code }).exec()
-
-    if (!game) {
-      return NextResponse.json({ message: "Game not found" }, { status: 404 })
+    const { code } = params;
+    
+    const result = await getGameByCode(code);
+    
+    if (result.error) {
+      const statusCode = result.error === "Game not found" ? 404 : 500;
+      return Response.json({ error: result.error }, { status: statusCode });
     }
-
-    return NextResponse.json(game)
-  } catch (error: any) {
-    console.error("Error fetching game:", error)
-    return NextResponse.json({ message: error.message || "Failed to fetch game" }, { status: 500 })
+    
+    return Response.json(result);
+  } catch (error) {
+    console.error("Error in GET /api/games/[code]:", error);
+    return Response.json({ error: "Internal server error" }, { status: 500 });
   }
 }

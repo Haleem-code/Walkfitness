@@ -132,7 +132,7 @@
 //   }
 // }
 
-import { Steps, User, Point, Tournament,Game } from "./models"
+import { Steps, User, Point,Game } from "./models"
 import { connectToDb } from "./utils"
 import { unstable_noStore as noStore } from "next/cache"
 import { auth } from "./auth"

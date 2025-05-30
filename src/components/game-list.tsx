@@ -1,83 +1,143 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
-import { getGames } from "@/backend/data"
+import { Card, CardContent } from "@/components/ui/card"
+import { Badge } from "@/components/ui/badge"
+import { useRouter } from "next/navigation"
 
 interface Game {
-  _id: string
+  id: string
   name: string
-  gameSteps: number
-  duration: number
-  entryPrice: number
-  gameType: "public" | "private" | "sponsored"
-  participants: string[]
-  image?: string
-  code?: string
+  days: number
+  steps: number
+  players: number
+  maxPlayers: number
+  entryFee: number
+  type: "public" | "private" | "sponsored"
+  reward?: string
+  isActive: boolean
 }
 
-interface GameListProps {
+interface GamesListProps {
+  games: Game[]
   type: "public" | "sponsored"
 }
 
-export default async function GameList({ type }: GameListProps) {
-  try {
-    const games = await getGames(type)
+export default function GamesList({ games, type }: GamesListProps) {
+  const router = useRouter()
 
-    if (!games || games.length === 0) {
-      return (
-        <div className="text-center py-8 text-gray-400">
-          <p>No {type} games available.</p>
-        </div>
-      )
+  const handleJoinGame = async (gameId: string) => {
+    try {
+      const response = await fetch(`/api/games/join`, {
+        method: "POST",
+        body: JSON.stringify({ gameId }),
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+
+      if (response.ok) {
+        router.push(`/game/${gameId}`)
+      } else {
+        alert("Failed to join game")
+      }
+    } catch (error) {
+      console.error("Failed to join game:", error)
+      alert("Failed to join game")
     }
+  }
 
+  if (games.length === 0) {
     return (
-      <div className="space-y-4">
-        <div className="grid grid-cols-[1fr_auto_auto_auto_auto] gap-2 px-4 py-2 text-xs text-gray-400 uppercase">
-          <div>Game Name</div>
-          <div>Days</div>
-          <div>Steps</div>
-          <div>Players</div>
-          <div>Entry</div>
-        </div>
+      <Card className="bg-gray-800/50 border-gray-600">
+        <CardContent className="p-6 text-center text-gray-400">No {type} games available</CardContent>
+      </Card>
+    )
+  }
 
-        {games.map((game) => (
-          <div
-            key={game._id}
-            className="grid grid-cols-[1fr_auto_auto_auto_auto] items-center gap-2 px-4 py-3 bg-gray-800/50 backdrop-blur-sm rounded-lg border border-gray-700"
-          >
-            <div className="flex items-center gap-3">
-              {game.image ? (
-                <div className="w-8 h-8 rounded-full bg-gray-700 overflow-hidden">
-                  <img src={game.image || "/placeholder.svg"} alt={game.name} className="w-full h-full object-cover" />
+  return (
+    <div className="space-y-3">
+      {/* Header */}
+      <div className="grid grid-cols-12 gap-2 text-xs text-gray-400 font-semibold uppercase tracking-wider px-4">
+        <div className="col-span-4">Game Name</div>
+        <div className="col-span-2">Days</div>
+        <div className="col-span-2">Steps</div>
+        <div className="col-span-2">Players</div>
+        <div className="col-span-1">Entry</div>
+        <div className="col-span-1"></div>
+      </div>
+
+      {/* Games */}
+      {games.map((game) => (
+        <Card key={game.id} className="bg-gray-800/70 border-gray-600 hover:bg-gray-800/90 transition-colors">
+          <CardContent className="p-4">
+            <div className="grid grid-cols-12 gap-2 items-center">
+              {/* Game Name with Icon */}
+              <div className="col-span-4 flex items-center gap-2">
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center text-xs font-bold">
+                  {game.name.charAt(0)}
                 </div>
-              ) : (
-                <div className="w-8 h-8 rounded-full bg-gray-700 flex items-center justify-center">
-                  <span className="text-xs">🎮</span>
+                <div className="text-sm font-medium truncate">{game.name}</div>
+              </div>
+
+              {/* Days */}
+              <div className="col-span-2 text-sm">
+                <div>{game.days} Days</div>
+                <div className="text-xs text-gray-400">2025 - 2025</div>
+              </div>
+
+              {/* Steps */}
+              <div className="col-span-2 text-sm">
+                <div>{game.steps.toLocaleString()}</div>
+              </div>
+
+              {/* Players */}
+              <div className="col-span-2 text-sm">
+                <div className="flex items-center gap-1">
+                  <div className="flex -space-x-1">
+                    {[...Array(Math.min(3, game.players))].map((_, i) => (
+                      <div
+                        key={i}
+                        className="w-5 h-5 bg-gradient-to-br from-green-400 to-blue-400 rounded-full border border-gray-800"
+                      />
+                    ))}
+                  </div>
+                  <span className="text-xs">{game.players}</span>
                 </div>
-              )}
-              <span className="font-medium truncate">{game.name}</span>
-            </div>
-            <div className="text-sm">{game.duration} Days</div>
-            <div className="text-sm">{game.gameSteps.toLocaleString()}</div>
-            <div className="text-sm">{game.participants.length}</div>
-            <div className="flex items-center gap-2">
-              <span className={`text-sm ${game.entryPrice > 0 ? "text-purple-400" : "text-green-400"}`}>
-                {game.entryPrice > 0 ? `$${game.entryPrice}` : "FREE"}
-              </span>
-              <form action={`https://walkfit.vercel.app/api/games/${game._id}/join`} method="POST">
+              </div>
+
+              {/* Entry Fee */}
+              <div className="col-span-1">
+                {type === "sponsored" ? (
+                  <Badge className="bg-blue-600 text-white text-xs px-2 py-1">FREE</Badge>
+                ) : (
+                  <Badge className="bg-purple-600 text-white text-xs px-2 py-1">₹{game.entryFee}</Badge>
+                )}
+              </div>
+
+              {/* Join Button */}
+              <div className="col-span-1">
                 <Button
-                  type="submit"
                   size="sm"
-                  className="bg-green-500 hover:bg-green-600 text-white rounded-full px-4 py-1 text-xs"
+                  onClick={() => handleJoinGame(game.id)}
+                  className="bg-green-400 hover:bg-green-500 text-black font-semibold px-3 py-1 text-xs rounded-lg"
                 >
                   Join
                 </Button>
-              </form>
+              </div>
             </div>
-          </div>
-        ))}
-      </div>
-    )
-  } catch (error: any) {
-    return <p className="text-red-500">Error loading games: {error.message}</p>
-  }
+
+            {/* Reward for sponsored games */}
+            {type === "sponsored" && game.reward && (
+              <div className="mt-2 pl-10">
+                <Badge className="bg-gradient-to-r from-purple-500 to-pink-500 text-white text-xs px-2 py-1">
+                  🎁 {game.reward}
+                </Badge>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  )
 }
