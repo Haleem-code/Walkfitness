@@ -43,7 +43,7 @@ const AuthPage = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch("/api/fitbitLogin", {
+      const response = await fetch("https://walkfit.vercel.app/api/fitbitLogin", {
         method: "POST", 
         headers: {
           "Content-Type": "application/json",
