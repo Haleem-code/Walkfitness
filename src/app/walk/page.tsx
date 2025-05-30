@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
 import { Users, TrendingUp, Coins } from "lucide-react"
 import { useRouter } from "next/navigation"
-import CreateGameModal from "@/components/create-game-modal"
+//imrt CreateGameModal from "@/components/create-game-modal"
 import GamesList from "@/components/game-list"
 import TopNavbar from "@/components/TopNav"
 import DailyProgressBar from "@/components/DailyProgressBar"
@@ -61,7 +61,7 @@ export default function WalkPage() {
           const { email } = await emailRes.json()
           console.log("email", email)
 
-          const res = await fetch(`http://localhost:3000/api/get/steps?email=${email}`)
+          const res = await fetch(`http://localhost:3000/api/steps?email=${email}`)
           const data = await res.json()
 
           if (res.status === 200) {
@@ -72,14 +72,20 @@ export default function WalkPage() {
           }
 
           // Fetch user data
-          const userRes = await fetch(`http://localhost:3000/api/user?email=${email}`)
+          const userRes = await fetch(`http://localhost:3000/api/games/user?email=${email}`)
           const userData = await userRes.json()
 
           if (userRes.status === 200) {
             setUser(userData)
           } else {
             console.error("Failed to fetch user data:", userData.message || "Unknown error")
-            setError(userData.message || "Failed to fetch user data")
+            // Set a default user object so the page doesn't stay loading
+            setUser({
+              email: email,
+              username: email,
+              steps: stepsData?.totalSteps || 0,
+              targetSteps: 10000, // default target
+            })
           }
         } catch (error) {
           console.error("Error fetching data:", error)
@@ -102,11 +108,19 @@ export default function WalkPage() {
 
   const fetchGames = async () => {
     try {
-      const response = await fetch("/api/games")
+      const response = await fetch("http://localhost:3000/api/games")
       const data = await response.json()
-      setGames(data)
+
+      // Ensure data is an array and has the expected structure
+      if (Array.isArray(data)) {
+        setGames(data)
+      } else {
+        console.error("Games API returned unexpected data structure:", data)
+        setGames([])
+      }
     } catch (error) {
       console.error("Failed to fetch games:", error)
+      setGames([])
     }
   }
 
@@ -114,7 +128,7 @@ export default function WalkPage() {
     if (!gameCode.trim()) return
 
     try {
-      const response = await fetch(`/api/games/${gameCode}`)
+      const response = await fetch(`/api/games/join/${gameCode}`)
       if (response.ok) {
         router.push(`/game/${gameCode}`)
       } else {
@@ -159,7 +173,7 @@ export default function WalkPage() {
     )
   }
 
-  if (!stepsData || !user) {
+  if (!stepsData) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black flex items-center justify-center">
         <div className="text-white text-center">
@@ -170,8 +184,10 @@ export default function WalkPage() {
     )
   }
 
-  const publicGames = games.filter((game) => game.type === "public")
-  const sponsoredGames = games.filter((game) => game.type === "sponsored")
+  console.log("Games data:", games)
+  console.log("First game:", games[0])
+  const publicGames = games.filter((game) => game && game.type === "public")
+  const sponsoredGames = games.filter((game) => game && game.type === "sponsored")
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-purple-800 text-white">
@@ -183,16 +199,16 @@ export default function WalkPage() {
 
         {/* Action Buttons */}
         <div className="flex gap-4 mb-6">
-          <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-green-400 hover:bg-green-500 text-black font-semibold px-6 py-3 rounded-xl">
+          {/* <Dialog open={isCreateModalOpen} onOpenChange={setIsCreateModalOpen}>
+            <DialogTrigger asChild> */}
+              <Button onClick={() => router.push("/createGame")} className="bg-green-400 hover:bg-green-500 text-black font-semibold px-6 py-3 rounded-xl">
                 Create Game
               </Button>
-            </DialogTrigger>
+            {/* </DialogTrigger>
             <DialogContent className="p-0 border-0 bg-transparent">
               <CreateGameModal onClose={() => setIsCreateModalOpen(false)} onGameCreated={fetchGames} />
             </DialogContent>
-          </Dialog>
+          </Dialog> */}
 
           <Button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl">
             Create Group
@@ -225,7 +241,7 @@ export default function WalkPage() {
               <h3 className="text-lg font-semibold mb-4">Your Steps Progress</h3>
               <div className="flex items-center justify-between mb-4">
                 <span className="text-sm text-gray-400">Total Steps: {stepsData.totalSteps.toLocaleString()}</span>
-                <span className="text-sm text-gray-400">Target: {user.targetSteps.toLocaleString()} steps</span>
+                <span className="text-sm text-gray-400">Target: {(user?.targetSteps || 10000).toLocaleString()} steps</span>
               </div>
               <DailyProgressBar totalSteps={stepsData.stepsForLastUpdate} />
             </div>

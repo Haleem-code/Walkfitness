@@ -114,6 +114,7 @@ export const {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
       session.userId = token.userId;
+      console.log("Session:", session);
       return session;
     },
   },
