@@ -132,6 +132,7 @@ const gameSchema = new mongoose.Schema({
     type: String,
     sparse: true, // Allow null/undefined values but enforce uniqueness for non-null values
     trim: true,
+    index:true,
   },
   creator: {
     type: String, // Email of the creator
@@ -159,7 +160,6 @@ const gameSchema = new mongoose.Schema({
 })
 
 // Create indexes
-gameSchema.index({ code: 1 }, { unique: true, sparse: true })
 gameSchema.index({ gameType: 1 })
 gameSchema.index({ endDate: 1 })
 

@@ -10,7 +10,7 @@ const nextConfig = {
   // Add Auth.js configuration to trust localhost
   env: {
     AUTH_TRUST_HOST: "true",
-    NEXTAUTH_URL: "https://walkfit.vercel.app"
+    NEXTAUTH_URL: "http://localhost:3000"
   },
 };
 

@@ -6,7 +6,8 @@ export const dynamic = "force-dynamic"; // Mark the route as dynamic
 export async function GET() {
   try {
     const session = await auth()
-    const email = session?.user?.id
+    console.log("Session:", session)
+    const email = session?.userId || session?.user?.email
     console.log("User ID:", email)
     if (!email) {
       return NextResponse.json(

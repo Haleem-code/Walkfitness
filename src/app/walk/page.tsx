@@ -57,11 +57,11 @@ export default function WalkPage() {
           setLoading(true)
           setError(null)
 
-          const emailRes = await fetch(`https://walkfit.vercel.app/api/getemail`)
+          const emailRes = await fetch(`http://localhost:3000/api/getemail`)
           const { email } = await emailRes.json()
           console.log("email", email)
 
-          const res = await fetch(`https://walkfit.vercel.app/api/get/steps?email=${email}`)
+          const res = await fetch(`http://localhost:3000/api/get/steps?email=${email}`)
           const data = await res.json()
 
           if (res.status === 200) {
@@ -72,7 +72,7 @@ export default function WalkPage() {
           }
 
           // Fetch user data
-          const userRes = await fetch(`https://walkfit.vercel.app/api/user?email=${email}`)
+          const userRes = await fetch(`http://localhost:3000/api/user?email=${email}`)
           const userData = await userRes.json()
 
           if (userRes.status === 200) {
