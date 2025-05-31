@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import "dotenv/config";
 import { connectToDb } from "./utils";
-import { User, Steps, Point, Game} from "./models";
+import { User, Point, Game} from "./models";
 import { updateStepData } from "./updateSteps";
 
 export const {

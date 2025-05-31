@@ -1,48 +1,56 @@
-
-import { joinGame } from '@/backend/action';
+// app/api/games/join/route.js
+import { NextResponse } from "next/server";
+import { auth } from "@/backend/auth";
+import { joinGame, joinGameById } from "@/backend/action";
 
 export const dynamic = "force-dynamic";
 
-// POST /api/games/join - Join a game
-export async function POST(req: Request): Promise<Response> {
+export async function POST(req: Request) {
   try {
-    const { userId, gameCode } = await req.json();
+    const session = await auth();
+    console.log("Session:", session);
+    const email = session?.user?.email;
+    console.log("User email:", email);
     
-    if (!userId || !gameCode) {
-      return new Response(
-        JSON.stringify({ error: "User ID and game code are required" }),
-        {
-          status: 400,
-          headers: { "Content-Type": "application/json" },
-        }
+    if (!email) {
+      return NextResponse.json(
+        { error: "No authenticated user found" },
+        { status: 401 }
       );
     }
+
+    const { gameCode, gameId } = await req.json();
     
-    const result = await joinGame(userId, gameCode);
+    if (!gameCode && !gameId) {
+      return NextResponse.json(
+        { error: "Game code or game ID is required" },
+        { status: 400 }
+      );
+    }
+
+    let result;
     
+    if (gameCode) {
+      // Join private game with code
+      result = await joinGame(email, gameCode);
+    } else {
+      // Join public/sponsored game with ID
+      result = await joinGameById(email, gameId);
+    }
+
     if (result.error) {
-      const statusCode = result.error === "Game not found" ? 404 : 400;
-      return new Response(
-        JSON.stringify({ error: result.error }),
-        {
-          status: statusCode,
-          headers: { "Content-Type": "application/json" },
-        }
+      return NextResponse.json(
+        { error: result.error },
+        { status: 400 }
       );
     }
-    
-    return new Response(JSON.stringify(result), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+
+    return NextResponse.json(result, { status: 200 });
   } catch (error) {
     console.error("Error in POST /api/games/join:", error);
-    return new Response(
-      JSON.stringify({ error: "Internal server error" }),
-      {
-        status: 500,
-        headers: { "Content-Type": "application/json" },
-      }
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
     );
   }
 }

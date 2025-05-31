@@ -1,10 +1,10 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/backend/auth";
-import { getGameByCode } from "@/backend/action";
+import { getGameById } from "@/backend/action";
 
 export const dynamic = "force-dynamic";
 
-export async function GET(req: Request, { params }: { params: { code: string } }) {
+export async function GET(req: Request, { params }: { params: { gameId: string } }) {
   try {
     const session = await auth();
     console.log("Session:", session);
@@ -17,10 +17,10 @@ export async function GET(req: Request, { params }: { params: { code: string } }
       );
     }
 
-    const { code } = params;
+    const { gameId } = params;
     
-    // Get game by code using your existing function
-    const gameResult = await getGameByCode(code);
+    // Get game by ID using your existing function
+    const gameResult = await getGameById(gameId);
     
     if (gameResult.error) {
       return NextResponse.json(
@@ -41,7 +41,7 @@ export async function GET(req: Request, { params }: { params: { code: string } }
     
     return NextResponse.json({ 
       game,
-      participants: game.participants // Just return the basic participant list for now
+      participants: game.participants
     }, { status: 200 });
     
   } catch (error) {

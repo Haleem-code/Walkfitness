@@ -16,6 +16,7 @@ interface Game {
   type: "public" | "private" | "sponsored"
   reward?: string
   isActive: boolean
+  banner: string
 }
 
 interface GamesListProps {
@@ -36,10 +37,13 @@ export default function GamesList({ games, type }: GamesListProps) {
         },
       })
 
-      if (response.ok) {
-        router.push(`/game/${gameId}`)
+      const data = await response.json()
+
+      if (response.ok && !data.error) {
+        // Redirect to the correct game page based on type
+        router.push(`/game/id/${gameId}`)
       } else {
-        alert("Failed to join game")
+        alert(data.error || "Failed to join game")
       }
     } catch (error) {
       console.error("Failed to join game:", error)
@@ -75,7 +79,15 @@ export default function GamesList({ games, type }: GamesListProps) {
               {/* Game Name with Icon */}
               <div className="col-span-4 flex items-center gap-2">
                 <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-blue-500 rounded-lg flex items-center justify-center text-xs font-bold">
-                  {game.name.charAt(0)}
+                  {game.banner ? (
+                    <img 
+                      src={game.banner} 
+                      alt={game.name}
+                      className="w-8 h-8 rounded-lg object-cover"
+                    />
+                  ) : (
+                    <span>{game.name.charAt(0)}</span>
+                  )}
                 </div>
                 <div className="text-sm font-medium truncate">{game.name}</div>
               </div>
@@ -83,7 +95,7 @@ export default function GamesList({ games, type }: GamesListProps) {
               {/* Days */}
               <div className="col-span-2 text-sm">
                 <div>{game.days} Days</div>
-                <div className="text-xs text-gray-400">2025 - 2025</div>
+                <div className="text-xs text-gray-400">2025</div>
               </div>
 
               {/* Steps */}
@@ -102,7 +114,7 @@ export default function GamesList({ games, type }: GamesListProps) {
                       />
                     ))}
                   </div>
-                  <span className="text-xs">{game.players}</span>
+                  <span className="text-xs">{game.players}/{game.maxPlayers}</span>
                 </div>
               </div>
 
@@ -111,7 +123,7 @@ export default function GamesList({ games, type }: GamesListProps) {
                 {type === "sponsored" ? (
                   <Badge className="bg-blue-600 text-white text-xs px-2 py-1">FREE</Badge>
                 ) : (
-                  <Badge className="bg-purple-600 text-white text-xs px-2 py-1">₹{game.entryFee}</Badge>
+                  <Badge className="bg-purple-600 text-white text-xs px-2 py-1">${game.entryFee}</Badge>
                 )}
               </div>
 
@@ -120,9 +132,10 @@ export default function GamesList({ games, type }: GamesListProps) {
                 <Button
                   size="sm"
                   onClick={() => handleJoinGame(game.id)}
-                  className="bg-green-400 hover:bg-green-500 text-black font-semibold px-3 py-1 text-xs rounded-lg"
+                  disabled={game.players >= game.maxPlayers}
+                  className="bg-green-400 hover:bg-green-500 text-black font-semibold px-3 py-1 text-xs rounded-lg disabled:opacity-50"
                 >
-                  Join
+                  {game.players >= game.maxPlayers ? 'Full' : 'Join'}
                 </Button>
               </div>
             </div>

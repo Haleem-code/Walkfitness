@@ -3,7 +3,6 @@ import mongoose, { Schema, Document } from "mongoose";
 import { nanoid } from 'nanoid';
 // User schema
 
-
 const userSchema = new mongoose.Schema(
   {
     username: {
@@ -14,7 +13,7 @@ const userSchema = new mongoose.Schema(
       max: 20,
     },
     email: {
-      type: String,
+      type: String, 
       required: true,
       unique: true,
       max: 50,
@@ -72,7 +71,7 @@ const pointSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
- 
+
 });
 
 // Referral schema
@@ -80,7 +79,7 @@ const ReferredUserSchema = new Schema({
   userId: {
     type: String,
     required: true
-    
+
   },
 
   username: {
@@ -100,7 +99,7 @@ const ReferralSchema = new Schema({
 });
 
 // Game schema
-// Define the Game schema
+
 const gameSchema = new mongoose.Schema({
   name: {
     type: String,
@@ -130,17 +129,22 @@ const gameSchema = new mongoose.Schema({
   },
   code: {
     type: String,
-    sparse: true, // Allow null/undefined values but enforce uniqueness for non-null values
     trim: true,
-    index:true,
+    default: ()=>nanoid(6),
+    unique: true,
   },
   creator: {
-    type: String, // Email of the creator
+    type: String,
     required: true,
   },
   participants: {
-    type: [String], // Array of participant emails
+    type: [String],
     default: [],
+  },
+  maxPlayers: {
+    type: Number,
+    default: 100,
+    min: 1,
   },
   createdAt: {
     type: Date,
@@ -155,13 +159,15 @@ const gameSchema = new mongoose.Schema({
     required: true,
   },
   image: {
-    type: String, // URL to the game image
+    type: String,
   },
-})
+});
 
-// Create indexes
-gameSchema.index({ gameType: 1 })
-gameSchema.index({ endDate: 1 })
+// indexes
+gameSchema.index({ gameType: 1 });
+gameSchema.index({ endDate: 1 });
+
+
 
 
 export const Referral = mongoose.models.Referral || mongoose.model('Referral', ReferralSchema);

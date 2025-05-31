@@ -18,7 +18,7 @@ const AuthPage = () => {
       // Redirect to the "walk" page after 2 seconds if authenticated
       setTimeout(() => {
         router.push("/walk")
-      }, 2000)
+      }, 1000)
     }
   }, [session, status, router])
 
