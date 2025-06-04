@@ -501,6 +501,8 @@ export const joinGame = async (email, gameCode) => {
   }
 };
 
+
+
 export const getGamesByType = async (gameType) => {
   "use server";
   

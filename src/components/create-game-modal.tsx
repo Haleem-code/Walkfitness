@@ -9,6 +9,7 @@ import { useSession } from "next-auth/react"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
+import { useRouter } from "next/navigation"
 
 interface CreateGameModalProps {
   onClose: () => void
@@ -27,7 +28,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
     duration: "3 Days",
     customDuration: "",
     gameType: "public" as "public" | "private" | "sponsored",
-    banner: null as File | null,
+    banner: null as File | "images/sneaker.svg" | null, 
     bannerPreview: "" as string | null,
   })
 
@@ -37,7 +38,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
   const [gameCreated, setGameCreated] = useState(false)
   const [inviteCode, setInviteCode] = useState("")
   const [copied, setCopied] = useState(false)
-
+  const router = useRouter()  
   const entryPriceOptions = [15, 20]
   const durationOptions = ["3 Days", "1 Week", "6 Days"]
 
@@ -160,7 +161,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
 
       if (response.ok && responseData.success) {
         setGameCreated(true)
-        
+        router.push(`/walk`)
         if (formData.gameType === "private" && responseData.inviteCode) {
           setInviteCode(responseData.inviteCode)
         } else {
@@ -247,6 +248,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                     <Image
                       src={formData.bannerPreview}
                       alt="Game banner preview"
+                       width={800}
+                       height={192}
                       layout="fill"
                       objectFit="cover"
                       className="absolute inset-0"

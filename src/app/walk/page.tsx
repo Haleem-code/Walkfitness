@@ -1,15 +1,14 @@
 "use client"
 
 import { useSession } from "next-auth/react"
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
+import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Users, TrendingUp, Coins, Target, Clock, Star } from "lucide-react"
 import { useRouter } from "next/navigation"
 import TopNavbar from "@/components/TopNav"
-import DailyProgressBar from "@/components/DailyProgressBar"
-import GamesList from "@/components/game-list" // Import the GamesList component
+import GamesList from "@/components/game-list"
+import Image from "next/image"
 
 interface ApiGame {
   _id: string
@@ -27,7 +26,6 @@ interface ApiGame {
   image?: string
 }
 
-// Interface to match GamesList component expectations
 interface Game {
   id: string
   name: string
@@ -67,8 +65,35 @@ export default function WalkPage() {
   const [joiningGame, setJoiningGame] = useState<string | null>(null)
   const router = useRouter()
 
+  const fadeInUp = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6 },
+    },
+  }
+
+  const staggerContainer = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.1,
+      },
+    },
+  }
+
   // Function to convert API game format to GamesList component format
   const convertApiGameToGame = (apiGame: ApiGame): Game => {
+    let banner = "/images/sneaker.svg";//default banner
+    if (apiGame.image) {
+      if (apiGame.image.startsWith("http")|| apiGame.image.startsWith('/')) {
+        banner = apiGame.image;
+      } else {
+        banner = `/images/${apiGame.image}`; // Assuming images are stored in the public/images directory
+      }
+    }
     return {
       id: apiGame._id,
       name: apiGame.name,
@@ -80,9 +105,30 @@ export default function WalkPage() {
       type: apiGame.gameType,
       reward: apiGame.gameType === "sponsored" ? "Prize Pool Available" : undefined,
       isActive: new Date() < new Date(apiGame.endDate),
-      banner: apiGame.image || "/default-game-banner.jpg" // Provide default image
+      banner: apiGame.image || "/images/sneaker.svg",
     }
   }
+
+  // Use useCallback to memoize fetchGames function
+  const fetchGames = useCallback(async () => {
+    try {
+      const publicResponse = await fetch("/api/games/public")
+      if (publicResponse.ok) {
+        const publicData = await publicResponse.json()
+        const convertedPublicGames = (publicData.games || []).map(convertApiGameToGame)
+        setPublicGames(convertedPublicGames)
+      }
+
+      const sponsoredResponse = await fetch("/api/games/sponsored")
+      if (sponsoredResponse.ok) {
+        const sponsoredData = await sponsoredResponse.json()
+        const convertedSponsoredGames = (sponsoredData.games || []).map(convertApiGameToGame)
+        setSponsoredGames(convertedSponsoredGames)
+      }
+    } catch (error) {
+      console.error("Failed to fetch games:", error)
+    }
+  }, []) // Empty dependency array since fetchGames doesn't depend on any external values
 
   // Fetch user data and steps
   useEffect(() => {
@@ -106,10 +152,9 @@ export default function WalkPage() {
             setError(data.message || "Failed to fetch steps data")
           }
 
-          // Set a default user object
           setUser({
             email: email,
-            username: email.split('@')[0],
+            username: email.split("@")[0],
             steps: data?.totalSteps || 0,
             targetSteps: 10000,
           })
@@ -127,32 +172,10 @@ export default function WalkPage() {
     }
   }, [status, session])
 
-  // Fetch games
+  // Fetch games - now includes fetchGames in dependency array
   useEffect(() => {
     fetchGames()
-  }, [])
-
-  const fetchGames = async () => {
-    try {
-      // Fetch public games
-      const publicResponse = await fetch("/api/games/public")
-      if (publicResponse.ok) {
-        const publicData = await publicResponse.json()
-        const convertedPublicGames = (publicData.games || []).map(convertApiGameToGame)
-        setPublicGames(convertedPublicGames)
-      }
-
-      // Fetch sponsored games
-      const sponsoredResponse = await fetch("/api/games/sponsored")
-      if (sponsoredResponse.ok) {
-        const sponsoredData = await sponsoredResponse.json()
-        const convertedSponsoredGames = (sponsoredData.games || []).map(convertApiGameToGame)
-        setSponsoredGames(convertedSponsoredGames)
-      }
-    } catch (error) {
-      console.error("Failed to fetch games:", error)
-    }
-  }
+  }, [fetchGames])
 
   const handleJoinWithCode = async () => {
     if (!gameCode.trim()) {
@@ -162,10 +185,10 @@ export default function WalkPage() {
 
     setJoiningGame("code")
     try {
-      const response = await fetch('/api/games/join', {
-        method: 'POST',
+      const response = await fetch("/api/games/join", {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ gameCode: gameCode.trim().toUpperCase() }),
       })
@@ -175,7 +198,6 @@ export default function WalkPage() {
       if (data.error) {
         alert(data.error)
       } else {
-        // Redirect to game page
         router.push(`/game/${gameCode.trim().toUpperCase()}`)
       }
     } catch (error) {
@@ -186,120 +208,15 @@ export default function WalkPage() {
     }
   }
 
-  const handleJoinById = async (gameId: string) => {
-    setJoiningGame(gameId)
-    try {
-      const response = await fetch('/api/games/join', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ gameId }),
-      })
-
-      const data = await response.json()
-
-      if (data.error) {
-        alert(data.error)
-      } else {
-        // Redirect to game page
-        router.push(`/game/id/${gameId}`)
-      }
-    } catch (error) {
-      console.error("Failed to join game:", error)
-      alert("Failed to join game")
-    } finally {
-      setJoiningGame(null)
-    }
-  }
-
-  const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString()
-  }
-
-  const getGameStatus = (game: ApiGame) => {
-    const now = new Date()
-    const startDate = new Date(game.startDate)
-    const endDate = new Date(game.endDate)
-    
-    if (now < startDate) return 'Starting Soon'
-    if (now > endDate) return 'Ended'
-    return 'Active'
-  }
-
-  const GameCard = ({ game }: { game: ApiGame }) => (
-    <div className="bg-gray-800/50 backdrop-blur-sm rounded-xl p-6 border border-gray-700 hover:border-gray-600 transition-all">
-      {game.image && (
-        <img 
-          src={game.image} 
-          alt={game.name}
-          className="w-full h-40 object-cover rounded-lg mb-4"
-        />
-      )}
-      
-      <div className="flex items-start justify-between mb-3">
-        <h3 className="text-lg font-semibold text-white">{game.name}</h3>
-        <span className={`px-2 py-1 rounded-full text-xs font-medium ${
-          game.gameType === 'sponsored' 
-            ? 'bg-yellow-100 text-yellow-800' 
-            : 'bg-green-100 text-green-800'
-        }`}>
-          {game.gameType === 'sponsored' && <Star className="w-3 h-3 inline mr-1" />}
-          {game.gameType}
-        </span>
-      </div>
-
-      <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
-        <div className="flex items-center gap-2 text-gray-400">
-          <Target className="w-4 h-4" />
-          <span>{game.gameSteps.toLocaleString()} steps</span>
-        </div>
-        <div className="flex items-center gap-2 text-gray-400">
-          <Clock className="w-4 h-4" />
-          <span>{game.duration} days</span>
-        </div>
-        <div className="flex items-center gap-2 text-gray-400">
-          <Users className="w-4 h-4" />
-          <span>{game.participants.length}/{game.maxPlayers}</span>
-        </div>
-        <div className="flex items-center gap-2 text-gray-400">
-          <Coins className="w-4 h-4" />
-          <span>${game.entryPrice}</span>
-        </div>
-      </div>
-
-      <div className="flex justify-between items-center mb-4 text-sm">
-        <span className="text-gray-400">
-          {formatDate(game.startDate)} - {formatDate(game.endDate)}
-        </span>
-        <span className={`px-2 py-1 rounded text-xs ${
-          getGameStatus(game) === 'Active' 
-            ? 'bg-green-600 text-white' 
-            : getGameStatus(game) === 'Starting Soon'
-            ? 'bg-yellow-600 text-white'
-            : 'bg-red-600 text-white'
-        }`}>
-          {getGameStatus(game)}
-        </span>
-      </div>
-
-      <Button
-        onClick={() => handleJoinById(game._id)}
-        disabled={joiningGame === game._id || game.participants.length >= game.maxPlayers}
-        className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 rounded-lg disabled:opacity-50"
-      >
-        {joiningGame === game._id ? 'Joining...' : 
-         game.participants.length >= game.maxPlayers ? 'Full' : 'Join Game'}
-      </Button>
-    </div>
-  )
-
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p>Loading your steps data...</p>
+      <div className="min-h-screen bg-black text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+            <p>Loading your steps data...</p>
+          </div>
         </div>
       </div>
     )
@@ -307,131 +224,202 @@ export default function WalkPage() {
 
   if (!session) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black flex items-center justify-center">
-        <p className="text-white">You need to sign in to view your steps</p>
+      <div className="min-h-screen bg-black text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <p className="text-white">You need to sign in to view your steps</p>
+        </div>
       </div>
     )
   }
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black flex flex-col items-center justify-center">
-        <p className="text-white mb-4">{error}</p>
-        <button
-          onClick={() => window.location.reload()}
-          className="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
-        >
-          Try Again
-        </button>
+      <div className="min-h-screen bg-black text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
+        <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
+          <p className="text-white mb-4 text-center">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded"
+          >
+            Try Again
+          </button>
+        </div>
       </div>
     )
   }
 
   if (!stepsData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-purple-900 via-gray-900 to-black flex items-center justify-center">
-        <div className="text-white text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-500 mx-auto mb-4"></div>
-          <p>Loading...</p>
+      <div className="min-h-screen bg-black text-white overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
+        <div className="relative z-10 flex items-center justify-center min-h-screen">
+          <div className="text-white text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+            <p>Loading...</p>
+          </div>
         </div>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-900 via-blue-900 to-purple-800 text-white">
-      <div className="container mx-auto px-4 py-8 max-w-7xl">
+    <div className="min-h-screen bg-black text-white overflow-hidden relative">
+      {/* Background with purple gradient at top */}
+      <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
+
+      {/* Blurred background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+          <Image
+            src="/images/footer-sneak.png"
+            width={400}
+            height={400}
+            alt="Sneaker"
+            className="w-full h-full object-contain"
+          />
+        </div>
+        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+          <Image
+            src="/images/blue-sneak.png"
+            width={400}
+            height={400}
+            alt="Sneaker"
+            className="w-full h-full object-contain"
+          />
+        </div>
+      </div>
+
+      <div className="relative z-10 min-h-screen">
         {/* Header Section */}
-        <div className="mb-8">
+        <motion.div className="px-4 py-6 md:px-6 lg:px-8" initial="hidden" animate="visible" variants={fadeInUp}>
           <TopNavbar />
-        </div>
+        </motion.div>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 mb-6">
-          <Button onClick={() => router.push("/createGame")} className="bg-green-400 hover:bg-green-500 text-black font-semibold px-6 py-3 rounded-xl">
-            Create Game
-          </Button>
-          <Button className="bg-purple-600 hover:bg-purple-700 text-white font-semibold px-6 py-3 rounded-xl">
-            Create Group
-          </Button>
-        </div>
+        {/* Main Content Container */}
+        <div className="px-4 md:px-6 lg:px-8 mt-8 max-w-7xl mx-auto">
+            {/* Action Buttons */}
+            <motion.div
+            className="flex flex-wrap gap-3 mb-8 items-center justify-center"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+            >
+            <motion.div variants={fadeInUp}>
+              <Button
+              onClick={() => router.push("/createGame")}
+              className="bg-green-400 hover:bg-green-500 text-black font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+              >
+              Create Game
+              </Button>
+            </motion.div>
 
-        {/* Join Private Game Section */}
-        <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700 mb-8">
-          <h2 className="text-xl font-bold mb-4">Join Private Game</h2>
-          <p className="text-gray-400 mb-4">Enter the game code you received to join a private game.</p>
-          <div className="flex gap-4">
-            <Input
-              placeholder="Enter game code (e.g., ABC12345)"
+            <motion.div variants={fadeInUp}>
+              <Button
+              onClick={() => router.push("/#walk")}
+              className="bg-white hover:bg-white/90 hover:text-purple-700 text-purple-600 font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+              >
+              Create Group
+              </Button>
+            </motion.div>
+
+            <motion.div variants={fadeInUp} className="flex gap-2">
+              <Input
+              placeholder="Enter game code"
               value={gameCode}
               onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-              className="bg-gray-700/50 border-gray-600 text-white placeholder-gray-400 rounded-xl py-3 px-4 flex-1"
+              className="w-32 sm:w-64 md:w-80 bg-black/30 border-gray-600 text-white placeholder-gray-400 rounded-xl h-10 sm:h-12 px-3 sm:px-4 focus:border-green-400 transition-colors backdrop-blur-sm text-sm sm:text-base"
               onKeyPress={(e) => e.key === "Enter" && handleJoinWithCode()}
               maxLength={8}
-            />
-            <Button
-              onClick={handleJoinWithCode}
-              disabled={joiningGame === "code"}
-              className="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl"
-            >
-              {joiningGame === "code" ? 'Joining...' : 'Join'}
-            </Button>
-          </div>
-        </div>
+              />
 
-        {/* Main Content - Steps Progress */}
-        <div className="flex justify-center mb-8">
-          <div className="w-full max-w-2xl">
-            <div className="bg-gray-800/50 backdrop-blur-sm rounded-2xl p-6 border border-gray-700">
-              <h3 className="text-lg font-semibold mb-4">Your Steps Progress</h3>
-              <div className="flex items-center justify-between mb-4">
-                <span className="text-sm text-gray-400">Total Steps: {stepsData.totalSteps.toLocaleString()}</span>
-                <span className="text-sm text-gray-400">Target: {(user?.targetSteps || 10000).toLocaleString()} steps</span>
+              {gameCode.length > 0 && (
+              <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.2 }}
+              >
+                <Button
+                onClick={handleJoinWithCode}
+                disabled={joiningGame === "code"}
+                className="bg-green-400 hover:bg-green-500 text-black px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                >
+                {joiningGame === "code" ? "Joining..." : "Join"}
+                </Button>
+              </motion.div>
+              )}
+            </motion.div>
+            </motion.div>
+
+          {/* Steps Progress Circle */}
+          <motion.div
+            className="flex justify-center mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.4 }}
+          >
+            <div className="w-full max-w-lg md:max-w-xl lg:max-w-2xl">
+              <div className="bg-black/30 backdrop-blur-md rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-600/50 shadow-2xl">
+                <div className="flex items-center justify-center">
+                  <div className="relative w-48 h-48 md:w-56 md:h-56">
+                    {/* Outer circle */}
+                    <div className="absolute inset-0 rounded-full border-4 border-gray-700/50"></div>
+
+                    {/* Progress circle */}
+                    <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                      <circle
+                        cx="50"
+                        cy="50"
+                        r="45"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="3"
+                        className="text-green-400"
+                        strokeDasharray={`${(stepsData.stepsForLastUpdate / 15000) * 283} 283`}
+                        strokeLinecap="round"
+                      />
+                    </svg>
+
+                    {/* Center content */}
+                    <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+                      <Image src="/images/sneaker.svg" alt="Steps" width={100} height={100} />
+                      <div className="text-2xl md:text-3xl font-bold text-white">
+                        {stepsData.stepsForLastUpdate.toLocaleString()}
+                      </div>
+                      <div className="text-sm text-gray-400">/ 15K steps</div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <DailyProgressBar totalSteps={stepsData.stepsForLastUpdate} />
             </div>
-          </div>
-        </div>
+          </motion.div>
 
-        {/* Public Games */}
-        <div className="mb-8">
-          <h2 className="text-xl font-bold mb-6">Public Games</h2>
-          <GamesList games={publicGames} type="public" />
-        </div>
+          {/* Public Games */}
+          <motion.div
+            className="mb-8"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
+          >
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Public Games</h2>
+            <div className="space-y-4">
+              <GamesList games={publicGames} type="public" />
+            </div>
+          </motion.div>
 
-        {/* Sponsored Games */}
-        <div className="mb-20">
-          <h2 className="text-xl font-bold mb-6">Sponsored Games</h2>
-          <GamesList games={sponsoredGames} type="sponsored" />
-        </div>
-
-        {/* Bottom Navigation */}
-        <div className="fixed bottom-0 left-0 right-0 bg-gray-900/90 backdrop-blur-lg border-t border-gray-700">
-          <div className="flex items-center justify-around py-3">
-            <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 text-gray-400">
-              <TrendingUp className="w-5 h-5" />
-              <span className="text-xs">Steps</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 text-gray-400">
-              <Users className="w-5 h-5" />
-              <span className="text-xs">Groups</span>
-            </Button>
-            <Button
-              variant="ghost"
-              size="sm"
-              className="flex flex-col items-center gap-1 text-green-400 bg-green-400/20 rounded-full p-3"
-            >
-              <div className="text-sm font-semibold">Walk</div>
-            </Button>
-            <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 text-gray-400">
-              <Coins className="w-5 h-5" />
-              <span className="text-xs">Rewards</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="flex flex-col items-center gap-1 text-gray-400">
-              <Users className="w-5 h-5" />
-              <span className="text-xs">Profile</span>
-            </Button>
-          </div>
+          {/* Sponsored Games */}
+          <motion.div
+            className="mb-20"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, delay: 0.8 }}
+          >
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Sponsored Games</h2>
+            <div className="space-y-4">
+              <GamesList games={sponsoredGames} type="sponsored" />
+            </div>
+          </motion.div>
         </div>
       </div>
     </div>

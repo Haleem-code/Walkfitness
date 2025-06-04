@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from 'react';
+import { useCallback,useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { getGameByCode } from "@/backend/data"
 import { notFound } from "next/navigation"
@@ -17,13 +17,6 @@ export default function GamePage() {
   const [error, setError] = useState('');
   const [userEmail, setUserEmail] = useState('');
 
-  useEffect(() => {
-    fetchUserEmail();
-    if (code) {
-      fetchGameData();
-    }
-  }, [code]);
-
   const fetchUserEmail = async () => {
     try {
       const response = await fetch('/api/getemail');
@@ -36,7 +29,7 @@ export default function GamePage() {
     }
   };
 
-  const fetchGameData = async () => {
+  const fetchGameData = useCallback(async () => {
     try {
       const response = await fetch(`/api/games/${code}`);
       const data = await response.json();
@@ -52,7 +45,14 @@ export default function GamePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [code]);
+
+  useEffect(() => {
+    fetchUserEmail();
+    if (code) {
+      fetchGameData();
+    }
+  }, [code, fetchGameData]);
 
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();

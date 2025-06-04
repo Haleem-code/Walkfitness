@@ -56,12 +56,15 @@ const stepsSchema = new mongoose.Schema({
   },
 });
 
-// Point schema to include button state
 const pointSchema = new mongoose.Schema({
+  userId: {
+    type: String,
+    required: true,
+    unique: true,
+  },
   email: {
     type: String,
     required: true,
-    unique: false,
   },
   questPoint: {
     type: Number,
@@ -71,9 +74,7 @@ const pointSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-
 });
-
 // Referral schema
 const ReferredUserSchema = new Schema({
   userId: {
