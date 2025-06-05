@@ -51,6 +51,23 @@ export default function GamesList({ games, type }: GamesListProps) {
     }
   }
 
+  // Helper function to safely get image source
+  const getImageSrc = (banner: string) => {
+    // Always return default image for now to prevent errors
+    return "/images/sneaker.svg"
+  }
+
+  // Helper function to check if we should show an image
+  const shouldShowImage = (banner: string) => {
+    // Only show image if it's a known safe path
+    const safePaths = [
+      "/images/sneaker.svg",
+      "/images/blue-sneak.png", 
+      "/images/footer-sneak.png"
+    ]
+    return banner && safePaths.some(path => banner.includes(path.split('/').pop() || ''))
+  }
+
   if (games.length === 0) {
     return (
       <Card className="bg-[#D9D9D91A] border-gray-700/50">
@@ -82,20 +99,19 @@ export default function GamesList({ games, type }: GamesListProps) {
             <div className="hidden md:grid grid-cols-12 gap-2 items-center">
               {/* Game Name with Icon */}
               <div className="col-span-4 flex items-center gap-2">
-                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-green-400 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0">
-                  {game.banner ? (
+                <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-green-400 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 overflow-hidden">
+                  {shouldShowImage(game.banner) ? (
                     <Image
-                      src={game.banner.startsWith('/') || game.banner.startsWith("http") ? game.banner : `/images/${game.banner}`}
+                      src={getImageSrc(game.banner)}
                       alt={game.name}
                       width={32}
                       height={32}
                       className="w-8 h-8 rounded-lg object-cover"
-                      onError={(e) => {
-                        e.currentTarget.src = "/images/sneaker.svg" // Fallback image
-                      }}
+                      priority={false}
+                      unoptimized={true}
                     />
                   ) : (
-                    <span>{game.name.charAt(0)}</span>
+                    <span className="text-white">{game.name.charAt(0).toUpperCase()}</span>
                   )}
                 </div>
                 <div className="text-sm font-medium truncate text-white">{game.name}</div>
@@ -156,20 +172,19 @@ export default function GamesList({ games, type }: GamesListProps) {
               {/* Game Name and Join Button Row */}
               <div className="flex items-center justify-between gap-3">
                 <div className="flex items-center gap-2 flex-1 min-w-0">
-                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-green-400 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0">
-                    {game.banner ? (
+                  <div className="w-8 h-8 bg-gradient-to-br from-purple-500 to-green-400 rounded-lg flex items-center justify-center text-xs font-bold flex-shrink-0 overflow-hidden">
+                    {shouldShowImage(game.banner) ? (
                       <Image
-                        src={game.banner.startsWith('/') || game.banner.startsWith("http") ? game.banner : `/images/${game.banner}`}
+                        src={getImageSrc(game.banner)}
                         alt={game.name}
                         width={32}
                         height={32}
                         className="w-8 h-8 rounded-lg object-cover"
-                        onError={(e) => {
-                        e.currentTarget.src = "/images/sneaker.svg" // Fallback image
-                      }}
+                        priority={false}
+                        unoptimized={true}
                       />
                     ) : (
-                      <span>{game.name.charAt(0)}</span>
+                      <span className="text-white">{game.name.charAt(0).toUpperCase()}</span>
                     )}
                   </div>
                   <div className="text-sm font-medium text-white truncate">{game.name}</div>

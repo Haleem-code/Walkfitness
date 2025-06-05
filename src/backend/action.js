@@ -257,15 +257,14 @@
 // };
 
 
+"use server";
 
 import { signIn } from "./auth";
 import { Steps, Point, Game, User } from "./models";
 import { connectToDb } from "./utils";
-import { nanoid } from 'nanoid'; // Import nanoid for generating random codes
+import { nanoid } from 'nanoid';
 
 export const updateSteps = async (stepsData) => {
-  "use server";
-
   const { totalSteps, presentDaySteps, userId } = stepsData;
 
   try {
@@ -316,8 +315,6 @@ const updateGameSteps = async (userId, steps) => {
 };
 
 export const createGame = async (gameData) => {
-  "use server";
-  
   const { name, gameSteps, duration, entryPrice, gameType, creator, startDate, maxPlayers, image } = gameData;
   
   // Validation
@@ -342,7 +339,7 @@ export const createGame = async (gameData) => {
       const maxAttempts = 10;
       
       while (codeExists && attempts < maxAttempts) {
-        gameCode = nanoid(8).toUpperCase(); // Generate 8-character uppercase code
+        gameCode = nanoid(8).toUpperCase();
         const existingGame = await Game.findOne({ code: gameCode });
         codeExists = !!existingGame;
         attempts++;
@@ -362,20 +359,19 @@ export const createGame = async (gameData) => {
       duration,
       entryPrice: entryPrice || 0,
       gameType: gameType || "public",
-      code: gameCode, // Will be null for public/sponsored games
+      code: gameCode,
       creator,
-      participants: [creator], // Add creator as first participant
+      participants: [creator],
       createdAt: new Date(),
       startDate: startDateObj,
       endDate: endDateObj,
       image: image || null,
-      maxPlayers: maxPlayers || 100, // Add maxPlayers field
+      maxPlayers: maxPlayers || 100,
     });
     
     await newGame.save();
     console.log("Game created and saved to db");
     
-    // Return the invite code for private games
     const response = { success: true, game: newGame };
     if (gameType === "private" && gameCode) {
       response.inviteCode = gameCode;
@@ -388,10 +384,7 @@ export const createGame = async (gameData) => {
   }
 };
 
-
 export const joinGameById = async (email, gameId) => {
-  "use server";
-  
   // Validation
   if (!email || !gameId) {
     return { error: "Missing required fields" };
@@ -435,8 +428,6 @@ export const joinGameById = async (email, gameId) => {
 };
 
 export const getGameById = async (gameId) => {
-  "use server";
-  
   if (!gameId) {
     return { error: "Game ID is required" };
   }
@@ -457,8 +448,6 @@ export const getGameById = async (gameId) => {
 };
 
 export const joinGame = async (email, gameCode) => {
-  "use server";
-  
   // Validation
   if (!email || !gameCode) {
     return { error: "Missing required fields" };
@@ -501,11 +490,7 @@ export const joinGame = async (email, gameCode) => {
   }
 };
 
-
-
 export const getGamesByType = async (gameType) => {
-  "use server";
-  
   // Validation
   if (!["public", "private", "sponsored"].includes(gameType)) {
     return { error: "Invalid game type" };
@@ -515,7 +500,7 @@ export const getGamesByType = async (gameType) => {
     await connectToDb();
     const games = await Game.find({ 
       gameType,
-      endDate: { $gt: new Date() } // Only active games
+      endDate: { $gt: new Date() }
     }).sort({ createdAt: -1 });
     
     return { success: true, games };
@@ -526,12 +511,10 @@ export const getGamesByType = async (gameType) => {
 };
 
 export const getGames = async () => {
-  "use server";
-  
   try {
     await connectToDb();
     const games = await Game.find({
-      endDate: { $gt: new Date() } // Only active games
+      endDate: { $gt: new Date() }
     }).sort({ createdAt: -1 });
     
     return { success: true, games };
@@ -542,8 +525,6 @@ export const getGames = async () => {
 };
 
 export const getUserGames = async (email) => {
-  "use server";
-  
   // Validation
   if (!email) {
     return { error: "Email is required" };
@@ -563,8 +544,6 @@ export const getUserGames = async (email) => {
 };
 
 export const getGameByCode = async (code) => {
-  "use server";
-  
   if (!code) {
     return { error: "Game code is required" };
   }
@@ -585,7 +564,6 @@ export const getGameByCode = async (code) => {
 };
 
 export const handleGoogleLogin = async () => {
-  "use server";
   await signIn("fitbit");
 };
 
@@ -597,11 +575,143 @@ export const handleQuestPoint = async (email, point, buttonState) => {
     throw new Error("User not found");
   }
 
-  // Update quest points
   user.questPoint += point;
-
-  // Update the button state
   user.buttonState = buttonState;
-
   await user.save();
 };
+
+export const checkAndUpdateStreak = async (userId) => {
+  try {
+    await connectToDb()
+
+    const user = await User.findOne({ email: userId })
+    if (!user) {
+      throw new Error("User not found")
+    }
+
+    const now = new Date()
+    const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+    let hasStreak = false
+    let streakCount = user.currentStreak || 0
+    let xpAwarded = 0
+    let isNewRecord = false
+
+    if (user.lastStreakDate) {
+      const lastStreakDate = new Date(user.lastStreakDate)
+      const lastStreakDay = new Date(lastStreakDate.getFullYear(), lastStreakDate.getMonth(), lastStreakDate.getDate())
+
+      if (lastStreakDay.getTime() === today.getTime()) {
+        return {
+          hasStreak: false,
+          streakCount: user.currentStreak || 0,
+          xpAwarded: 0,
+          isNewRecord: false,
+        }
+      }
+
+      const yesterday = new Date(today)
+      yesterday.setDate(yesterday.getDate() - 1)
+
+      if (lastStreakDay.getTime() === yesterday.getTime()) {
+        streakCount += 1
+        hasStreak = true
+        xpAwarded = 200
+      } else {
+        streakCount = 1
+        hasStreak = true
+        xpAwarded = 200
+      }
+    } else {
+      streakCount = 1
+      hasStreak = true
+      xpAwarded = 200
+    }
+
+    const longestStreak = user.longestStreak || 0
+    if (streakCount > longestStreak) {
+      isNewRecord = true
+    }
+
+    await User.updateOne(
+      { email: userId },
+      {
+        $set: {
+          currentStreak: streakCount,
+          longestStreak: Math.max(streakCount, longestStreak),
+          lastStreakDate: now,
+          streakXP: (user.streakXP || 0) + xpAwarded,
+        },
+      },
+    )
+
+    if (xpAwarded > 0) {
+      let pointEntry = await Point.findOne({ email: userId })
+      if (!pointEntry) {
+        pointEntry = new Point({
+          userId: userId,
+          email: userId,
+          questPoint: xpAwarded,
+          totalPoint: xpAwarded,
+        })
+        await pointEntry.save()
+      } else {
+        await Point.updateOne(
+          { email: userId },
+          {
+            $inc: {
+              questPoint: xpAwarded,
+              totalPoint: xpAwarded,
+            },
+          },
+        )
+      }
+    }
+
+    return {
+      hasStreak,
+      streakCount,
+      xpAwarded,
+      isNewRecord,
+    }
+  } catch (error) {
+    console.error("Error checking streak:", error)
+    return {
+      hasStreak: false,
+      streakCount: 0,
+      xpAwarded: 0,
+      isNewRecord: false,
+    }
+  }
+}
+
+export const getUserStreak = async (userId) => {
+  try {
+    await connectToDb()
+    const user = await User.findOne({ email: userId })
+
+    if (!user) {
+      return {
+        currentStreak: 0,
+        longestStreak: 0,
+        streakXP: 0,
+        lastStreakDate: null,
+      }
+    }
+
+    return {
+      currentStreak: user.currentStreak || 0,
+      longestStreak: user.longestStreak || 0,
+      streakXP: user.streakXP || 0,
+      lastStreakDate: user.lastStreakDate,
+    }
+  } catch (error) {
+    console.error("Error getting user streak:", error)
+    return {
+      currentStreak: 0,
+      longestStreak: 0,
+      streakXP: 0,
+      lastStreakDate: null,
+    }
+  }
+}

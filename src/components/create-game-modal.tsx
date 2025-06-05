@@ -28,8 +28,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
     duration: "3 Days",
     customDuration: "",
     gameType: "public" as "public" | "private" | "sponsored",
-    banner: null as File | "images/sneaker.svg" | null, 
-    bannerPreview: "" as string | null,
+    banner: "images/sneaker.svg" as File | "images/sneaker.svg",
+    bannerPreview: "images/sneaker.svg" as string,
   })
 
   const [showCustomPrice, setShowCustomPrice] = useState(false)
@@ -48,7 +48,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file && file.type.startsWith('image/')) {
+    if (file && file.type.startsWith('image/')) { // Fixed: changed 'images/' to 'image/'
       setFormData((prev) => ({ 
         ...prev, 
         banner: file,
@@ -147,7 +147,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
       // Create FormData to handle file upload
       const formDataToSend = new FormData()
       formDataToSend.append("data", JSON.stringify(gameData))
-      if (formData.banner) {
+      if (formData.banner && formData.banner !== "images/sneaker.svg") {
         formDataToSend.append("banner", formData.banner)
       }
 
@@ -161,13 +161,15 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
 
       if (response.ok && responseData.success) {
         setGameCreated(true)
-        router.push(`/walk`)
         if (formData.gameType === "private" && responseData.inviteCode) {
           setInviteCode(responseData.inviteCode)
         } else {
-          // For public and sponsored games, close immediately and refresh
-          onGameCreated()
-          onClose()
+          // For public and sponsored games, show success state for 8 seconds then navigate
+          setTimeout(() => {
+        router.push(`/walk`)
+        onGameCreated()
+        onClose()
+          }, 8000)
         }
       } else {
         alert(responseData.error || "Failed to create game")
@@ -244,15 +246,13 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
             <div>
               <label htmlFor="banner-upload" className="cursor-pointer">
                 {formData.bannerPreview ? (
-                  <div className="relative w-full h-48 rounded-2xl overflow-hidden">
+                  <div className="relative w-full h-48 rounded-2xl overflow-hidden flex justify-center items-center bg-gray-800/50">
                     <Image
                       src={formData.bannerPreview}
                       alt="Game banner preview"
-                       width={800}
-                       height={192}
-                      layout="fill"
-                      objectFit="cover"
-                      className="absolute inset-0"
+                      width={400}
+                      height={192}
+                      className="object-cover w-full h-full"
                     />
                   </div>
                 ) : (

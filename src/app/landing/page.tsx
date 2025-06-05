@@ -1,12 +1,15 @@
 "use client"
 
+import type React from "react"
+
 import { useState } from "react"
 import Link from "next/link"
 import { motion } from "framer-motion"
-import { ChevronDown, Trophy, Store, DollarSign, Twitter, Instagram, Youtube } from "lucide-react"
+import { ChevronDown, Twitter, Instagram, Youtube, CheckCircle } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import Image from "next/image"
+import { useToast } from "@/hooks/use-toast"
 import {
   Dialog,
   DialogContent,
@@ -19,9 +22,59 @@ import {
 export default function WalkfitLanding() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0)
   const [showGetStartedDialog, setShowGetStartedDialog] = useState(false)
+  const [email, setEmail] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [hasJoinedWaitlist, setHasJoinedWaitlist] = useState(false)
+  const { toast } = useToast()
 
   const toggleFaq = (index: number) => {
     setExpandedFaq(expandedFaq === index ? null : index)
+  }
+
+  const handleWaitlistSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (!email.trim()) {
+      toast({
+        title: "Error",
+        description: "Please enter your email address",
+        //variant: "destructive",
+      })
+      return
+    }
+
+    setIsLoading(true)
+
+    try {
+      const formData = new FormData()
+      formData.append("email", email.trim())
+
+      const response = await fetch("/api/waitlist", {
+        method: "POST",
+        body: formData,
+      })
+
+      const result = await response.json()
+
+      if (result.success) {
+        setHasJoinedWaitlist(true)
+        setEmail("")
+      } else {
+        toast({
+          title: "Error",
+          description: result.message,
+          //variant: "destructive",
+        })
+      }
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Something went wrong. Please try again.",
+        //variant: "destructive",
+      })
+    } finally {
+      setIsLoading(false)
+    }
   }
 
   const fadeInUp = {
@@ -128,34 +181,34 @@ export default function WalkfitLanding() {
       >
         <div className="flex justify-between items-center p-4 max-w-7xl mx-auto">
           <div className="flex items-center">
-        <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-white">
-          <Image src={"/images/logo2.svg"} width={120} height={80} alt="Logo" />
-        </motion.div>
+            <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-white">
+              <Image src={"/images/logo2.svg"} width={120} height={80} alt="Logo" />
+            </motion.div>
           </div>
           <div className="hidden md:flex space-x-6 border border-gray-700 rounded-full px-6 py-4">
-        <Link href="#" className="hover:text-green-400 transition-colors">
-          Tournaments
-        </Link>
-        <Link href="#" className="hover:text-green-400 transition-colors">
-          Developer
-        </Link>
-        <Link href="#" className="hover:text-green-400 transition-colors">
-          Marketplace
-        </Link>
-        <Link href="#" className="hover:text-green-400 transition-colors">
-          Blog
-        </Link>
-        <Link href="#" className="hover:text-green-400 transition-colors">
-          FAQs
-        </Link>
+            <Link href="#" className="hover:text-green-400 transition-colors">
+              Tournaments
+            </Link>
+            <Link href="#" className="hover:text-green-400 transition-colors">
+              Developer
+            </Link>
+            <Link href="#" className="hover:text-green-400 transition-colors">
+              Marketplace
+            </Link>
+            <Link href="#" className="hover:text-green-400 transition-colors">
+              Blog
+            </Link>
+            <Link href="#" className="hover:text-green-400 transition-colors">
+              FAQs
+            </Link>
           </div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-        <Button
-          className="bg-purple-600 hover:bg-purple-700 text-white"
-          onClick={() => setShowGetStartedDialog(true)}
-        >
-          Get Started
-        </Button>
+            <Button
+              className="bg-purple-600 hover:bg-purple-700 text-white"
+              onClick={() => setShowGetStartedDialog(true)}
+            >
+              Get Started
+            </Button>
           </motion.div>
         </div>
       </motion.nav>
@@ -230,168 +283,187 @@ export default function WalkfitLanding() {
             <Image src={"/images/eclipse.svg"} width={120} height={40} alt="Eclipse" className="mx-auto" />
           </div>
         </motion.div>
-            <motion.div
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="relative w-full" >
-            <Image 
-              src={"/images/footer-sneak.png"} 
-              width={600} 
-              height={600} 
-              alt="Sneaker" 
-              className="absolute -right-20 bottom-0 opacity-10 -z-10"
-            />
-          </motion.div>
+          className="relative w-full"
+        >
+          <Image
+            src={"/images/footer-sneak.png"}
+            width={600}
+            height={600}
+            alt="Sneaker"
+            className="absolute -right-20 bottom-0 opacity-10 -z-10"
+          />
+        </motion.div>
 
-              <motion.div
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="relative w-full" >
-            <Image 
-              src={"/images/blue-sneak.png"} 
-              width={600} 
-              height={600} 
-              alt="Sneaker" 
-              className="absolute -left-20 bottom-0 opacity-10 -z-10"
-            />
-          </motion.div>
+          className="relative w-full"
+        >
+          <Image
+            src={"/images/blue-sneak.png"}
+            width={600}
+            height={600}
+            alt="Sneaker"
+            className="absolute -left-20 bottom-0 opacity-10 -z-10"
+          />
+        </motion.div>
       </section>
 
-     {
-  /* Features Section */
-}
-<section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
-  <motion.div className="mb-16" initial="hidden" whileInView="visible" viewport={{ once: true }} variants={fadeInUp}>
-    <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
-      WALKFIT - Move, Compete, Earn
-    </motion.h2>
-    <motion.p className="text-gray-300" variants={fadeInUp}>
-      Your steps unlock rewards, your movement fuels the game.
-    </motion.p>
-  </motion.div>
+      {/* Features Section */}
+      <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+        <motion.div
+          className="mb-16"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true }}
+          variants={fadeInUp}
+        >
+          <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
+            WALKFIT - Move, Compete, Earn
+          </motion.h2>
+          <motion.p className="text-gray-300" variants={fadeInUp}>
+            Your steps unlock rewards, your movement fuels the game.
+          </motion.p>
+        </motion.div>
 
-  <motion.div
-    className="grid md:grid-cols-2 gap-8"
-    initial="hidden"
-    whileInView="visible"
-    viewport={{ once: true, margin: "-100px" }}
-    variants={staggerOnScroll}
-  >
-    {/* Feature 1 */}
-    <motion.div
-      className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-      variants={fadeInUpOnScroll}
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      <div className="flex flex-col h-full">
-        <div className="mb-6 flex justify-center">
-          <div className="w-40 h-40 relative">
-            <Image src={"/images/tournament.svg"} width={160} height={160} alt="Tournament" className="w-full h-full" />
-          </div>
-        </div>
-        <h3 className="text-2xl font-bold mb-3">Tournaments</h3>
-        <p className="text-gray-400">
-          Compete in step challenges against others and win crypto rewards. The more you move, the closer you are to the
-          top.
-        </p>
-      </div>
-    </motion.div>
+        <motion.div
+          className="grid md:grid-cols-2 gap-8"
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, margin: "-100px" }}
+          variants={staggerOnScroll}
+        >
+          {/* Feature 1 */}
+          <motion.div
+            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
+            variants={fadeInUpOnScroll}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="flex flex-col h-full">
+              <div className="mb-6 flex justify-center">
+                <div className="w-40 h-40 relative">
+                  <Image
+                    src={"/images/tournament.svg"}
+                    width={160}
+                    height={160}
+                    alt="Tournament"
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Tournaments</h3>
+              <p className="text-gray-400">
+                Compete in step challenges against others and win crypto rewards. The more you move, the closer you are
+                to the top.
+              </p>
+            </div>
+          </motion.div>
 
-    {/* Feature 2 */}
-    <motion.div
-      className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-      variants={fadeInUpOnScroll}
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      <div className="flex flex-col h-full">
-        <div className="mb-6 flex justify-center">
-          <div className="w-40 h-40 relative">
-            <Image
-              src={"/images/marketplace.svg"}
-              width={160}
-              height={160}
-              alt="Marketplace"
-              className="w-full h-full"
-            />
-          </div>
-        </div>
-        <h3 className="text-2xl font-bold mb-3">Marketplace</h3>
-        <p className="text-gray-400">
-          Buy, sell, or trade sneakers. Whether you &apos;re upgrading or cashing out, the marketplace keeps your
-          fitness journey flexible and rewarding.
-        </p>
-      </div>
-    </motion.div>
+          {/* Feature 2 */}
+          <motion.div
+            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
+            variants={fadeInUpOnScroll}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="flex flex-col h-full">
+              <div className="mb-6 flex justify-center">
+                <div className="w-40 h-40 relative">
+                  <Image
+                    src={"/images/marketplace.svg"}
+                    width={160}
+                    height={160}
+                    alt="Marketplace"
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Marketplace</h3>
+              <p className="text-gray-400">
+                Buy, sell, or trade sneakers. Whether you &apos;re upgrading or cashing out, the marketplace keeps your
+                fitness journey flexible and rewarding.
+              </p>
+            </div>
+          </motion.div>
 
-    {/* Feature 3 */}
-    <motion.div
-      className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-      variants={fadeInUpOnScroll}
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      <div className="flex flex-col h-full">
-        <div className="mb-6 flex justify-center">
-          <div className="w-40 h-40 relative">
-            <Image src={"/images/community.svg"} width={160} height={160} alt="Community" className="w-full h-full" />
-          </div>
-        </div>
-        <h3 className="text-2xl font-bold mb-3">Community</h3>
-        <p className="text-gray-400">
-          Exclusive games designed for fitness communities. Walk, play, and connect while earning in fun and engaging
-          ways.
-        </p>
-      </div>
-    </motion.div>
+          {/* Feature 3 */}
+          <motion.div
+            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
+            variants={fadeInUpOnScroll}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="flex flex-col h-full">
+              <div className="mb-6 flex justify-center">
+                <div className="w-40 h-40 relative">
+                  <Image
+                    src={"/images/community.svg"}
+                    width={160}
+                    height={160}
+                    alt="Community"
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Community</h3>
+              <p className="text-gray-400">
+                Exclusive games designed for fitness communities. Walk, play, and connect while earning in fun and
+                engaging ways.
+              </p>
+            </div>
+          </motion.div>
 
-    {/* Feature 4 */}
-    <motion.div
-      className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-      variants={fadeInUpOnScroll}
-      whileHover={{ y: -5 }}
-      transition={{ type: "spring", stiffness: 300 }}
-    >
-      <div className="flex flex-col h-full">
-        <div className="mb-6 flex justify-center">
-          <div className="w-40 h-40 relative">
-            <Image
-              src={"/images/pointsystem.svg"}
-              width={160}
-              height={160}
-              alt="Point System"
-              className="w-full h-full"
-            />
-          </div>
-        </div>
-        <h3 className="text-2xl font-bold mb-3">Point System</h3>
-        <p className="text-gray-400">
-          Earn points for every action—steps, wins, and achievements. Boost your points and unlock powerful future
-          rewards.
-        </p>
-      </div>
-    </motion.div>
-  </motion.div>
-      <motion.div
+          {/* Feature 4 */}
+          <motion.div
+            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
+            variants={fadeInUpOnScroll}
+            whileHover={{ y: -5 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <div className="flex flex-col h-full">
+              <div className="mb-6 flex justify-center">
+                <div className="w-40 h-40 relative">
+                  <Image
+                    src={"/images/pointsystem.svg"}
+                    width={160}
+                    height={160}
+                    alt="Point System"
+                    className="w-full h-full"
+                  />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold mb-3">Point System</h3>
+              <p className="text-gray-400">
+                Earn points for every action—steps, wins, and achievements. Boost your points and unlock powerful future
+                rewards.
+              </p>
+            </div>
+          </motion.div>
+        </motion.div>
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="relative w-full" >
-            <Image 
-              src={"/images/blue-sneak.png"} 
-              width={600} 
-              height={600} 
-              alt="Sneaker" 
-              className="absolute -left-20 bottom-0 opacity-10 -z-10"
-            />
-          </motion.div>
-</section>
+          className="relative w-full"
+        >
+          <Image
+            src={"/images/blue-sneak.png"}
+            width={600}
+            height={600}
+            alt="Sneaker"
+            className="absolute -left-20 bottom-0 opacity-10 -z-10"
+          />
+        </motion.div>
+      </section>
 
       {/* FAQ Section */}
       <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
@@ -449,26 +521,39 @@ export default function WalkfitLanding() {
             </motion.div>
           ))}
         </motion.div>
-            <motion.div
+        <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.5 }}
-          className="relative w-full" >
-            <Image 
-              src={"/images/footer-sneak.png"} 
-              width={600} 
-              height={600} 
-              alt="Sneaker" 
-              className="absolute -right-20 bottom-0 opacity-10 -z-10"
-            />
-          </motion.div>
-      </section>
+          className="relative w-full"
+        >
+          <Image
+            src={"/images/footer-sneak.png"}
+            width={600}
+            height={600}
+            alt="Sneaker"
+            className="absolute -right-20 bottom-0 opacity-10 -z-10"
+          />
+        </motion.div>
 
-      {/* Newsletter Section */}
+        </section>
+      {/* Newsletter/Waitlist Section */}
       <section className="relative z-10 py-20 px-4 max-w-4xl mx-auto">
+        {/* Background Image */}
+        <div className="absolute inset-0 z-0">
+          <Image
+            src="/images/hero-bg.svg"
+            alt="Hero Background"
+            fill
+            className="object-cover opacity-20"
+          />
+          <div className="absolute inset-0 bg-purple-900/40" />
+        </div>
+
+        {/* Content */}
         <motion.div
-          className="bg-purple-900/20 border border-purple-800/30 rounded-xl p-12 text-center"
+          className="text-center relative z-10 py-12"
           initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: "-100px" }}
@@ -486,128 +571,180 @@ export default function WalkfitLanding() {
             everyone.
           </motion.h2>
 
-          <motion.div
-            className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto mt-8"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.4 }}
-          >
-            <Input type="email" placeholder="Your email" className="bg-black/50 border-gray-700 text-white" />
-            <Button className="bg-white text-black hover:bg-gray-200">Join waitlist</Button>
-          </motion.div>
+          {!hasJoinedWaitlist ? (
+            <>
+              <motion.form
+                onSubmit={handleWaitlistSubmit}
+                className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto mt-8"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <Input
+                  type="email"
+                  placeholder="Your email"
+                  className="bg-black/50 border-gray-700 text-white"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  disabled={isLoading}
+                  required
+                />
+                <Button type="submit" className="bg-white text-black hover:bg-gray-200" disabled={isLoading}>
+                  {isLoading ? "Joining..." : "Join waitlist"}
+                </Button>
+              </motion.form>
 
-          <motion.p
-            className="text-sm text-gray-400 mt-6"
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            Get Latest updates on new game - walkfit team
-          </motion.p>
+              <motion.p
+                className="text-sm text-gray-400 mt-6"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.6 }}
+              >
+                Get Latest updates on new game - walkfit team
+              </motion.p>
+            </>
+          ) : (
+            <motion.div
+              className="mt-8"
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <motion.div
+                className="flex items-center justify-center mb-4"
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+              >
+                <CheckCircle className="w-16 h-16 text-green-400" />
+              </motion.div>
+
+              <motion.h3
+                className="text-2xl font-bold text-green-400 mb-2"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+              >
+                You&apos;ve joined our waitlist! 🎉
+              </motion.h3>
+
+              <motion.p
+                className="text-gray-300 mb-4"
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.4 }}
+              >
+                We&apos;ll notify you as soon as Walkfit launches. Get ready to turn your steps into crypto!
+              </motion.p>
+
+              <motion.p
+                className="text-sm text-gray-400"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.5 }}
+              >
+                Follow us on social media for the latest updates
+              </motion.p>
+            </motion.div>
+          )}
         </motion.div>
       </section>
 
       {/* Footer */}
       <footer className="relative z-10 py-12 px-4 border-t border-gray-800">
-  <div className="max-w-7xl mx-auto">
-    {/* Top section with logo and columns */}
-    <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
-      {/* Logo and social media - full width on mobile, 1 column on desktop */}
-      <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        whileInView={{ opacity: 1, y: 0 }}
-        viewport={{ once: true }}
-        transition={{ duration: 0.6 }}
-        className="md:col-span-1"
-      >
-        <div className="mb-4 -ml-6">
-          <Image src={"/images/logo2.svg"} width={100} height={40} alt="Walkfit Logo" />
+        <div className="max-w-7xl mx-auto">
+          {/* Top section with logo and columns */}
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 mb-8">
+            {/* Logo and social media - full width on mobile, 1 column on desktop */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6 }}
+              className="md:col-span-1"
+            >
+              <div className="mb-4 -ml-6">
+                <Image src={"/images/logo2.svg"} width={100} height={40} alt="Walkfit Logo" />
+              </div>
+              <p className="text-sm text-gray-400 mb-4">Turn your daily steps into rewards with walkfit.</p>
+              <motion.div
+                className="flex space-x-6 mt-4"
+                initial={{ opacity: 0 }}
+                whileInView={{ opacity: 1 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.4 }}
+              >
+                <motion.a href="#" whileHover={{ y: -3, color: "#1DA1F2" }} className="text-gray-400 hover:text-white">
+                  <Twitter className="w-5 h-5" />
+                </motion.a>
+                <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
+                  <Instagram className="w-5 h-5" />
+                </motion.a>
+                <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
+                  <Youtube className="w-5 h-5" />
+                </motion.a>
+              </motion.div>
+            </motion.div>
+
+            {/* Navigation columns - stacked on mobile, 3 columns on desktop */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:col-span-3">
+              {/* Product column */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.1 }}
+                className="space-y-3"
+              >
+                <h4 className="font-medium text-white mb-4">Product</h4>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Tournament</p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Marketplace</p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Community</p>
+              </motion.div>
+
+              {/* Company column */}
+              <motion.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.6, delay: 0.3 }}
+                className="space-y-3"
+              >
+                <h4 className="font-medium text-white mb-4">Company</h4>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Blog</p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Contact</p>
+              </motion.div>
+            </div>
+          </div>
+
+          {/* Bottom section with copyright */}
+          <motion.div
+            className="pt-8 border-t border-gray-800 mt-8 text-center md:text-left text-sm text-gray-500"
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.5 }}
+          >
+            <div className="flex flex-col md:flex-row justify-between items-center">
+              <p>© {new Date().getFullYear()} Walkfit. All rights reserved.</p>
+              <div className="flex space-x-6 mt-4 md:mt-0">
+                <a href="#" className="hover:text-white transition-colors">
+                  Terms
+                </a>
+                <a href="#" className="hover:text-white transition-colors">
+                  Privacy
+                </a>
+                <a href="#" className="hover:text-white transition-colors">
+                  Cookies
+                </a>
+              </div>
+            </div>
+          </motion.div>
         </div>
-        <p className="text-sm text-gray-400 mb-4">
-          Turn your daily steps into rewards with walkfit.
-        </p>
-        <motion.div
-          className="flex space-x-6 mt-4"
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.4 }}
-        >
-          <motion.a href="#" whileHover={{ y: -3, color: "#1DA1F2" }} className="text-gray-400 hover:text-white">
-            <Twitter className="w-5 h-5" />
-          </motion.a>
-          <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
-            <Instagram className="w-5 h-5" />
-          </motion.a>
-          <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
-            <Youtube className="w-5 h-5" />
-          </motion.a>
-        </motion.div>
-      </motion.div>
-
-      {/* Navigation columns - stacked on mobile, 3 columns on desktop */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-8 md:col-span-3">
-        {/* Product column */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.1 }}
-          className="space-y-3"
-        >
-          <h4 className="font-medium text-white mb-4">Product</h4>
-          <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Tournament</p>
-          <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Marketplace</p>
-          <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">community</p>
-       
-        </motion.div>
-
-
-        {/* Company column */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.3 }}
-          className="space-y-3"
-        >
-          <h4 className="font-medium text-white mb-4">Company</h4>
-          <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</p>
-          <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Blog</p>
-          <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Contact</p>
-        </motion.div>
-
-        
-      </div>
-    </div>
-
-    {/* Bottom section with copyright */}
-    <motion.div
-      className="pt-8 border-t border-gray-800 mt-8 text-center md:text-left text-sm text-gray-500"
-      initial={{ opacity: 0 }}
-      whileInView={{ opacity: 1 }}
-      viewport={{ once: true }}
-      transition={{ duration: 0.6, delay: 0.5 }}
-    >
-      <div className="flex flex-col md:flex-row justify-between items-center">
-        <p>© {new Date().getFullYear()} Walkfit. All rights reserved.</p>
-        <div className="flex space-x-6 mt-4 md:mt-0">
-          <a href="#" className="hover:text-white transition-colors">
-            Terms
-          </a>
-          <a href="#" className="hover:text-white transition-colors">
-            Privacy
-          </a>
-          <a href="#" className="hover:text-white transition-colors">
-            Cookies
-          </a>
-        </div>
-      </div>
-    </motion.div>
-  </div>
-</footer>
+      </footer>
 
       {/* Get Started Dialog */}
       <Dialog open={showGetStartedDialog} onOpenChange={setShowGetStartedDialog}>

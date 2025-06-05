@@ -3,7 +3,27 @@ import mongoose, { Schema, Document } from "mongoose";
 import { nanoid } from 'nanoid';
 // User schema
 
-const userSchema = new mongoose.Schema(
+const streakFields={
+  currentStreak: {
+    type: Number,
+    default: 0,
+  },
+  longestStreak: {
+    type: Number,
+    default: 0,
+  },
+  lastStreakDate: {
+    type: Date,
+    default: null,
+  },
+  streakXP: {
+    type: Number,
+    default: 0,
+  },
+}
+
+
+const userSchemaWithStreak = new mongoose.Schema(
   {
     username: {
       type: String,
@@ -29,6 +49,7 @@ const userSchema = new mongoose.Schema(
       type: Number,
       default: 0,
     },
+    ...streakFields,
   },
 )
 
@@ -131,7 +152,7 @@ const gameSchema = new mongoose.Schema({
   code: {
     type: String,
     trim: true,
-    default: ()=>nanoid(6),
+    default: function() { return nanoid(6); },
     unique: true,
   },
   creator: {
@@ -169,11 +190,43 @@ gameSchema.index({ gameType: 1 });
 gameSchema.index({ endDate: 1 });
 
 
+const waitlistSchema = new mongoose.Schema(
+  {
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
+      match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+    },
+    joinedAt: {
+      type: Date,
+      default: Date.now,
+    },
+    status: {
+      type: String,
+      enum: ['pending', 'invited', 'registered'],
+      default: 'pending'
+    },
+    source: {
+      type: String,
+      default: 'landing-page'
+    }
+  },
+  {
+    timestamps: true
+  }
+);
 
 
+waitlistSchema.index({ joinedAt: -1 });
+
+export const Waitlist = mongoose.models.Waitlist || mongoose.model("Waitlist", waitlistSchema);
 export const Referral = mongoose.models.Referral || mongoose.model('Referral', ReferralSchema);
-export const User = mongoose.models.User || mongoose.model("User", userSchema);
+export const User = mongoose.models.User || mongoose.model("User", userSchemaWithStreak);
 export const Steps = mongoose.models.Steps || mongoose.model("Steps", stepsSchema);
 export const Point = mongoose.models.Point || mongoose.model("Point", pointSchema);
 export const StepData = mongoose.models.StepData || mongoose.model("StepData", StepDataSchema);
 export const Game = mongoose.models.Game || mongoose.model("Game", gameSchema)
+export const StreakFields = streakFields;

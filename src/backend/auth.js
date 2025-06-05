@@ -67,7 +67,7 @@ export const {
         if (token.userId) {
           try {
             await connectToDb();
-            
+        
             // Initialize user in database
             let existingUser = await User.findOne({ email: token.userId });
             if (!existingUser) {

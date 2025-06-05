@@ -30,7 +30,7 @@ const BottomNav: React.FC<BottomNavProps> = ({ pendingTaskCount = 0 }) => {
   const handleMouseOut = () => setActiveIndex(null)
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-600">
+    <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-600 z-50">
       <div className="flex justify-around items-center p-4">
         {navItems.map((item, index) => {
           const isActive = pathname === item.href
