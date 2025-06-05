@@ -818,6 +818,8 @@ export default function WalkfitLanding() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      
     </div>
   )
 }

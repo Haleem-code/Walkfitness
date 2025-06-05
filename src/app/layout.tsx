@@ -4,7 +4,6 @@ import "../styles/globals.css";
 import React, { useEffect, useState, type ReactNode } from "react";
 import { usePathname } from "next/navigation";
 import { Poppins } from "next/font/google";
-import { Metadata } from "next";
 
 import ClientOnly from "../components/ClientOnly";
 import TopNavbar from "@/components/TopNav";
@@ -19,18 +18,6 @@ const poppins = Poppins({
    variable: '--font-poppins'
 });
 
-export const metadata: Metadata = {
-  title:"Walkfit",
-  description: "earn with your fitness",
-  manifest: "/site.webmanifest",
-  icons: {
-    apple: "/newlogo.png",
-    icon: [
-      { url: "/newlogo.png", sizes: "32x32", type: "image/png" },
-      { url: "/newlogo.png", sizes: "16x16", type: "image/png" },
-    ],
-  },
-}
 
 interface LayoutProps {
   children: ReactNode;
@@ -69,6 +56,7 @@ export default function RootLayout({ children }: LayoutProps) {
                 {showNavbars && <TopNavbar/>}
                 <main className="flex-grow">{children}</main>
                 {showNavbars && <BottomNav />}
+                
               </ClientOnly>
             </SessionProvider>
           </WalletProvider>
