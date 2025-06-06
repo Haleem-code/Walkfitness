@@ -5,9 +5,9 @@ export default async function test() {
     const apiUrl = process.env.API_URL ;
     // ||
     //  "http://localhost:3000/";
-    console.log(`Fetching email from: ${apiUrl}/api/getEmail`); // Log the API URL
+    console.log(`Fetching email from: ${apiUrl}/api/getemail`); // Log the API URL
 
-    const emailRes = await fetch(`${apiUrl}/api/getEmail`);
+    const emailRes = await fetch(`${apiUrl}/api/getemail`);
 
     if (!emailRes.ok) {
       throw new Error(`Failed to fetch: ${emailRes.statusText} (${emailRes.status})`);
