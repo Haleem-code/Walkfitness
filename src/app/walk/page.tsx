@@ -112,7 +112,7 @@ export default function WalkPage() {
   // Use useCallback to memoize fetchGames function
   const fetchGames = useCallback(async () => {
     try {
-      const publicResponse = await fetch("/api/games/public")
+      const publicResponse = await fetch("https://walkfit.vercel.app/api/games/public")
       if (publicResponse.ok) {
         const publicData = await publicResponse.json()
         const convertedPublicGames = (publicData.games || []).map(convertApiGameToGame)
@@ -138,7 +138,7 @@ export default function WalkPage() {
           setLoading(true)
           setError(null)
 
-          const emailRes = await fetch(`/api/getemail`)
+          const emailRes = await fetch(`https://walkfit.vercel.app/api/getemail`)
           const { email } = await emailRes.json()
           console.log("email", email)
 
@@ -185,7 +185,7 @@ export default function WalkPage() {
 
     setJoiningGame("code")
     try {
-      const response = await fetch("/api/games/join", {
+      const response = await fetch("https://walkfit.vercel.app/api/games/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
