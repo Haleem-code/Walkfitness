@@ -8,7 +8,7 @@ const nextConfig = {
   },
   env: {
     AUTH_TRUST_HOST: "true",
-    NEXTAUTH_URL: "https://walkfit.vercel.app", 
+    NEXTAUTH_URL: "http://localhost:3000", 
   },
 };
 

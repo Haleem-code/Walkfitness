@@ -680,8 +680,8 @@ export default function WalkfitLanding() {
                   <Twitter className="w-5 h-5" />
                 </motion.a>
                 <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
-                  <Instagram className="w-5 h-5" />
-                </motion.a>
+                    <Instagram className="w-5 h-5" />
+                  </motion.a>
                 <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
                   <Youtube className="w-5 h-5" />
                 </motion.a>
@@ -714,8 +714,6 @@ export default function WalkfitLanding() {
               >
                 <h4 className="font-medium text-white mb-4">Company</h4>
                 <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</p>
-                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Blog</p>
-                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Contact</p>
               </motion.div>
             </div>
           </div>
