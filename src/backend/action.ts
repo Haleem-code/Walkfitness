@@ -375,6 +375,140 @@ export const handleQuestPoint = async (
 	// No need to call save() after updateOne
 };
 
-// Note: The following functions (checkAndUpdateStreak and getUserStreak) are not included
-// as they were not visible in the original file. Please provide their implementations
-// if you'd like them to be included in the TypeScript version.
+
+export const checkAndUpdateStreak = async (userId) => {
+  try {
+	await connectToDb()
+
+	const user = await User.findOne({ email: userId })
+	if (!user) {
+	  throw new Error("User not found")
+	}
+
+	const now = new Date()
+	const today = new Date(now.getFullYear(), now.getMonth(), now.getDate())
+
+	let hasStreak = false
+	let streakCount = user.currentStreak || 0
+	let xpAwarded = 0
+	let isNewRecord = false
+
+	if (user.lastStreakDate) {
+	  const lastStreakDate = new Date(user.lastStreakDate)
+	  const lastStreakDay = new Date(lastStreakDate.getFullYear(), lastStreakDate.getMonth(), lastStreakDate.getDate())
+
+	  if (lastStreakDay.getTime() === today.getTime()) {
+		return {
+		  hasStreak: false,
+		  streakCount: user.currentStreak || 0,
+		  xpAwarded: 0,
+		  isNewRecord: false,
+		}
+	  }
+
+	  const yesterday = new Date(today)
+	  yesterday.setDate(yesterday.getDate() - 1)
+
+	  if (lastStreakDay.getTime() === yesterday.getTime()) {
+		streakCount += 1
+		hasStreak = true
+		xpAwarded = 200
+	  } else {
+		streakCount = 1
+		hasStreak = true
+		xpAwarded = 200
+	  }
+	} else {
+	  streakCount = 1
+	  hasStreak = true
+	  xpAwarded = 200
+	}
+
+	const longestStreak = user.longestStreak || 0
+	if (streakCount > longestStreak) {
+	  isNewRecord = true
+	}
+
+	await User.updateOne(
+	  { email: userId },
+	  {
+		$set: {
+		  currentStreak: streakCount,
+		  longestStreak: Math.max(streakCount, longestStreak),
+		  lastStreakDate: now,
+		  streakXP: (user.streakXP || 0) + xpAwarded,
+		},
+	  },
+	)
+
+	if (xpAwarded > 0) {
+	  let pointEntry = await Point.findOne({ email: userId })
+	  if (!pointEntry) {
+		pointEntry = new Point({
+		  userId: userId,
+		  email: userId,
+		  questPoint: xpAwarded,
+		  totalPoint: xpAwarded,
+		})
+		await pointEntry.save()
+	  } else {
+		await Point.updateOne(
+		  { email: userId },
+		  {
+			$inc: {
+			  questPoint: xpAwarded,
+			  totalPoint: xpAwarded,
+			},
+		  },
+		)
+	  }
+	}
+
+	return {
+	  hasStreak,
+	  streakCount,
+	  xpAwarded,
+	  isNewRecord,
+	}
+  } catch (error) {
+	console.error("Error checking streak:", error)
+	return {
+	  hasStreak: false,
+	  streakCount: 0,
+	  xpAwarded: 0,
+	  isNewRecord: false,
+	}
+  }
+}
+
+
+export const getUserStreak = async (userId) => {
+  try {
+	await connectToDb()
+	const user = await User.findOne({ email: userId })
+
+	if (!user) {
+	  return {
+		currentStreak: 0,
+		longestStreak: 0,
+		streakXP: 0,
+		lastStreakDate: null,
+	  }
+	}
+
+	return {
+	  currentStreak: user.currentStreak || 0,
+	  longestStreak: user.longestStreak || 0,
+	  streakXP: user.streakXP || 0,
+	  lastStreakDate: user.lastStreakDate,
+	}
+  } catch (error) {
+	console.error("Error getting user streak:", error)
+	return {
+	  currentStreak: 0,
+	  longestStreak: 0,
+	  streakXP: 0,
+	  lastStreakDate: null,
+	}
+  }
+}
