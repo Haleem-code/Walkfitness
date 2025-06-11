@@ -3,19 +3,20 @@ import mongoose, {
 	type Document,
 	type Model,
 	type Types,
+	model,
 } from "mongoose";
 import { nanoid } from "nanoid";
 
-// Interface for Streak fields
-interface IStreakFields {
+// export export interface for Streak fields
+export interface IStreakFields {
 	currentStreak: number;
 	longestStreak: number;
 	lastStreakDate: Date | null;
 	streakXP: number;
 }
 
-// Interface for User document
-interface IUser extends Document {
+// export interface for User document
+export interface IUser extends Document {
 	username: string;
 	email: string;
 	img?: string;
@@ -30,42 +31,42 @@ interface IUser extends Document {
 	streakXP: number;
 }
 
-// Interface for Step Data
-interface IStepData extends Document {
+// export interface for Step Data
+export interface IStepData extends Document {
 	date: Date;
 	steps: number;
 }
 
-// Interface for Steps document
-interface ISteps extends Document {
+// export interface for Steps document
+export interface ISteps extends Document {
 	email: string;
 	totalSteps: number;
 	lastSevenDaysSteps: Types.Array<IStepData>;
 	stepsForLastUpdate: number;
 }
 
-// Interface for Points document
-interface IPoint extends Document {
+// export interface for Points document
+export interface IPoint extends Document {
 	userId: string;
 	email: string;
 	questPoint: number;
 	totalPoint: number;
 }
 
-// Interface for Referred User
-interface IReferredUser extends Document {
+// export interface for Referred User
+export interface IReferredUser extends Document {
 	userId: string;
 	username: string;
 }
 
-// Interface for Referral document
-interface IReferral extends Document {
+// export interface for Referral document
+export interface IReferral extends Document {
 	userId: string;
 	referredUsers: Types.Array<IReferredUser>;
 }
 
-// Interface for Game document
-interface IGame extends Document {
+// export interface for Game document
+export interface IGame extends Document {
 	name: string;
 	gameSteps: number;
 	duration: number;
@@ -81,8 +82,8 @@ interface IGame extends Document {
 	image?: string;
 }
 
-// Interface for Waitlist document
-interface IWaitlist extends Document {
+// export interface for Waitlist document
+export interface IWaitlist extends Document {
 	email: string;
 	joinedAt: Date;
 	status: "pending" | "invited" | "registered";
@@ -139,6 +140,29 @@ const userSchemaWithStreak = new Schema<IUser>({
 		default: 0,
 	},
 	...streakFields,
+});
+
+export interface IWallet extends Document {
+  userId: string;
+  address: string;
+  key: string;
+}
+
+const walletSchema = new Schema<IWallet>({
+  userId: { 
+    type: String, 
+    required: true,
+    unique: true 
+  },
+  address: { 
+    type: String, 
+    required: true,
+    unique: true 
+  },
+  key: { 
+    type: String, 
+    required: true 
+  }
 });
 
 // Steps data schema
@@ -330,15 +354,7 @@ export const Game: Model<IGame> =
 	mongoose.models.Game || mongoose.model<IGame>("Game", gameSchema);
 export const StreakFields = streakFields;
 
-// Export interfaces for use in other files
-export type {
-	IUser,
-	ISteps,
-	IPoint,
-	IReferral,
-	IGame,
-	IWaitlist,
-	IStreakFields,
-	IStepData,
-	IReferredUser,
-};
+export const Wallet: Model<IWallet> =
+	mongoose.models.Wallet || mongoose.model<IWallet>('Wallet', walletSchema);
+
+// Export export interfaces for use in other files

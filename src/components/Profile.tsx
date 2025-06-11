@@ -145,7 +145,7 @@ const ProfilePage = () => {
                   <div className="relative mb-6">
                     <div className="w-32 h-32 rounded-full border-4 border-green-400 overflow-hidden shadow-lg">
                       <Image
-                        src="/images/profileImg.svg"
+                        src={session?.user?.image || "/images/profileImg.svg"}
                         alt="Profile"
                         width={128}
                         height={128}
@@ -234,7 +234,7 @@ const ProfilePage = () => {
                       <span className="text-sm text-orange-200 font-medium">Current Streak</span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-12 bg-orange-400/20 animate-pulse rounded mx-auto"></div>
+                      <div className="h-8 w-12 bg-orange-400/20 animate-pulse rounded mx-auto"/>
                     ) : (
                       <div className="text-3xl font-bold text-orange-400">{streakData.currentStreak}</div>
                     )}
@@ -250,7 +250,7 @@ const ProfilePage = () => {
                       <span className="text-sm text-yellow-200 font-medium">Best Streak</span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-12 bg-yellow-400/20 animate-pulse rounded mx-auto"></div>
+                      <div className="h-8 w-12 bg-yellow-400/20 animate-pulse rounded mx-auto"/>
                     ) : (
                       <div className="text-3xl font-bold text-yellow-400">{streakData.longestStreak}</div>
                     )}
@@ -266,7 +266,7 @@ const ProfilePage = () => {
                       <span className="text-sm text-green-200 font-medium">Streak XP</span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-16 bg-green-400/20 animate-pulse rounded mx-auto"></div>
+                      <div className="h-8 w-16 bg-green-400/20 animate-pulse rounded mx-auto"/>
                     ) : (
                       <div className="text-3xl font-bold text-green-400">{formatXP(streakData.streakXP)}</div>
                     )}

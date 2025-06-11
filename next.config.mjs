@@ -10,11 +10,20 @@ const nextConfig = {
     AUTH_TRUST_HOST: "true",
     NEXTAUTH_URL: "http://localhost:3000", 
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https', // or 'http' if needed, but 'https' is recommended
+        hostname: '**', // This wildcard allows all hostnames
+      },
+    ],
+  },
 };
 
-export default nextPWA({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-})(nextConfig);
+export default nextConfig;
+// export default nextPWA({
+//   dest: "public",
+//   register: true,
+//   skipWaiting: true,
+//   disable: process.env.NODE_ENV === "development",
+// })(nextConfig);

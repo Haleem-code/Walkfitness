@@ -49,7 +49,7 @@ const LogoPage = () => {
       {/* Blinking Sneakers Around the Page */}
       {sneakerPositions.map((sneaker, index) => (
         <motion.div
-          key={index}
+          key={sneaker.src}
           initial={{ opacity: 0 }}
           animate="visible"
           variants={blinkVariants}

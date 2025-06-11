@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import "dotenv/config";
-import { connectToDb } from "./utils";
-import { User, Point, Game} from "./models";
+import { connectToDb, generateWalletAddress } from "./utils";
+import { User, Point, Game } from "./models";
 import { updateStepData } from "./updateSteps";
 
 export const {
@@ -69,9 +69,9 @@ export const {
         if (token.userId) {
           try {
             await connectToDb();
-        
+
             // Initialize user in database
-            let existingUser = await User.findOne({ email: token.userId });
+            let existingUser = await User.findOne({ email: token.userId.toowerCase() });
             if (!existingUser) {
               existingUser = new User({
                 username: user?.name || "Fitbit User",
@@ -88,7 +88,19 @@ export const {
               existingUser.googleAccessToken = account.access_token;
               await existingUser.save();
             }
-            
+
+            const existingWallet = await Wallet.exists({ userId: user.id });
+
+            if (!existingWallet) {
+              const wallet = generateWalletAddress();
+              const newWallet = new Wallet({
+                userId: token.userId,
+                address: wallet.address,
+                key: wallet.key,
+              });
+              await newWallet.save();
+            }
+
             // // Initialize points
             // let pointEntry = await Point.findOne({ email: token.userId });
             // if (!pointEntry) {
@@ -99,13 +111,13 @@ export const {
             //   });
             //   await pointEntry.save();
             // }
-    
+
             // Fetch step data
             if (account.access_token) {
               console.log("Fetching account data for user:", account.access_token);
               console.log("User ID:", account.user_id);
               await updateStepData(token.userId, account.access_token);
-              
+
             }
           } catch (err) {
             console.error("Database error:", err);
@@ -114,7 +126,7 @@ export const {
       }
       return token;
     },
-    
+
     async session({ session, token }) {
       session.accessToken = token.accessToken;
       session.refreshToken = token.refreshToken;
@@ -123,16 +135,16 @@ export const {
       return session;
     },
   },
-  
+
   // Add debug mode
   debug: true,
-  
+
   // Session configuration
   session: {
     strategy: "jwt",
     maxAge: 30 * 24 * 60 * 60, // 30 days
   },
-  
+
   // Pages configuration
   pages: {
     signIn: "/authpage",

@@ -48,7 +48,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
 
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
-    if (file && file.type.startsWith('image/')) { // Fixed: changed 'images/' to 'image/'
+    if (file?.type.startsWith('image/')) { // Fixed: changed 'images/' to 'image/'
       setFormData((prev) => ({ 
         ...prev, 
         banner: file,
@@ -84,13 +84,12 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
   const parseDurationToDays = (duration: string): number => {
     const lowerDuration = duration.toLowerCase()
     if (lowerDuration.includes('week')) {
-      const weeks = parseInt(lowerDuration) || 1
+      const weeks = Number.parseInt(lowerDuration) || 1
       return weeks * 7
-    } else if (lowerDuration.includes('day')) {
-      return parseInt(lowerDuration) || 1
-    } else {
-      return parseInt(duration) || 1
+    }if (lowerDuration.includes('day')) {
+      return Number.parseInt(lowerDuration) || 1
     }
+      return Number.parseInt(duration) || 1
   }
 
   const copyToClipboard = async () => {
@@ -166,7 +165,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
         } else {
           // For public and sponsored games, show success state for 8 seconds then navigate
           setTimeout(() => {
-        router.push(`/walk`)
+        router.push("/walk")
         onGameCreated()
         onClose()
           }, 8000)

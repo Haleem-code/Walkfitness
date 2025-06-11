@@ -37,18 +37,18 @@ const BottomNav: React.FC<BottomNavProps> = ({ pendingTaskCount = 0 }) => {
 
           return (
             <Link href={item.href} key={item.name}>
+              {/* biome-ignore lint/a11y/useKeyWithMouseEvents: <explanation> */}
               <div
-                className={`flex items-center justify-center transition-all duration-200 ${
-                  activeIndex === index ? "scale-110" : ""
-                }`}
+                className={`flex items-center justify-center transition-all duration-200 ${activeIndex === index ? "scale-110" : ""
+                  }`}
                 onMouseOver={() => handleMouseOver(index)}
                 onMouseOut={handleMouseOut}
               >
                 {isActive ? (
                   // Active state: horizontal layout with green background
-                  <div className="flex items-center gap-2 bg-[#A0FEA0]/50 text-white px-4 py-2 rounded-full">
+                  <div className="flex flex-col items-center sm:flex sm:flex-row sm:items-center sm:gap-2 bg-[#A0FEA0]/50 text-white px-4 py-2 rounded-full">
                     <Image src={item.icon || "/placeholder.svg"} alt={item.name} width={20} height={20} />
-                    <span className="text-sm font-medium">{item.name}</span>
+                    <span className="hidden sm:block text-sm font-medium">{item.name}</span>
                   </div>
                 ) : (
                   // Inactive state: vertical layout

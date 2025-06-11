@@ -1,6 +1,6 @@
 // pages/index.tsx
 "use client";
-import React from "react";
+import type React from "react";
 import Profile from "../../components/Profile";
 
 const Home: React.FC = () => {

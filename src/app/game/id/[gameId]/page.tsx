@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback,useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
-//import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import DailyProgressBar from "@/components/DailyProgressBar"
 import TopNavbar from "@/components/TopNav"
 import { motion } from "framer-motion"
@@ -47,6 +47,7 @@ export default function GamePage() {
     }
   }, [gameId]);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     if (userEmail) {
       fetchUserSteps();
@@ -77,11 +78,11 @@ export default function GamePage() {
     }
   };
 
-const fetchGameData = useCallback(async () => {
+  const fetchGameData = useCallback(async () => {
     try {
       const response = await fetch(`/api/games/id/${gameId}`);
       const data = await response.json();
-      
+
       if (data.error) {
         setError(data.error);
       } else {
@@ -96,11 +97,11 @@ const fetchGameData = useCallback(async () => {
     }
   }, [gameId]);
 
- const fetchLeaderboard = useCallback(async () => {
+  const fetchLeaderboard = useCallback(async () => {
     try {
       const response = await fetch(`/api/games/${gameId}/leaderboard`);
       const data = await response.json();
-      
+
       if (data.success) {
         setLeaderboard(data.leaderboard || []);
       }
@@ -110,7 +111,7 @@ const fetchGameData = useCallback(async () => {
   }, [gameId]);
 
   const getGameTypeColor = (type) => {
-    switch(type) {
+    switch (type) {
       case 'sponsored': return 'from-yellow-500 to-orange-500'
       case 'private': return 'from-purple-500 to-pink-500'
       case 'public': return 'from-green-500 to-blue-500'
@@ -127,11 +128,11 @@ const fetchGameData = useCallback(async () => {
 
   const getGameStatus = () => {
     if (!game) return '';
-    
+
     const now = new Date();
     const startDate = new Date(game.startDate);
     const endDate = new Date(game.endDate);
-    
+
     if (now < startDate) return 'Not Started';
     if (now > endDate) return 'Ended';
     return 'Active';
@@ -148,7 +149,7 @@ const fetchGameData = useCallback(async () => {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
             <p>Loading game...</p>
           </div>
         </div>
@@ -164,12 +165,12 @@ const fetchGameData = useCallback(async () => {
           <div className="text-center">
             <h1 className="text-2xl font-bold text-red-400 mb-4">Game Not Found</h1>
             <p className="text-gray-400 mb-4">{error || 'This game does not exist or you do not have access to it.'}</p>
-            <button 
+            <Button
               onClick={() => router.push('/walk')}
               className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded-xl transition-all duration-300"
             >
               Back to Walk Page
-            </button>
+            </Button>
           </div>
         </div>
       </div>
@@ -215,20 +216,22 @@ const fetchGameData = useCallback(async () => {
 
       <div className="relative z-10 min-h-screen">
         {/* Header */}
-        <motion.div 
+        <motion.div
           className="px-4 py-6 md:px-6 lg:px-8"
-          initial="hidden" 
-          animate="visible" 
+          initial="hidden"
+          animate="visible"
           variants={fadeInUp}
         >
           <div className="max-w-7xl mx-auto">
             <TopNavbar />
-            <button 
+            <div className="h-8" />
+            <Button
+              variant="ghost"
               onClick={() => router.push('/walk')}
-              className="text-green-400 hover:text-green-300 mt-4 flex items-center gap-2 transition-colors"
+              className="text-green-400 hover:text-green-300 hover:bg-transparent mt-4 flex items-center gap-2 px-0"
             >
               ← Back to Games
-            </button>
+            </Button>
           </div>
         </motion.div>
 
@@ -248,11 +251,10 @@ const fetchGameData = useCallback(async () => {
                     <span className={`px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r ${getGameTypeColor(game.gameType)} text-white`}>
                       {game.gameType.charAt(0).toUpperCase() + game.gameType.slice(1)}
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      getGameStatus() === 'Active' ? 'bg-green-500/20 text-green-400' :
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getGameStatus() === 'Active' ? 'bg-green-500/20 text-green-400' :
                       getGameStatus() === 'Ended' ? 'bg-red-500/20 text-red-400' :
-                      'bg-yellow-500/20 text-yellow-400'
-                    }`}>
+                        'bg-yellow-500/20 text-yellow-400'
+                      }`}>
                       {getGameStatus()}
                     </span>
                   </div>
@@ -260,12 +262,19 @@ const fetchGameData = useCallback(async () => {
                     {daysRemaining > 0 ? `${daysRemaining} days remaining` : 'Game ended'}
                   </p>
                 </div>
-                
+
                 {/* Progress Circle */}
                 <div className="flex justify-center lg:justify-end">
                   <div className="relative w-32 h-32">
-                    <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    <svg
+                      className="absolute inset-0 w-full h-full transform -rotate-90"
+                      viewBox="0 0 100 100"
+                      role="img"
+                      aria-label={`Progress: ${progressPercentage}% complete`}
+                    >
+                      <title>Game progress: {progressPercentage}% complete</title>
                       <circle
+
                         cx="50"
                         cy="50"
                         r="40"
@@ -273,6 +282,7 @@ const fetchGameData = useCallback(async () => {
                         stroke="currentColor"
                         strokeWidth="6"
                         className="text-gray-700"
+
                       />
                       <circle
                         cx="50"
@@ -396,11 +406,11 @@ const fetchGameData = useCallback(async () => {
                     <div className="text-3xl font-bold mb-2">{userSteps.toLocaleString()}</div>
                     <div className="text-sm text-gray-400 mb-4">Total Steps</div>
                     <div className="bg-gray-700/50 rounded-full h-2 mb-2">
-                      <div className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500" style={{width: `${userProgressPercentage}%`}}></div>
+                      <div className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500" style={{ width: `${userProgressPercentage}%` }} />
                     </div>
                     <div className="text-sm text-gray-400">{userProgressPercentage}% of target reached</div>
                   </div>
-                  
+
                   {/* Daily Progress Bar */}
                   <div className="mt-6">
                     <h4 className="text-sm font-semibold mb-2 text-gray-300">Daily Progress</h4>
@@ -426,22 +436,20 @@ const fetchGameData = useCallback(async () => {
                     {leaderboard.length > 0 ? leaderboard.map((participant, index) => (
                       <motion.div
                         key={participant.id || participant.email || index}
-                        className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.02] ${
-                          participant.email === userEmail 
-                            ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30' 
-                            : 'bg-gray-700/30 hover:bg-gray-700/50'
-                        }`}
+                        className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.02] ${participant.email === userEmail
+                          ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30'
+                          : 'bg-gray-700/30 hover:bg-gray-700/50'
+                          }`}
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ delay: index * 0.1 }}
                       >
                         <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 flex items-center justify-center rounded-full font-bold ${
-                            index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' :
+                          <div className={`w-10 h-10 flex items-center justify-center rounded-full font-bold ${index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' :
                             index === 1 ? 'bg-gradient-to-r from-gray-300 to-gray-500 text-black' :
-                            index === 2 ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black' :
-                            'bg-gray-600/50 text-white'
-                          }`}>
+                              index === 2 ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black' :
+                                'bg-gray-600/50 text-white'
+                            }`}>
                             {getRankIcon(index + 1)}
                           </div>
                           <div>

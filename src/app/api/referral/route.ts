@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     }
 
     // Find referrer or create if doesn't exist
-    let referrer = await Referral.findOne({ userId: referrerId });
+    const referrer = await Referral.findOne({ userId: referrerId });
     if (!referrer) {
       return new Response(JSON.stringify({ message: "Referrer not found" }), { status: 404 });
     }
