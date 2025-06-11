@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import "dotenv/config";
+
 
 const connection = {};
 
@@ -21,7 +21,7 @@ export const connectToDb = async () => {
 export const generateCodeVerifier = () => {
   const array = new Uint32Array(56 / 2);
   crypto.getRandomValues(array);
-  return Array.from(array, (dec) => ("0" + dec.toString(16)).substr(-2)).join(
+  return Array.from(array, (dec) => (`0${dec.toString(16)}`).substr(-2)).join(
     ""
   );
 };

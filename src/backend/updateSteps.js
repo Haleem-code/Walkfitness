@@ -1,5 +1,5 @@
-import { connectToDb } from "./utils.js";
-import { User, Steps } from "./models.js";
+import { connectToDb } from "./utils";
+import { User, Steps } from "./models";
 
 export async function updateStepData(email, accessToken) {
   await connectToDb();
@@ -42,7 +42,7 @@ export async function updateStepData(email, accessToken) {
 
   try {
     const todayResponse = await fetch(
-      `https://api.fitbit.com/1/user/-/activities/steps/date/today/1d.json`,
+      "https://api.fitbit.com/1/user/-/activities/steps/date/today/1d.json",
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
