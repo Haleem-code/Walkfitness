@@ -58,11 +58,13 @@ export const {
 
   callbacks: {
     async jwt({ token, account, user }) {
-      if (account) {
+      if (account?.provider === "fitbit") {
         token.accessToken = account.access_token;
         token.refreshToken = account.refresh_token;
-        token.userId = account.providerAccountId || user?.id;
-        
+        token.userId = account.user_id || account.providerAccountId;
+        console.log(user, "User ID from account:", token.userId);
+        console.log(token, "JWT Token:", token);
+        console.log("Account:", account);
         // Only connect to DB if we have a userId
         if (token.userId) {
           try {
@@ -87,20 +89,23 @@ export const {
               await existingUser.save();
             }
             
-            // Initialize points
-            let pointEntry = await Point.findOne({ email: token.userId });
-            if (!pointEntry) {
-              pointEntry = new Point({
-                email: token.userId,
-                questPoint: 0,
-                totalPoint: 0,
-              });
-              await pointEntry.save();
-            }
+            // // Initialize points
+            // let pointEntry = await Point.findOne({ email: token.userId });
+            // if (!pointEntry) {
+            //   pointEntry = new Point({
+            //     email: token.userId,
+            //     questPoint: 0,
+            //     totalPoint: 0,
+            //   });
+            //   await pointEntry.save();
+            // }
     
             // Fetch step data
             if (account.access_token) {
+              console.log("Fetching account data for user:", account.access_token);
+              console.log("User ID:", account.user_id);
               await updateStepData(token.userId, account.access_token);
+              
             }
           } catch (err) {
             console.error("Database error:", err);

@@ -152,7 +152,7 @@ const gameSchema = new mongoose.Schema({
   code: {
     type: String,
     trim: true,
-    default: function() { return nanoid(6); },
+    default: () => nanoid(6),
     unique: true,
   },
   creator: {
@@ -185,9 +185,11 @@ const gameSchema = new mongoose.Schema({
   },
 });
 
+
 // indexes
 gameSchema.index({ gameType: 1 });
 gameSchema.index({ endDate: 1 });
+
 
 
 const waitlistSchema = new mongoose.Schema(

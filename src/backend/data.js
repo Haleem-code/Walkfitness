@@ -132,7 +132,7 @@
 //   }
 // }
 
-import { Steps, User, Point,Game } from "./models"
+import { User, Point,Game } from "./models"
 import { connectToDb } from "./utils"
 import { unstable_noStore as noStore } from "next/cache"
 import { auth } from "./auth"
@@ -141,29 +141,32 @@ export const getSteps = async (email) => {
   noStore()
   try {
     await connectToDb()
+    
+    console.log(`Searching for user with email: ${email}`)
 
-    let steps = await Steps.findOne({ email })
-
-    // If no steps found, create a new entry instead of throwing an error
-    if (!steps) {
-      console.log(`No steps found for email: ${email}. Creating new entry.`)
-      steps = new Steps({
-        email,
-        totalSteps: 0,
-        lastSevenDaysSteps: [],
+    const user = await User.findOne({ email })
+    console.log(`User found:`, user)
+    // Handle case where user is not found
+    if (!user) {
+      console.log(`No user found for email: ${email}`)
+      return {
         stepsForLastUpdate: 0,
-      })
-      await steps.save()
+        totalSteps: 0,
+        error: "User not found"
+      }
     }
-
+    
+    console.log(`Found user:`, user)
+    
     return {
-      stepsForLastUpdate: steps.stepsForLastUpdate,
-      totalSteps: steps.totalSteps,
-      lastSevenDaysSteps: steps.lastSevenDaysSteps || [],
+      stepsForLastUpdate: user.stepsForLastUpdate || 0,
+      totalSteps: user.totalSteps || 0,
     }
   } catch (err) {
     console.log("Error in getSteps:", err)
-    throw new Error("Failed to fetch steps!")
+    console.log("Error details:", err.message)
+    console.log("Stack trace:", err.stack)
+    throw new Error(`Failed to fetch steps: ${err.message}`)
   }
 }
 

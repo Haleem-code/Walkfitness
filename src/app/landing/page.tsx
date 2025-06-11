@@ -186,21 +186,18 @@ export default function WalkfitLanding() {
             </motion.div>
           </div>
           <div className="hidden md:flex space-x-6 border border-gray-700 rounded-full px-6 py-4">
-            <Link href="#" className="hover:text-green-400 transition-colors">
+            <Link href="#features" className="hover:text-green-400 transition-colors">
               Tournaments
             </Link>
-            <Link href="#" className="hover:text-green-400 transition-colors">
-              Developer
-            </Link>
-            <Link href="#" className="hover:text-green-400 transition-colors">
+            <a href="#features" className="hover:text-green-400 transition-colors">
+              Community
+            </a>
+            <a href="#features" className="hover:text-green-400 transition-colors">
               Marketplace
-            </Link>
-            <Link href="#" className="hover:text-green-400 transition-colors">
-              Blog
-            </Link>
-            <Link href="#" className="hover:text-green-400 transition-colors">
+            </a>
+            <a href="#faqs" className="hover:text-green-400 transition-colors">
               FAQs
-            </Link>
+            </a>
           </div>
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Button
@@ -317,7 +314,7 @@ export default function WalkfitLanding() {
       </section>
 
       {/* Features Section */}
-      <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+      <section id="features" className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
         <motion.div
           className="mb-16"
           initial="hidden"
@@ -466,7 +463,7 @@ export default function WalkfitLanding() {
       </section>
 
       {/* FAQ Section */}
-      <section className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+      <section id="faqs" className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
         <motion.div
           className="mb-12"
           initial="hidden"
@@ -475,10 +472,10 @@ export default function WalkfitLanding() {
           variants={fadeInUp}
         >
           <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
-            FAQs
+        FAQs
           </motion.h2>
           <motion.p className="text-gray-300" variants={fadeInUp}>
-            Frequently asked questions
+        Frequently asked questions
           </motion.p>
         </motion.div>
 
@@ -490,35 +487,35 @@ export default function WalkfitLanding() {
           variants={staggerOnScroll}
         >
           {faqs.map((faq, index) => (
-            <motion.div key={index} className="border-b border-gray-800 pb-2" variants={fadeInUp}>
-              <motion.button
-                className="flex justify-between items-center w-full py-4 text-left"
-                onClick={() => toggleFaq(index)}
-                whileHover={{ x: 5 }}
-              >
-                <div className="flex items-center">
-                  <div className="w-6 h-6 rounded-full bg-green-500 mr-3 flex items-center justify-center text-black">
-                    <ChevronDown
-                      className={`w-4 h-4 transition-transform ${expandedFaq === index ? "rotate-180" : ""}`}
-                    />
-                  </div>
-                  <span className="font-medium">{faq.question}</span>
-                </div>
-              </motion.button>
+        <motion.div key={index} className="border-b border-gray-800 pb-2" variants={fadeInUp}>
+          <motion.button
+            className="flex justify-between items-center w-full py-4 text-left"
+            onClick={() => toggleFaq(index)}
+            whileHover={{ x: 5 }}
+          >
+            <div className="flex items-center">
+          <div className="w-6 h-6 rounded-full bg-green-500 mr-3 flex items-center justify-center text-black">
+            <ChevronDown
+              className={`w-4 h-4 transition-transform ${expandedFaq === index ? "rotate-180" : ""}`}
+            />
+          </div>
+          <span className="font-medium">{faq.question}</span>
+            </div>
+          </motion.button>
 
-              <motion.div
-                initial={false}
-                animate={{
-                  height: expandedFaq === index ? "auto" : 0,
-                  opacity: expandedFaq === index ? 1 : 0,
-                  marginBottom: expandedFaq === index ? 16 : 0,
-                }}
-                transition={{ duration: 0.3 }}
-                className="overflow-hidden pl-9 text-gray-400 text-sm"
-              >
-                <p>{faq.answer}</p>
-              </motion.div>
-            </motion.div>
+          <motion.div
+            initial={false}
+            animate={{
+          height: expandedFaq === index ? "auto" : 0,
+          opacity: expandedFaq === index ? 1 : 0,
+          marginBottom: expandedFaq === index ? 16 : 0,
+            }}
+            transition={{ duration: 0.3 }}
+            className="overflow-hidden pl-9 text-gray-400 text-sm"
+          >
+            <p>{faq.answer}</p>
+          </motion.div>
+        </motion.div>
           ))}
         </motion.div>
         <motion.div
@@ -529,11 +526,11 @@ export default function WalkfitLanding() {
           className="relative w-full"
         >
           <Image
-            src={"/images/footer-sneak.png"}
-            width={600}
-            height={600}
-            alt="Sneaker"
-            className="absolute -right-20 bottom-0 opacity-10 -z-10"
+        src={"/images/footer-sneak.png"}
+        width={600}
+        height={600}
+        alt="Sneaker"
+        className="absolute -right-20 bottom-0 opacity-10 -z-10"
           />
         </motion.div>
 
@@ -699,9 +696,9 @@ export default function WalkfitLanding() {
                 className="space-y-3"
               >
                 <h4 className="font-medium text-white mb-4">Product</h4>
-                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Tournament</p>
-                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Marketplace</p>
-                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">Community</p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"><a href="/tournament-page">Tournament</a></p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"><a href="/marketplace-page">Marketplace</a></p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"><a href="/community-page">Community</a></p>
               </motion.div>
 
               {/* Company column */}
@@ -713,7 +710,7 @@ export default function WalkfitLanding() {
                 className="space-y-3"
               >
                 <h4 className="font-medium text-white mb-4">Company</h4>
-                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</p>
+                <p className="text-sm text-gray-400 hover:text-white transition-colors cursor-pointer"> <a href="/about-us-page">About Us</a></p>
               </motion.div>
             </div>
           </div>

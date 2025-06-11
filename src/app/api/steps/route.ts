@@ -8,7 +8,12 @@ export async function GET(req: Request): Promise<Response> {
     // Parse the request URL to extract query parameters
     const { searchParams } = new URL(req.url)
     const email = searchParams.get("email")
-
+    
+    console.log("=== API Route Debug ===")
+    console.log("Received email:", email)
+    console.log("Email type:", typeof email)
+    console.log("Email length:", email?.length)
+    
     if (!email) {
       return new Response(JSON.stringify({ message: "Email is required" }), {
         status: 400,
@@ -18,11 +23,13 @@ export async function GET(req: Request): Promise<Response> {
       })
     }
 
-    console.log("User email:", email)
-
+    console.log("About to call getSteps with email:", email)
+    
     // Fetch steps data based on the email
     const stepsData = await getSteps(email)
-
+    
+    console.log("Steps data returned:", stepsData)
+          
     return new Response(JSON.stringify(stepsData), {
       status: 200,
       headers: {
@@ -30,7 +37,15 @@ export async function GET(req: Request): Promise<Response> {
       },
     })
   } catch (error) {
+    console.error("=== API Route Error ===")
     console.error("Error fetching steps data:", error)
+    console.error("Error type:", typeof error)
+    console.error("Error constructor:", error.constructor.name)
+    
+    if (error instanceof Error) {
+      console.error("Error message:", error.message)
+      console.error("Error stack:", error.stack)
+    }
 
     // Type narrowing: Check if error is an instance of Error
     if (error instanceof Error) {
@@ -63,4 +78,3 @@ export async function GET(req: Request): Promise<Response> {
     }
   }
 }
-

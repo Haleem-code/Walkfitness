@@ -142,7 +142,7 @@ export default function WalkPage() {
           const { email } = await emailRes.json()
           console.log("email", email)
 
-          const res = await fetch(`/api/steps?email=${email}`)
+          const res = await fetch(`http://localhost:3000/api/steps?email=${email}`)
           const data = await res.json()
 
           if (res.status === 200) {
@@ -376,7 +376,7 @@ export default function WalkPage() {
                         stroke="currentColor"
                         strokeWidth="3"
                         className="text-green-400"
-                        strokeDasharray={`${(stepsData.stepsForLastUpdate / 15000) * 283} 283`}
+                        strokeDasharray={`${(stepsData.stepsForLastUpdate )}`}
                         strokeLinecap="round"
                       />
                     </svg>
@@ -387,7 +387,10 @@ export default function WalkPage() {
                       <div className="text-2xl md:text-3xl font-bold text-white">
                         {stepsData.stepsForLastUpdate.toLocaleString()}
                       </div>
-                      <div className="text-sm text-gray-400">/ 15K steps</div>
+                      <div className="text-sm md:text-base text-gray-400 mt-2">
+                       <span> today steps</span>
+
+                      </div>
                     </div>
                   </div>
                 </div>
