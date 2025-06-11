@@ -175,7 +175,7 @@ export default function AboutPage() {
           variants={fadeInUpOnScroll}
         >
           <motion.h2 className="text-3xl font-bold mb-8 text-center" variants={fadeInUp}>
-            The Problem We're Solving
+            The Problem We&apos;re Solving
           </motion.h2>
           
           <motion.div
