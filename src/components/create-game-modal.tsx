@@ -38,7 +38,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
   const [gameCreated, setGameCreated] = useState(false)
   const [inviteCode, setInviteCode] = useState("")
   const [copied, setCopied] = useState(false)
-  const router = useRouter()  
+  const router = useRouter()
   const entryPriceOptions = [15, 20]
   const durationOptions = ["3 Days", "1 Week", "6 Days"]
 
@@ -49,8 +49,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
   const handleFileUpload = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0]
     if (file?.type.startsWith('image/')) { // Fixed: changed 'images/' to 'image/'
-      setFormData((prev) => ({ 
-        ...prev, 
+      setFormData((prev) => ({
+        ...prev,
         banner: file,
         bannerPreview: URL.createObjectURL(file)
       }))
@@ -86,10 +86,10 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
     if (lowerDuration.includes('week')) {
       const weeks = Number.parseInt(lowerDuration) || 1
       return weeks * 7
-    }if (lowerDuration.includes('day')) {
+    } if (lowerDuration.includes('day')) {
       return Number.parseInt(lowerDuration) || 1
     }
-      return Number.parseInt(duration) || 1
+    return Number.parseInt(duration) || 1
   }
 
   const copyToClipboard = async () => {
@@ -105,7 +105,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
   const handleSubmit = async () => {
     try {
       setIsSubmitting(true)
-      
+
       if (!formData.name.trim()) {
         alert("Please enter a game name")
         return
@@ -123,9 +123,9 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
         return
       }
 
-      const finalEntryPrice = formData.entryPrice === "custom" ? 
+      const finalEntryPrice = formData.entryPrice === "custom" ?
         Number(formData.customEntryPrice) : formData.entryPrice
-      const finalDuration = formData.duration === "custom" ? 
+      const finalDuration = formData.duration === "custom" ?
         formData.customDuration : formData.duration
       const durationInDays = parseDurationToDays(finalDuration)
 
@@ -165,9 +165,9 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
         } else {
           // For public and sponsored games, show success state for 8 seconds then navigate
           setTimeout(() => {
-        router.push("/walk")
-        onGameCreated()
-        onClose()
+            router.push("/walk")
+            onGameCreated()
+            onClose()
           }, 8000)
         }
       } else {
@@ -193,10 +193,10 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
           <div className="w-16 h-16 bg-green-400 rounded-full flex items-center justify-center mx-auto mb-6">
             <Check className="w-8 h-8 text-black" />
           </div>
-          
+
           <h2 className="text-white text-2xl font-bold mb-2">Game Created!</h2>
           <p className="text-gray-300 mb-6">Share this invite code with your friends</p>
-          
+
           {/* Game Code Display */}
           <div className="bg-gray-700/50 rounded-2xl p-4 mb-6">
             <div className="text-gray-400 text-sm mb-2">Invite Code</div>
@@ -221,7 +221,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
               <div className="text-green-400 text-sm mt-2">Copied to clipboard!</div>
             )}
           </div>
-          
+
           <Button
             onClick={handleFinish}
             className="w-full bg-green-400 hover:bg-green-500 text-black font-bold py-4 text-lg rounded-2xl"
@@ -299,9 +299,9 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
             {/* Game Type Radio Buttons */}
             <div>
               <div className="text-green-400 text-sm font-medium mb-3">Game Type</div>
-              <RadioGroup 
+              <RadioGroup
                 value={formData.gameType}
-                onValueChange={(value: "public" | "private" | "sponsored") => 
+                onValueChange={(value: "public" | "private" | "sponsored") =>
                   handleInputChange("gameType", value)}
                 className="grid grid-cols-3 gap-2"
               >
@@ -342,9 +342,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                   <Button
                     key={price}
                     variant="ghost"
-                    className={`${
-                      formData.entryPrice === price ? "bg-green-400 text-black" : "bg-purple-600 text-white"
-                    } rounded-full px-3 py-2 sm:px-6 sm:py-3 font-semibold text-sm sm:text-base`}
+                    className={`${formData.entryPrice === price ? "bg-green-400 text-black" : "bg-purple-600 text-white"
+                      } rounded-full px-3 py-2 sm:px-6 sm:py-3 font-semibold text-sm sm:text-base`}
                     onClick={() => handlePriceSelect(price)}
                   >
                     $ {price}
@@ -352,9 +351,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                 ))}
                 <Button
                   variant="ghost"
-                  className={`${
-                    showCustomPrice ? "bg-green-400 text-black" : "bg-purple-600 text-white"
-                  } rounded-full px-3 py-2 sm:px-6 sm:py-3 font-semibold text-sm sm:text-base col-span-2 sm:col-span-1`}
+                  className={`${showCustomPrice ? "bg-green-400 text-black" : "bg-purple-600 text-white"
+                    } rounded-full px-3 py-2 sm:px-6 sm:py-3 font-semibold text-sm sm:text-base col-span-2 sm:col-span-1`}
                   onClick={handleCustomPrice}
                 >
                   Custom
@@ -389,9 +387,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                     <Button
                       key={duration}
                       variant="ghost"
-                      className={`${
-                        formData.duration === duration ? "bg-green-400 text-black" : "bg-purple-600 text-white"
-                      } rounded-full px-3 py-2 sm:px-4 sm:py-2 font-semibold text-xs sm:text-sm`}
+                      className={`${formData.duration === duration ? "bg-green-400 text-black" : "bg-purple-600 text-white"
+                        } rounded-full px-3 py-2 sm:px-4 sm:py-2 font-semibold text-xs sm:text-sm`}
                       onClick={() => handleDurationSelect(duration)}
                     >
                       {duration}
@@ -399,9 +396,8 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                   ))}
                   <Button
                     variant="ghost"
-                    className={`${
-                      showCustomDuration ? "bg-green-400 text-black" : "bg-purple-600 text-white"
-                    } rounded-full px-3 py-2 sm:px-4 sm:py-2 font-semibold text-xs sm:text-sm col-span-2 sm:col-span-1`}
+                    className={`${showCustomDuration ? "bg-green-400 text-black" : "bg-purple-600 text-white"
+                      } rounded-full px-3 py-2 sm:px-4 sm:py-2 font-semibold text-xs sm:text-sm col-span-2 sm:col-span-1`}
                     onClick={handleCustomDuration}
                   >
                     Custom

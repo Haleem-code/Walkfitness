@@ -26,6 +26,8 @@ import { nanoid } from 'nanoid';
 
 export const dynamic = "force-dynamic";
 
+
+
 export async function POST(req) {
   try {
     // Check if request is FormData (with file upload) or JSON

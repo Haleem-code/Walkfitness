@@ -664,8 +664,8 @@ export default function WalkfitLanding() {
               transition={{ duration: 0.6 }}
               className="md:col-span-1"
             >
-              <div className="mb-4 -ml-6">
-                <Image src={"/images/logo2.svg"} width={100} height={40} alt="Walkfit Logo" />
+              <div className="mb-4">
+                <Image src={"/images/logo2.svg"} width={60} height={50} alt="Walkfit Logo" />
               </div>
               <p className="text-sm text-gray-400 mb-4">Turn your daily steps into rewards with walkfit.</p>
               <motion.div

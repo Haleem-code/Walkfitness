@@ -1,18 +1,28 @@
 "use server";
 
 import { signIn } from "./auth";
+import { Steps, Point, Game, User, type IGame, Wallet } from "./models";
+import { connectToDb, decrypt } from "./utils";
+import { BN, Program } from "@coral-xyz/anchor";
+import idl from "@/lib/idl.json";
+import type { Walkfit } from "@/lib/idlType";
 import {
-	Steps,
-	Point,
-	Game,
-	User,
-	type IGame,
-	ISteps,
-	IPoint,
-	IUser,
-} from "./models";
-import { connectToDb } from "./utils";
+	Connection,
+	Keypair,
+	LAMPORTS_PER_SOL,
+	PublicKey,
+	sendAndConfirmTransaction,
+	Transaction,
+} from "@solana/web3.js";
+import { NEXT_PUBLIC_RPC_URL } from "@/config";
+import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
 import { nanoid } from "nanoid";
+
+const connection = new Connection(NEXT_PUBLIC_RPC_URL);
+
+const walkfit = new Program<Walkfit>(idl as Walkfit, {
+	connection,
+});
 
 interface StepsData {
 	totalSteps: number;
@@ -126,6 +136,14 @@ export const createGame = async (
 			startDateObj.getTime() + duration * 24 * 60 * 60 * 1000,
 		);
 
+		const code = nanoid(6);
+
+		const wallet = await Wallet.findOne({
+			userId: creator,
+		});
+
+		const kp = Keypair.fromSecretKey(bs58.decode(decrypt(wallet.key)));
+
 		const newGame = new Game({
 			name,
 			gameSteps,
@@ -137,9 +155,22 @@ export const createGame = async (
 			createdAt: new Date(),
 			startDate: startDateObj,
 			endDate: endDateObj,
+			code,
 			image: image || null,
 			maxPlayers: maxPlayers || 100,
 		});
+
+		const instruction = await walkfit.methods
+			.createGame(code, new BN(Number(newGame.entryPrice) * LAMPORTS_PER_SOL))
+			.accounts({
+				creator: new PublicKey(wallet.address),
+			})
+			.signers([kp])
+			.instruction();
+
+		const tx = new Transaction().add(instruction);
+		const signature = await sendAndConfirmTransaction(connection, tx, [kp]);
+		console.log(signature)
 
 		await newGame.save();
 		console.log("Game created and saved to db");

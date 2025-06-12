@@ -9,22 +9,10 @@
 	"instructions": [
 		{
 			"name": "create_game",
-			"docs": [
-				"Creates a new game account.",
-				"",
-				"The game PDA is derived using:",
-				"seeds = [b\"game\", creator.key().as_ref(), &game_id.to_le_bytes()]",
-				"The bump is automatically computed."
-			],
 			"discriminator": [124, 69, 75, 66, 184, 220, 72, 206],
 			"accounts": [
 				{
 					"name": "game",
-					"docs": [
-						"The game account is a PDA derived from:",
-						"seeds = [b\"game\", creator.key().as_ref(), &game_id.to_le_bytes()]",
-						"This ties the game uniquely to the creator and game id."
-					],
 					"writable": true,
 					"pda": {
 						"seeds": [
@@ -56,7 +44,7 @@
 			"args": [
 				{
 					"name": "game_id",
-					"type": "u64"
+					"type": "string"
 				},
 				{
 					"name": "entry_price",
@@ -66,80 +54,46 @@
 		},
 		{
 			"name": "end_game",
-			"docs": [
-				"Ends the game and distributes the collected funds.",
-				"",
-				"Only the game creator can end the game.",
-				"The total SOL in the game account is reduced by a 10% fee.",
-				"The remaining funds are then distributed to three winners with a ratio of 50:30:20."
-			],
 			"discriminator": [224, 135, 245, 99, 67, 175, 121, 252],
 			"accounts": [
 				{
 					"name": "game",
-					"docs": ["The game account (PDA) holding the game state."],
 					"writable": true
 				},
 				{
 					"name": "creator",
-					"docs": ["The game creator ending the game."],
 					"writable": true,
 					"signer": true
 				},
 				{
-					"name": "first",
-					"writable": true
-				},
-				{
-					"name": "second",
-					"writable": true
-				},
-				{
-					"name": "third",
-					"writable": true
-				},
-				{
 					"name": "system_program",
+					"docs": ["Remaining accounts must be the recipients in order"],
 					"address": "11111111111111111111111111111111"
 				}
 			],
 			"args": [
 				{
-					"name": "first",
-					"type": "pubkey"
-				},
-				{
-					"name": "second",
-					"type": "pubkey"
-				},
-				{
-					"name": "third",
-					"type": "pubkey"
+					"name": "reimburse_list",
+					"type": {
+						"vec": {
+							"defined": {
+								"name": "Reimburse"
+							}
+						}
+					}
 				}
 			]
 		},
 		{
 			"name": "join_game",
-			"docs": [
-				"A player joins the game.",
-				"",
-				"This function:",
-				"1. Checks that there is room for another player.",
-				"2. Uses a CPI call (system_program transfer) to collect the required SOL (entry_price) from the player.",
-				"3. Records the player's address in the game's players vector."
-			],
 			"discriminator": [107, 112, 18, 38, 56, 173, 60, 128],
 			"accounts": [
 				{
 					"name": "game",
-					"docs": [
-						"The game account. Its PDA is created as shown in CreateGame."
-					],
 					"writable": true
 				},
 				{
 					"name": "player",
-					"docs": ["The player joining the game."],
 					"writable": true,
 					"signer": true
 				},
@@ -160,13 +114,18 @@
 	"errors": [
 		{
 			"code": 6000,
-			"name": "GameFull",
-			"msg": "The game already has the maximum number of players."
+			"name": "Unauthorized",
+			"msg": "Only the game creator may end the game."
 		},
 		{
 			"code": 6001,
-			"name": "Unauthorized",
-			"msg": "Unauthorized: Only the game creator can end the game."
+			"name": "InvalidReimburseSum",
+			"msg": "Sum of reimbursements exceeds available pool."
+		},
+		{
+			"code": 6002,
+			"name": "AccountMismatch",
+			"msg": "Account in remaining_accounts does not match reimburse address."
 		}
 	],
 	"types": [
@@ -181,17 +140,27 @@
 					},
 					{
 						"name": "game_id",
-						"type": "u64"
+						"type": "string"
 					},
 					{
 						"name": "entry_price",
 						"type": "u64"
+					}
+				]
+			}
+		},
+		{
+			"name": "Reimburse",
+			"type": {
+				"kind": "struct",
+				"fields": [
+					{
+						"name": "address",
+						"type": "pubkey"
 					},
 					{
-						"name": "players",
-						"type": {
-							"vec": "pubkey"
-						}
+						"name": "amount",
+						"type": "u64"
 					}
 				]
 			}
