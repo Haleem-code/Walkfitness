@@ -268,6 +268,9 @@ const AuthPageWithStreak = () => {
                       height={40}
                       className="h-8 w-auto"
                     />
+                    <p className="text-white md:text-sm leading-relaxed px-2 md:px-0">
+                      Continue with Google
+                    </p>
                   </div>
 
                   <motion.div
@@ -314,6 +317,9 @@ const AuthPageWithStreak = () => {
                       height={40}
                       className="h-8 w-auto"
                     />
+                     <p className="text-white md:text-sm leading-relaxed px-2 md:px-0">
+                      Continue with Fitbit
+                    </p>
                   </div>
 
                   <motion.div

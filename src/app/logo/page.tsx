@@ -11,7 +11,7 @@ const LogoPage = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push("/landing")
-    }, 2500)
+    }, 2700)
 
     return () => clearTimeout(timer)
   }, [router])

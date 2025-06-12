@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation"
 import TopNavbar from "@/components/TopNav"
 import GamesList from "@/components/game-list"
 import Image from "next/image"
+import DailyProgressBar from "@/components/DailyProgressBar"
 
 interface ApiGame {
   _id: string
@@ -363,11 +364,10 @@ export default function WalkPage() {
               <div className="bg-black/30 backdrop-blur-md rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-600/50 shadow-2xl">
                 <div className="flex items-center justify-center">
                   <div className="relative w-48 h-48 md:w-56 md:h-56">
-                    {/* Outer circle */}
-                    <div className="absolute inset-0 rounded-full border-4 border-gray-700/50"></div>
+          
 
                     {/* Progress circle */}
-                    <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
+                    {/* <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
                       <circle
                         cx="50"
                         cy="50"
@@ -379,18 +379,13 @@ export default function WalkPage() {
                         strokeDasharray={`${(stepsData.stepsForLastUpdate )}`}
                         strokeLinecap="round"
                       />
-                    </svg>
+                    </svg> */}
+                   
 
                     {/* Center content */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                      <Image src="/images/sneaker.svg" alt="Steps" width={100} height={100} />
-                      <div className="text-2xl md:text-3xl font-bold text-white">
-                        {stepsData.stepsForLastUpdate.toLocaleString()}
-                      </div>
-                      <div className="text-sm md:text-base text-gray-400 mt-2">
-                       <span> today steps</span>
+                     <DailyProgressBar stepsForLastUpdate={stepsData.stepsForLastUpdate} />
 
-                      </div>
                     </div>
                   </div>
                 </div>

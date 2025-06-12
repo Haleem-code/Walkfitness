@@ -10,21 +10,21 @@ const PrivacyPolicy = () => {
       </p>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h1 style={{ color: '#CEFF67' }}>Privacy Policy for WALKFIT</h1>
+        <h1 style={{ color: '#A0FEA0' }}>Privacy Policy for WALKFIT</h1>
         <p>
           <strong>Effective Date:</strong> 13-08-2024
         </p>
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>1. Introduction</h3>
+        <h3 style={{ color: '#A0FEA0' }}>1. Introduction</h3>
         <p>
-          Welcome to <a href="https://www.walkfit.vercel.app" style={{ color: '#CEFF67' }}>WALKFIT</a>. WALKFIT was created as a fitness website that promotes healthy living and rewards walking and other physical activities. Your privacy is important to us, and we ensure that we protect the data you submit to us. In this Privacy Policy, we provide information about how and why we collect, process, share, and protect your personal data in accordance with the General Data Protection Regulation (GDPR) and the California Online Privacy Protection Act (CalOPPA).
+          Welcome to <a href="https://www.walkfit.vercel.app" style={{ color: '#A0FEA0' }}>WALKFIT</a>. WALKFIT was created as a fitness website that promotes healthy living and rewards walking and other physical activities. Your privacy is important to us, and we ensure that we protect the data you submit to us. In this Privacy Policy, we provide information about how and why we collect, process, share, and protect your personal data in accordance with the General Data Protection Regulation (GDPR) and the California Online Privacy Protection Act (CalOPPA).
         </p>
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>2. Information We Collect</h3>
+        <h3 style={{ color: '#A0FEA0' }}>2. Information We Collect</h3>
         <p>
           <strong>Personal Information:</strong> We store your email and name if you provide your consent for connecting to services like Twitter or Telegram.
         </p>
@@ -37,7 +37,7 @@ const PrivacyPolicy = () => {
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>3. How We Use Your Information</h3>
+        <h3 style={{ color: '#A0FEA0' }}>3. How We Use Your Information</h3>
         <p>
           We use the information we collect to:
         </p>
@@ -48,14 +48,14 @@ const PrivacyPolicy = () => {
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>4. Data Security</h3>
+        <h3 style={{ color: '#A0FEA0' }}>4. Data Security</h3>
         <p>
           We take adequate technical and organizational measures to ensure the confidentiality, integrity, availability, and resilience of your personal data. However, it is important to note that the transmission of information through the internet or any other means of electronic storage is not 100% secure.
         </p>
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>5. Data Sharing and Disclosure</h3>
+        <h3 style={{ color: '#A0FEA0' }}>5. Data Sharing and Disclosure</h3>
         <p>
           <strong>Third-Party Services:</strong> Your personal details will NOT be passed on to any third party for the purpose of marketing. However, we collect and analyze user data through third-party tools like Google Analytics to analyze the same.
         </p>
@@ -65,7 +65,7 @@ const PrivacyPolicy = () => {
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>6. Your Rights Under GDPR</h3>
+        <h3 style={{ color: '#A0FEA0' }}>6. Your Rights Under GDPR</h3>
         <ul>
           <li><strong>Access:</strong> You have the right to access the personal data that we hold about you.</li>
           <li><strong>Rectification:</strong> You always have the right to request rectification of your personal data if it is incorrect or incomplete.</li>
@@ -75,12 +75,12 @@ const PrivacyPolicy = () => {
           <li><strong>Portability:</strong> You can also ask for your data to be provided in a portable format that can be read by other systems.</li>
         </ul>
         <p>
-          To exercise any of these rights, please write to us at <a href="mailto:walkfitxyz@gmail.com" style={{ color: '#CEFF67' }}>walkfitxyz@gmail.com</a>.
+          To exercise any of these rights, please write to us at <a href="mailto:walkfitxyz@gmail.com" style={{ color: '#A0FEA0' }}>walkfitxyz@gmail.com</a>.
         </p>
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>7. Compliance with CalOPPA</h3>
+        <h3 style={{ color: '#A0FEA0' }}>7. Compliance with CalOPPA</h3>
         <p>
           <strong>Do Not Track Signals:</strong> Currently, we are not able to accommodate Do Not Track signals with respect to personal data.
         </p>
@@ -90,23 +90,23 @@ const PrivacyPolicy = () => {
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>8. Children’s Privacy</h3>
+        <h3 style={{ color: '#A0FEA0' }}>8. Children’s Privacy</h3>
         <p>
           The collection of personal information from children below the age of thirteen (13) years is prohibited at WALKFIT. However, if we realize that we have accumulated such information without consent, we will promptly destroy it.
         </p>
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>9. Subsequent Alterations to This Policy</h3>
+        <h3 style={{ color: '#A0FEA0 ' }}>9. Subsequent Alterations to This Policy</h3>
         <p>
           We may make changes to this Privacy Policy from time to time. We will inform you of any material changes by updating this policy on our website or by indicating the new effective date of the policy. It is important for you to understand that by continuing to use WALKFIT after these changes, it means you accept the changes made to the Privacy Policy.
         </p>
       </div>
 
       <div style={{ marginBottom: '2rem' }}>
-        <h3 style={{ color: '#CEFF67' }}>10. Contact Us</h3>
+        <h3 style={{ color: '#A0FEA0' }}>10. Contact Us</h3>
         <p>
-          If you have any questions or concerns about this Privacy Policy or our data practices, you can reach us at <a href="mailto:walkfitxyz@gmail.com" style={{ color: '#CEFF67' }}>walkfitxyz@gmail.com</a>.
+          If you have any questions or concerns about this Privacy Policy or our data practices, you can reach us at <a href="mailto:walkfitxyz@gmail.com" style={{ color: '#A0FEA0' }}>walkfitxyz@gmail.com</a>.
         </p>
       </div>
       <div style={{ marginTop: '5rem' }}>

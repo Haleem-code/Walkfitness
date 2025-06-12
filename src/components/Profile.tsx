@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react"
 import { useSession } from "next-auth/react"
 import Image from "next/image"
-import { Copy, Flame, Trophy, Star, User, Settings, LogOut } from "lucide-react"
+import { Copy, Flame, Trophy, Star } from "lucide-react"
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
@@ -17,10 +17,10 @@ interface StreakData {
 }
 
 interface UserStats {
-  completedGames: number
-  totalXP: number
-  ranking: number
-  referrals: number
+  completedGames: string
+  totalXP:number
+  ranking: string
+  referrals: string
 }
 
 const ProfilePage = () => {
@@ -32,10 +32,10 @@ const ProfilePage = () => {
     lastStreakDate: null,
   })
   const [userStats, setUserStats] = useState<UserStats>({
-    completedGames: 12,
-    totalXP: 1400000,
-    ranking: 96,
-    referrals: 13,
+    completedGames: "-",
+    totalXP: 0,
+    ranking: "",
+    referrals: "-",
   })
   const [loading, setLoading] = useState(true)
 
@@ -98,12 +98,12 @@ const ProfilePage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-black text-white overflow-hidden relative">
-      {/* Background with purple gradient at top */}
-      <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
+    <div className="min-h-screen text-white overflow-hidden">
+      {/* Full page background gradient */}
+      <div className="fixed inset-0 bg-gradient-to-b from-purple-600 via-purple-900/80 to-black -z-10" />
 
       {/* Blurred background decorative elements */}
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
         <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
           <Image
             src="/images/footer-sneak.png"
@@ -153,9 +153,7 @@ const ProfilePage = () => {
                       />
                     </div>
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
-                    {session?.user?.name || "User"}
-                  </h1>
+                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{session?.user?.name || "User"}</h1>
                   <p className="text-gray-400 text-sm">{session?.user?.email}</p>
                 </div>
               </div>
@@ -163,20 +161,13 @@ const ProfilePage = () => {
           </motion.div>
 
           {/* Stats Grid */}
-          <motion.div
-            className="mb-8"
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
+          <motion.div className="mb-8" initial="hidden" animate="visible" variants={staggerContainer}>
             <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Your Stats</h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <motion.div variants={fadeInUp}>
                 <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
-                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">
-                      {userStats.completedGames}
-                    </div>
+                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">{userStats.completedGames}</div>
                     <div className="text-sm text-gray-400">Completed Games</div>
                   </CardContent>
                 </Card>
@@ -196,9 +187,7 @@ const ProfilePage = () => {
               <motion.div variants={fadeInUp}>
                 <Card className="bg-black/30 backdrop-blur-md border-red-500/30 hover:border-red-500/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
-                    <div className="text-2xl md:text-3xl font-bold text-red-400 mb-2">
-                      #{userStats.ranking}
-                    </div>
+                    <div className="text-2xl md:text-3xl font-bold text-red-400 mb-2">#{userStats.ranking}</div>
                     <div className="text-sm text-gray-400">Ranking</div>
                   </CardContent>
                 </Card>
@@ -207,9 +196,7 @@ const ProfilePage = () => {
               <motion.div variants={fadeInUp}>
                 <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
-                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">
-                      {userStats.referrals}
-                    </div>
+                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">{userStats.referrals}</div>
                     <div className="text-sm text-gray-400">Referrals</div>
                   </CardContent>
                 </Card>
@@ -218,12 +205,7 @@ const ProfilePage = () => {
           </motion.div>
 
           {/* Streak Stats */}
-          <motion.div
-            className="mb-8"
-            initial="hidden"
-            animate="visible"
-            variants={staggerContainer}
-          >
+          <motion.div className="mb-8" initial="hidden" animate="visible" variants={staggerContainer}>
             <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Streak Performance</h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <motion.div variants={fadeInUp}>
@@ -234,7 +216,7 @@ const ProfilePage = () => {
                       <span className="text-sm text-orange-200 font-medium">Current Streak</span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-12 bg-orange-400/20 animate-pulse rounded mx-auto"/>
+                      <div className="h-8 w-12 bg-orange-400/20 animate-pulse rounded mx-auto" />
                     ) : (
                       <div className="text-3xl font-bold text-orange-400">{streakData.currentStreak}</div>
                     )}
@@ -250,7 +232,7 @@ const ProfilePage = () => {
                       <span className="text-sm text-yellow-200 font-medium">Best Streak</span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-12 bg-yellow-400/20 animate-pulse rounded mx-auto"/>
+                      <div className="h-8 w-12 bg-yellow-400/20 animate-pulse rounded mx-auto" />
                     ) : (
                       <div className="text-3xl font-bold text-yellow-400">{streakData.longestStreak}</div>
                     )}
@@ -266,7 +248,7 @@ const ProfilePage = () => {
                       <span className="text-sm text-green-200 font-medium">Streak XP</span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-16 bg-green-400/20 animate-pulse rounded mx-auto"/>
+                      <div className="h-8 w-16 bg-green-400/20 animate-pulse rounded mx-auto" />
                     ) : (
                       <div className="text-3xl font-bold text-green-400">{formatXP(streakData.streakXP)}</div>
                     )}
@@ -328,7 +310,13 @@ const ProfilePage = () => {
                     variant="outline"
                     className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-red-400 py-3 rounded-xl transition-all duration-300"
                   >
-                    <Image src="/images/fitbit.svg" alt="Fitbit" width={20} height={20} className="mr-3" />
+                    <Image
+                                         src="/images/fitbit.svg"
+                                         alt="Connect with Fitbit"
+                                         width={140}
+                                         height={40}
+                                         className="h-8 w-auto"
+                                       />
                     Disconnect Fitbit
                   </Button>
                 </div>
@@ -345,8 +333,8 @@ const ProfilePage = () => {
           >
             <Card className="bg-red-500/10 border-red-500/30">
               <CardContent className="p-6 text-center">
-                <Button 
-                  variant="ghost" 
+                <Button
+                  variant="ghost"
                   className="text-red-400 hover:text-red-300 hover:bg-red-500/20 font-semibold px-6 py-2 rounded-xl transition-all duration-300"
                 >
                   Delete Profile

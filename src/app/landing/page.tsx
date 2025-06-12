@@ -276,9 +276,11 @@ export default function WalkfitLanding() {
           transition={{ duration: 0.8, delay: 1 }}
         >
           <Image src={"/images/hero-img.svg"} width={1800} height={600} alt="Hero Image" className="mx-auto" />
-          <div className="flex justify-center mt-4">
-            <Image src={"/images/eclipse.svg"} width={120} height={40} alt="Eclipse" className="mx-auto" />
-          </div>
+            <div className="flex justify-center mt-4">
+            <a href="https://eclipse.xyz" target="_blank" rel="noopener noreferrer">
+              <Image src={"/images/eclipse.svg"} width={120} height={40} alt="Eclipse" className="mx-auto" />
+            </a>
+            </div>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}

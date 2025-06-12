@@ -38,11 +38,9 @@ export default function RootLayout({ children }: LayoutProps) {
   const [showNavbars, setShowNavbars] = useState(true);
   const [pointData, setPointData] = useState<number | null>(null);
 
-  useEffect(() => {
-    setShowNavbars(
-      !["/landing", "/authpage", "/"].some((path) => pathname === path)
-    );
-  }, [pathname]);
+ useEffect(() => {
+    setShowNavbars(!["/landing", "/authpage", "/", "/logo","/about-us-page","/community-page","/privacy","/marketplace-page","/tournament-page"].some((path) => pathname === path))
+  }, [pathname])
 
   useEffect(() => {
     const fetchPoints = async () => {
