@@ -225,7 +225,7 @@ export function WalletModal({
                         </Button>
                         <Button variant="ghost" size="icon" asChild>
                             <a
-                                href={walletAddress ? `https://explorer.solana.com/address/${walletAddress}` : '#'}
+                                href={walletAddress ? `https://explorer.dev.eclipsenetwork.xyz/address/${walletAddress}` : '#'}
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
