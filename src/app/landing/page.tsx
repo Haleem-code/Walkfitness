@@ -180,11 +180,11 @@ export default function WalkfitLanding() {
         transition={{ duration: 0.5 }}
       >
         <div className="flex justify-between items-center p-4 max-w-7xl mx-auto">
-          <div className="flex items-center">
-            <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-white">
-              <Image src={"/images/logo2.svg"} width={120} height={80} alt="Logo" />
-            </motion.div>
-          </div>
+
+          <motion.div whileHover={{ scale: 1.05 }} className="text-2xl font-bold text-white">
+            <Image src={"/images/logo2.svg"} height={50} width={60} alt="Logo" />
+          </motion.div>
+
           <div className="hidden md:flex space-x-6 border border-gray-700 rounded-full px-6 py-4">
             <Link href="#features" className="hover:text-green-400 transition-colors">
               Tournaments
@@ -276,11 +276,11 @@ export default function WalkfitLanding() {
           transition={{ duration: 0.8, delay: 1 }}
         >
           <Image src={"/images/hero-img.svg"} width={1800} height={600} alt="Hero Image" className="mx-auto" />
-            <div className="flex justify-center mt-4">
+          <div className="flex justify-center mt-4">
             <a href="https://eclipse.xyz" target="_blank" rel="noopener noreferrer">
               <Image src={"/images/eclipse.svg"} width={120} height={40} alt="Eclipse" className="mx-auto" />
             </a>
-            </div>
+          </div>
         </motion.div>
         <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -474,10 +474,10 @@ export default function WalkfitLanding() {
           variants={fadeInUp}
         >
           <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
-        FAQs
+            FAQs
           </motion.h2>
           <motion.p className="text-gray-300" variants={fadeInUp}>
-        Frequently asked questions
+            Frequently asked questions
           </motion.p>
         </motion.div>
 
@@ -489,35 +489,35 @@ export default function WalkfitLanding() {
           variants={staggerOnScroll}
         >
           {faqs.map((faq, index) => (
-        <motion.div key={index} className="border-b border-gray-800 pb-2" variants={fadeInUp}>
-          <motion.button
-            className="flex justify-between items-center w-full py-4 text-left"
-            onClick={() => toggleFaq(index)}
-            whileHover={{ x: 5 }}
-          >
-            <div className="flex items-center">
-          <div className="w-6 h-6 rounded-full bg-green-500 mr-3 flex items-center justify-center text-black">
-            <ChevronDown
-              className={`w-4 h-4 transition-transform ${expandedFaq === index ? "rotate-180" : ""}`}
-            />
-          </div>
-          <span className="font-medium">{faq.question}</span>
-            </div>
-          </motion.button>
+            <motion.div key={faq.question} className="border-b border-gray-800 pb-2" variants={fadeInUp}>
+              <motion.button
+                className="flex justify-between items-center w-full py-4 text-left"
+                onClick={() => toggleFaq(index)}
+                whileHover={{ x: 5 }}
+              >
+                <div className="flex items-center">
+                  <div className="w-6 h-6 rounded-full bg-green-500 mr-3 flex items-center justify-center text-black">
+                    <ChevronDown
+                      className={`w-4 h-4 transition-transform ${expandedFaq === index ? "rotate-180" : ""}`}
+                    />
+                  </div>
+                  <span className="font-medium">{faq.question}</span>
+                </div>
+              </motion.button>
 
-          <motion.div
-            initial={false}
-            animate={{
-          height: expandedFaq === index ? "auto" : 0,
-          opacity: expandedFaq === index ? 1 : 0,
-          marginBottom: expandedFaq === index ? 16 : 0,
-            }}
-            transition={{ duration: 0.3 }}
-            className="overflow-hidden pl-9 text-gray-400 text-sm"
-          >
-            <p>{faq.answer}</p>
-          </motion.div>
-        </motion.div>
+              <motion.div
+                initial={false}
+                animate={{
+                  height: expandedFaq === index ? "auto" : 0,
+                  opacity: expandedFaq === index ? 1 : 0,
+                  marginBottom: expandedFaq === index ? 16 : 0,
+                }}
+                transition={{ duration: 0.3 }}
+                className="overflow-hidden pl-9 text-gray-400 text-sm"
+              >
+                <p>{faq.answer}</p>
+              </motion.div>
+            </motion.div>
           ))}
         </motion.div>
         <motion.div
@@ -528,15 +528,15 @@ export default function WalkfitLanding() {
           className="relative w-full"
         >
           <Image
-        src={"/images/footer-sneak.png"}
-        width={600}
-        height={600}
-        alt="Sneaker"
-        className="absolute -right-20 bottom-0 opacity-10 -z-10"
+            src={"/images/footer-sneak.png"}
+            width={600}
+            height={600}
+            alt="Sneaker"
+            className="absolute -right-20 bottom-0 opacity-10 -z-10"
           />
         </motion.div>
 
-        </section>
+      </section>
       {/* Newsletter/Waitlist Section */}
       <section className="relative z-10 py-20 px-4 max-w-4xl mx-auto">
         {/* Background Image */}
@@ -679,8 +679,8 @@ export default function WalkfitLanding() {
                   <Twitter className="w-5 h-5" />
                 </motion.a>
                 <motion.a href="#" whileHover={{ y: -3, color: "#E1306C" }} className="text-gray-400 hover:text-white">
-                    <Instagram className="w-5 h-5" />
-                  </motion.a>
+                  <Instagram className="w-5 h-5" />
+                </motion.a>
                 <motion.a href="#" whileHover={{ y: -3, color: "#FF0000" }} className="text-gray-400 hover:text-white">
                   <Youtube className="w-5 h-5" />
                 </motion.a>
@@ -816,7 +816,7 @@ export default function WalkfitLanding() {
         </DialogContent>
       </Dialog>
 
-      
+
     </div>
   )
 }

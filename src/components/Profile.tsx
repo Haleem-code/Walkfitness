@@ -18,7 +18,7 @@ interface StreakData {
 
 interface UserStats {
   completedGames: string
-  totalXP:number
+  totalXP: number
   ranking: string
   referrals: string
 }
@@ -300,7 +300,7 @@ const ProfilePage = () => {
                 <div className="space-y-3">
                   <Button
                     variant="outline"
-                    className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-green-400 py-3 rounded-xl transition-all duration-300"
+                    className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-green-400 py-7 rounded-xl transition-all duration-300"
                   >
                     <Image src="/images/google.svg" alt="Google" width={20} height={20} className="mr-3" />
                     Continue with Google
@@ -308,15 +308,15 @@ const ProfilePage = () => {
 
                   <Button
                     variant="outline"
-                    className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-red-400 py-3 rounded-xl transition-all duration-300"
+                    className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-red-400 py-7 rounded-xl transition-all duration-300"
                   >
                     <Image
-                                         src="/images/fitbit.svg"
-                                         alt="Connect with Fitbit"
-                                         width={140}
-                                         height={40}
-                                         className="h-8 w-auto"
-                                       />
+                      src="/images/fitbit.svg"
+                      alt="Connect with Fitbit"
+                      width={140}
+                      height={40}
+                      className="h-8 w-auto"
+                    />
                     Disconnect Fitbit
                   </Button>
                 </div>

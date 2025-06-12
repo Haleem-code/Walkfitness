@@ -19,6 +19,12 @@ export const NETWORKS = {
     endpoint: "https://api.testnet.sonic.game",
     label: "Sonic Testnet",
   },
+
+  ECLIPSEDEVNET: {
+    name: "eclipse-devnet",
+    endpoint: "https://staging-rpc.dev2.eclipsenetwork.xyz",
+    label: "Eclipse",
+  },
 };
 
 type NetworkContextType = {

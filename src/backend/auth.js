@@ -89,30 +89,6 @@ export const {
               await existingUser.save();
             }
 
-            const existingWallet = await Wallet.exists({ userId: user.id });
-
-            if (!existingWallet) {
-              const wallet = generateWalletAddress();
-              const newWallet = new Wallet({
-                userId: token.userId,
-                address: wallet.address,
-                key: wallet.key,
-              });
-              await newWallet.save();
-            }
-
-            // // Initialize points
-            // let pointEntry = await Point.findOne({ email: token.userId });
-            // if (!pointEntry) {
-            //   pointEntry = new Point({
-            //     email: token.userId,
-            //     questPoint: 0,
-            //     totalPoint: 0,
-            //   });
-            //   await pointEntry.save();
-            // }
-
-            // Fetch step data
             if (account.access_token) {
               console.log("Fetching account data for user:", account.access_token);
               console.log("User ID:", account.user_id);

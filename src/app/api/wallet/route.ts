@@ -1,7 +1,13 @@
 import { auth } from "@/backend/auth";
 import { Wallet } from "@/backend/models";
-import { connectToDb } from "@/backend/utils";
+import { connectToDb, encrypt, generateWalletAddress } from "@/backend/utils";
 import { NextResponse } from "next/server";
+
+// Validate encryption key on server start
+if (!process.env.ENCRYPTION_KEY) {
+	console.error("ERROR: ENCRYPTION_KEY is not set in environment variables");
+	// Don't throw here to allow the server to start, but operations will fail if encryption is attempted
+}
 
 // GET /api/wallet
 async function handleGET() {
@@ -18,8 +24,9 @@ async function handleGET() {
 
 		// If wallet doesn't exist, create one
 		if (!wallet) {
-			const { generateWalletAddress } = await import('@/backend/utils');
 			const { address, key } = generateWalletAddress();
+
+			console.log(address, "->", key);
 
 			wallet = await Wallet.create({
 				userId: session.user.email,
@@ -35,9 +42,9 @@ async function handleGET() {
 	} catch (error) {
 		console.error("Error handling wallet:", error);
 		return new NextResponse(
-			JSON.stringify({ 
+			JSON.stringify({
 				error: "Failed to handle wallet",
-				details: error instanceof Error ? error.message : 'Unknown error'
+				details: error instanceof Error ? error.message : "Unknown error",
 			}),
 			{ status: 500 },
 		);
@@ -55,42 +62,46 @@ async function handlePOST() {
 		}
 
 		await connectToDb();
-		
+
 		// Check if wallet already exists
 		const existingWallet = await Wallet.findOne({ userId: session.user.email });
 		if (existingWallet) {
 			return new NextResponse(
-				JSON.stringify({ 
-                    error: "Wallet already exists",
-                    address: existingWallet.address 
-                }),
-				{ status: 200 }
+				JSON.stringify({
+					error: "Wallet already exists",
+					address: existingWallet.address,
+				}),
+				{ status: 200 },
 			);
 		}
 
-		// Import and generate wallet address
-		const { generateWalletAddress } = await import('@/backend/utils');
+		// Generate wallet address and encrypt the private key
 		const { address, key } = generateWalletAddress();
 
-		// Create and save new wallet
+		// Validate encryption key is set
+		if (!process.env.ENCRYPTION_KEY) {
+			throw new Error("ENCRYPTION_KEY is not set in environment variables");
+		}
+
+		// Create and save new wallet with encrypted key
 		const newWallet = await Wallet.create({
 			userId: session.user.email,
 			address,
-			key, // In production, encrypt this before saving
+			key: encrypt(key),
 		});
 
 		// Don't send the private key to the client
 		const { key: _, ...walletData } = newWallet.toObject();
-		
+
 		return NextResponse.json(walletData, { status: 201 });
 	} catch (error) {
 		console.error("Error creating wallet:", error);
 		return new NextResponse(
-			JSON.stringify({ 
-                error: "Failed to create wallet",
-                details: error instanceof Error ? error.message : 'Unknown error'
-            }),
-			{ status: 500 }
+			JSON.stringify({
+				error: "Failed to create wallet",
+				details: error instanceof Error ? error.message : "Unknown error",
+			}),
+			{ status: 500 },
 		);
 	}
 }
