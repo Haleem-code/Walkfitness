@@ -114,23 +114,23 @@ export function WalletModal({
         setValue,
         watch,
         formState: { errors, isValid }
-    } = useForm<WithdrawInputs>({ 
-        mode: "onBlur",
+    } = useForm<WithdrawInputs>({
+        mode: "onSubmit",
         defaultValues: {
             withdrawAddress: '',
             withdrawAmount: ''
         }
     });
-    
+
     // Watch the input values to prevent re-renders from breaking input focus
 
     const onSubmit = async (data: WithdrawInputs) => {
         if (!walletAddress) return;
-        
+
         setIsWithdrawing(true);
         setWithdrawError(null);
         setWithdrawSuccess(false);
-        
+
         try {
             const amount = Number.parseFloat(data.withdrawAmount);
             const response = await fetch('/api/wallet/withdraw', {
@@ -145,25 +145,25 @@ export function WalletModal({
             });
 
             const result = await response.json();
-            
+
             if (!response.ok) {
                 throw new Error(result.message || 'Withdrawal failed');
             }
-            
+
             setWithdrawSuccess(true);
             // Call the parent's onWithdraw for any additional handling
             onWithdraw(data.withdrawAddress, amount);
-            
+
             // Reset form after successful withdrawal
             setValue('withdrawAmount', '');
             setValue('withdrawAddress', '');
-            
+
             // Return to main view after a delay
             setTimeout(() => {
                 setCurrentView('MAIN');
                 setWithdrawSuccess(false);
             }, 2000);
-            
+
         } catch (error) {
             console.error('Withdrawal error:', error);
             setWithdrawError(error instanceof Error ? error.message : 'Failed to process withdrawal');
@@ -174,6 +174,10 @@ export function WalletModal({
 
     const MainView = () => (
         <div className="p-6 text-white">
+            <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200 mb-4">
+                Manage Wallet
+            </h2>
+
             <div className="relative bg-gradient-to-r from-purple-900/40 to-purple-600/30 backdrop-blur-sm p-6 rounded-2xl mb-6 border border-white/10">
                 <p className="text-sm text-purple-300 mb-1">Your Balance</p>
                 <div className="flex items-baseline gap-2">
@@ -240,7 +244,7 @@ export function WalletModal({
                 <Button variant="ghost" size="icon" onClick={() => setCurrentView('MAIN')}>
                     <ArrowLeft />
                 </Button>
-                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
+                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
                     Deposit ETH
                 </h2>
             </div>
@@ -275,7 +279,7 @@ export function WalletModal({
                 <Button variant="ghost" size="icon" onClick={() => setCurrentView('MAIN')}>
                     <ArrowLeft />
                 </Button>
-                <h2 className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
+                <h2 className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
                     Withdraw ETH
                 </h2>
             </div>
@@ -305,7 +309,7 @@ export function WalletModal({
                             required: 'Amount required',
                             validate: v => Number.parseFloat(v) > 0 || 'Must be > 0'
                         })}
-                    
+
                         className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-4 text-white pr-20 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent text-base"
                         placeholder="0.00"
                     />
@@ -330,9 +334,9 @@ export function WalletModal({
                     Withdrawal successful!
                 </div>
             )}
-            <Button 
-                type="submit" 
-                className="w-full h-12 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 transition-colors" 
+            <Button
+                type="submit"
+                className="w-full h-12 bg-gradient-to-r from-purple-600 to-purple-500 hover:from-purple-500 hover:to-purple-400 transition-colors"
                 disabled={!isValid || isWithdrawing}
             >
                 {isWithdrawing ? 'Processing...' : 'Withdraw'}
@@ -349,7 +353,7 @@ export function WalletModal({
             <Drawer open={isOpen} onOpenChange={onClose}>
                 <DrawerContent className="max-h-[90vh] rounded-t-2xl bg-gradient-to-b from-purple-950 to-black border-t border-purple-900/30">
                     <DrawerHeader>
-                        <DrawerTitle>Manage Wallet</DrawerTitle>
+
                     </DrawerHeader>
                     {content}
                 </DrawerContent>
@@ -361,9 +365,7 @@ export function WalletModal({
         <Dialog open={isOpen} onOpenChange={onClose}>
             <DialogContent className="sm:max-w-md p-0 overflow-hidden bg-gradient-to-b from-purple-950 to-black border border-purple-900/30 rounded-2xl">
                 <DialogHeader className="px-6 pt-6 pb-2 text-center">
-                    <DialogTitle className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-purple-200">
-                        Manage Wallet
-                    </DialogTitle>
+
                 </DialogHeader>
                 {content}
             </DialogContent>

@@ -40,11 +40,10 @@ const TopNavbar: FC = () => {
         <div>
           <Button
             onClick={() => setIsWalletOpen(true)}
-            variant="outline"
-            className="h-10 px-4 bg-white hover:bg-gray-50 text-[#0F172A] border-[#E2E8F0] hover:border-[#CBD5E1]"
+            className="h-11 px-5 bg-gradient-to-r from-purple-800 to-purple-700 hover:from-purple-700 hover:to-purple-600 text-white font-medium rounded-xl transition-colors duration-200"
           >
-            <Wallet className="w-4 h-4 mr-2" />
-            <span className="font-medium text-sm">Wallet</span>
+            <Wallet className="w-4 h-4" />
+            <span className="text-sm font-semibold">Wallet</span>
           </Button>
         </div>
       </nav>
