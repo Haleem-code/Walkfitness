@@ -1,5 +1,6 @@
-import { MarketplaceCard } from "@/components/MarketPlace";
+import React from "react";
+import ComingSoon from "@/components/MarketPlace";
 
 export default function MarketplacePage() {
-  return <MarketplaceCard />;
+  return <ComingSoon />;
 }

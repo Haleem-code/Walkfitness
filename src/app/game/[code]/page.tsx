@@ -8,11 +8,18 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import DailyProgressBar from "@/components/DailyProgressBar"
 import TopNavbar from "@/components/TopNav"
 
+interface StepsData {
+  totalSteps: number
+  lastSevenDaysSteps: number[]
+  stepsForLastUpdate: number
+}
+
 export default function GamePage() {
   const { code } = useParams();
   const router = useRouter();
   const [game, setGame] = useState(null);
   const [participants, setParticipants] = useState([]);
+  const [stepsData, setStepsData] = useState<StepsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [userEmail, setUserEmail] = useState('');
@@ -194,7 +201,7 @@ export default function GamePage() {
                 <div>
                   <h3 className="text-lg font-semibold mb-3">Your Progress</h3>
                   <div className="bg-gray-700/30 p-4 rounded-lg">
-                    <DailyProgressBar totalSteps={0} />
+                     <DailyProgressBar stepsForLastUpdate={stepsData.stepsForLastUpdate} />
                     <div className="mt-4 text-center text-sm text-gray-400">
                       Connect your fitness tracker to update your steps
                     </div>

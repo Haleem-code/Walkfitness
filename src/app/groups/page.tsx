@@ -93,33 +93,22 @@ export default function ComingSoon() {
       />
 
       {/* Navigation */}
-    
-      {/* Main Content */} <motion.div className="px-4 py-6 md:px-6 lg:px-8" initial="hidden" animate="visible" variants={fadeInUp}>
-                <TopNavbar />
-              </motion.div>
+     <motion.div className="px-4 py-6 md:px-6 lg:px-8" initial="hidden" animate="visible" variants={fadeInUp}>
+          <TopNavbar />
+        </motion.div>
+      {/* Main Content */}
       <div className="relative z-10 flex items-center justify-center min-h-screen px-4 pt-20">
         <div className="text-center max-w-4xl mx-auto">
           {/* Coming Soon Badge */}
-        <motion.div
-                   className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-                   variants={fadeInUpOnScroll}
-                   whileHover={{ y: -5 }}
-                   transition={{ type: "spring", stiffness: 300 }}
-                 >
-                   
-                     <div className="mb-6 flex justify-center">
-                       <div className="w-40 h-40 relative">
-                         <Image
-                           src={"/images/marketplace.svg"}
-                           width={160}
-                           height={160}
-                           alt="Marketplace"
-                           className="w-full h-full"
-                         />
-                       </div>
-                     </div>
-                    
-                 </motion.div>
+          <motion.div
+            className="inline-flex items-center bg-purple-900/50 rounded-full px-4 py-2 mb-8 border border-purple-500"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.5 }}
+            whileHover={{ scale: 1.05 }}
+          >
+            <span className="bg-purple-600 text-xs px-3 py-1 rounded-full mr-3"> Groups coming soon..</span>
+          </motion.div>
 
           {/* Hero Title */}
           <motion.h1
@@ -146,9 +135,9 @@ export default function ComingSoon() {
             animate={{ opacity: 1 }}
             transition={{ duration: 0.7, delay: 0.6 }}
           >
-            Buy sneakers, earn multipliers, and compete in tournaments to win crypto rewards.
+            Epic tournaments are coming to Walkfit! Challenge players worldwide,
             <br />
-          
+            climb the leaderboards, and win amazing crypto rewards.
           </motion.p>
    <motion.div
           initial={{ opacity: 0, y: 20 }}
@@ -181,7 +170,7 @@ export default function ComingSoon() {
             className="absolute -left-20 bottom-0 opacity-10 -z-10"
           />
         </motion.div>
-          {/* Tournament Feature Card */}
+          {/*Group Feature Card */}
           <motion.div
             className="bg-[#D9D9D91A] rounded-xl p-8 mb-12 overflow-hidden relative max-w-md mx-auto"
             initial={{ opacity: 0, y: 50 }}
@@ -193,7 +182,7 @@ export default function ComingSoon() {
               <div className="mb-6 flex justify-center">
                 <div className="w-32 h-32 relative">
                   <Image
-                    src={"/images/tournament.svg"}
+                    src={"/images/community.svg"}
                     width={128}
                     height={128}
                     alt="Tournament"
@@ -201,10 +190,10 @@ export default function ComingSoon() {
                   />
                 </div>
               </div>
-              <h3 className="text-2xl font-bold mb-3">Marketplace</h3>
+              <h3 className="text-2xl font-bold mb-3">Groups</h3>
               <p className="text-gray-400">
-                Buy, sell, or trade sneakers. Whether you&apos;re upgrading or cashing out, the marketplace keeps your
-                fitness journey flexible and rewarding.
+                Compete in step challenges against others and win crypto rewards. The more you move, the closer you are
+                to the top.
               </p>
             </div>
             
@@ -330,7 +319,7 @@ export default function ComingSoon() {
                 animate={{ opacity: 1 }}
                 transition={{ delay: 0.5 }}
               >
-                Follow us on social media for tournament updates
+                Follow us on social media for groups updates
               </motion.p>
             </motion.div>
           )}

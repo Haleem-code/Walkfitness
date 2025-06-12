@@ -9,11 +9,18 @@ import { motion } from "framer-motion"
 import { Trophy, Users, Calendar, Target, Clock, DollarSign } from "lucide-react"
 import Image from "next/image"
 
+interface StepsData {
+  totalSteps: number
+  lastSevenDaysSteps: number[]
+  stepsForLastUpdate: number
+}
+
 export default function GamePage() {
   const { gameId } = useParams();
   const router = useRouter();
   const [game, setGame] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [stepsData, setStepsData] = useState<StepsData | null>(null);
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -414,7 +421,7 @@ export default function GamePage() {
                   {/* Daily Progress Bar */}
                   <div className="mt-6">
                     <h4 className="text-sm font-semibold mb-2 text-gray-300">Daily Progress</h4>
-                    <DailyProgressBar totalSteps={userSteps} />
+                    <DailyProgressBar stepsForLastUpdate={stepsData.stepsForLastUpdate} />
                   </div>
                 </div>
               </motion.div>
