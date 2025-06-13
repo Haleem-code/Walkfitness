@@ -111,7 +111,7 @@ export default function GamesList({ games, type }: GamesListProps) {
                       unoptimized={true}
                     />
                   ) : (
-                    <span className="text-white">{game.name.charAt(0).toUpperCase()}</span>
+                    <span className="text-white">{game.name.charAt(0)}</span>
                   )}
                 </div>
                 <div className="text-sm font-medium truncate text-white">{game.name}</div>
@@ -184,7 +184,7 @@ export default function GamesList({ games, type }: GamesListProps) {
                         unoptimized={true}
                       />
                     ) : (
-                      <span className="text-white">{game.name.charAt(0).toUpperCase()}</span>
+                      <span className="text-white">{game.name.charAt(0)}</span>
                     )}
                   </div>
                   <div className="text-sm font-medium text-white truncate">{game.name}</div>

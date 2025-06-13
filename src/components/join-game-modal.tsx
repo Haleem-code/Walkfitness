@@ -52,7 +52,7 @@ const JoinGameModal = ({ isOpen, onClose }: JoinGameModalProps) => {
     }
 
     try {
-      const gameCode = data.code.trim().toUpperCase()
+      const gameCode = data.code.trim()
 
       // First, fetch the game details
       const response = await fetch(`http://localhost:3000/api/games/${gameCode}`)

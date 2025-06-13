@@ -55,8 +55,8 @@ export async function POST(req: Request) {
 
 		if (game.participants.includes(email)) {
 			return NextResponse.json(
-				{ error: "You are already a participant in this game" },
-				{ status: 403 },
+				{ message: "Already joined", gameId: game._id },
+				{ status: 200 },
 			);
 		}
 
