@@ -239,7 +239,7 @@ export default function GamesList({ games, type }: GamesListProps) {
                     {type === "sponsored" ? (
                       <Badge className="bg-green-400 text-black text-xs px-2 py-0.5 font-semibold">FREE</Badge>
                     ) : (
-                      <Badge className="bg-purple-600 text-white text-xs px-2 py-0.5">${game.entryFee}</Badge>
+                      <Badge className="bg-purple-600 text-white text-xs px-2 py-0.5">{game.entryFee} ETH</Badge>
                     )}
                   </div>
                 </div>
