@@ -55,7 +55,7 @@ const JoinGameModal = ({ isOpen, onClose }: JoinGameModalProps) => {
       const gameCode = data.code.trim()
 
       // First, fetch the game details
-      const response = await fetch(`http://localhost:3000/api/games/${gameCode}`)
+      const response = await fetch(`https://walkfit.vercel.app/api/games/${gameCode}`)
 
       if (!response.ok) {
         throw new Error("Game not found. Please check the code and try again.")
@@ -64,7 +64,7 @@ const JoinGameModal = ({ isOpen, onClose }: JoinGameModalProps) => {
       const game = await response.json()
 
       // Join the game
-      const joinResponse = await fetch(`http://localhost:3000/api/games/${gameCode}/join`, {
+      const joinResponse = await fetch(`https://walkfit.vercel.app/api/games/${gameCode}/join`, {
         method: "POST",
       })
 
