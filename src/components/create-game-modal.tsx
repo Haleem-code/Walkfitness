@@ -22,7 +22,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
     name: "",
     playerLimit: "",
     totalSteps: "",
-    entryPrice: 15 as number | "custom",
+    entryPrice: 0.02 as number | "custom",
     customEntryPrice: "",
     startDate: new Date().toISOString().split('T')[0],
     duration: "3 Days",
@@ -39,7 +39,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
   const [inviteCode, setInviteCode] = useState("")
   const [copied, setCopied] = useState(false)
   const router = useRouter()
-  const entryPriceOptions = [15, 20]
+  const entryPriceOptions = [0.02, 0.05,0.1, 0.2,0.5]
   const durationOptions = ["3 Days", "1 Week", "6 Days"]
 
   const handleInputChange = (field: string, value: any) => {
@@ -346,7 +346,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                       } rounded-full px-3 py-2 sm:px-6 sm:py-3 font-semibold text-sm sm:text-base`}
                     onClick={() => handlePriceSelect(price)}
                   >
-                    $ {price}
+                    {price}eth
                   </Button>
                 ))}
                 <Button

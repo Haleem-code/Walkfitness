@@ -256,7 +256,7 @@ export default function GamePage() {
                   <div className="flex items-center gap-4 mb-4 flex-wrap">
                     <h1 className="text-3xl md:text-4xl font-bold">{game.name}</h1>
                     <span className={`px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r ${getGameTypeColor(game.gameType)} text-white`}>
-                      {game.gameType.charAt(0).toUpperCase() + game.gameType.slice(1)}
+                      {game.gameType.charAt(0)+ game.gameType.slice(1)}
                     </span>
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getGameStatus() === 'Active' ? 'bg-green-500/20 text-green-400' :
                       getGameStatus() === 'Ended' ? 'bg-red-500/20 text-red-400' :
@@ -421,7 +421,7 @@ export default function GamePage() {
                   {/* Daily Progress Bar */}
                   <div className="mt-6">
                     <h4 className="text-sm font-semibold mb-2 text-gray-300">Daily Progress</h4>
-                    <DailyProgressBar stepsForLastUpdate={stepsData.stepsForLastUpdate} />
+                    <DailyProgressBar stepsForLastUpdate={stepsData ? stepsData.stepsForLastUpdate : 0} />
                   </div>
                 </div>
               </motion.div>

@@ -60,6 +60,7 @@ export default function WalkPage() {
   const [user, setUser] = useState<User | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshingSteps, setRefreshingSteps] = useState(false)
   const [publicGames, setPublicGames] = useState<Game[]>([])
   const [sponsoredGames, setSponsoredGames] = useState<Game[]>([])
   const [gameCode, setGameCode] = useState("")
@@ -85,14 +86,49 @@ export default function WalkPage() {
     },
   }
 
+  const refreshSteps = async () => {
+    if (!session) return
+    setRefreshingSteps(true)
+    try {
+      const emailRes = await fetch(`http://localhost:3000/api/getemail`)
+      const { email } = await emailRes.json()
+      console.log("email", email)
+      const updateRes = await fetch("/api/update-steps", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+      })
+
+      if (updateRes.ok) {
+        // Fetch updated steps data
+        const res = await fetch(`http://localhost:3000/api/steps?email=${email}`)
+        const data = await res.json()
+
+        if (res.status === 200) {
+          setStepsData(data)
+          setUser((prev) => (prev ? { ...prev, steps: data?.totalSteps || 0 } : null))
+        }
+      } else {
+        throw new Error("Failed to update steps")
+      }
+    } catch (error) {
+      console.error("Error refreshing steps:", error)
+      setError("Failed to refresh steps data")
+    } finally {
+      setRefreshingSteps(false)
+    }
+  }
+
   // Function to convert API game format to GamesList component format
   const convertApiGameToGame = (apiGame: ApiGame): Game => {
-    let banner = "/images/sneaker.svg";//default banner
+    let banner = "/images/sneaker.svg" //default banner
     if (apiGame.image) {
-      if (apiGame.image.startsWith("http")|| apiGame.image.startsWith('/')) {
-        banner = apiGame.image;
+      if (apiGame.image.startsWith("http") || apiGame.image.startsWith("/")) {
+        banner = apiGame.image
       } else {
-        banner = `/images/${apiGame.image}`; // Assuming images are stored in the public/images directory
+        banner = `/images/${apiGame.image}` // Assuming images are stored in the public/images directory
       }
     }
     return {
@@ -191,7 +227,7 @@ export default function WalkPage() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ gameCode: gameCode.trim().toUpperCase() }),
+        body: JSON.stringify({ gameCode: gameCode.trim() }),
       })
 
       const data = await response.json()
@@ -199,7 +235,7 @@ export default function WalkPage() {
       if (data.error) {
         alert(data.error)
       } else {
-        router.push(`/game/${gameCode.trim().toUpperCase()}`)
+        router.push(`/game/${gameCode.trim()}`)
       }
     } catch (error) {
       console.error("Failed to join game:", error)
@@ -300,58 +336,58 @@ export default function WalkPage() {
 
         {/* Main Content Container */}
         <div className="px-4 md:px-6 lg:px-8 mt-8 max-w-7xl mx-auto">
-            {/* Action Buttons */}
-            <motion.div
+          {/* Action Buttons */}
+          <motion.div
             className="flex flex-wrap gap-3 mb-8 items-center justify-center"
             initial="hidden"
             animate="visible"
             variants={staggerContainer}
-            >
+          >
             <motion.div variants={fadeInUp}>
               <Button
-              onClick={() => router.push("/createGame")}
-              className="bg-green-400 hover:bg-green-500 text-black font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                onClick={() => router.push("/createGame")}
+                className="bg-green-400 hover:bg-green-500 text-black font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
-              Create Game
+                Create Game
               </Button>
             </motion.div>
 
             <motion.div variants={fadeInUp}>
               <Button
-              onClick={() => router.push("/#walk")}
-              className="bg-white hover:bg-white/90 hover:text-purple-700 text-purple-600 font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                onClick={() => router.push("/#walk")}
+                className="bg-white hover:bg-white/90 hover:text-purple-700 text-purple-600 font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
-              Create Group
+                Create Group
               </Button>
             </motion.div>
 
             <motion.div variants={fadeInUp} className="flex gap-2">
               <Input
-              placeholder="Enter game code"
-              value={gameCode}
-              onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-              className="w-32 sm:w-64 md:w-80 bg-black/30 border-gray-600 text-white placeholder-gray-400 rounded-xl h-10 sm:h-12 px-3 sm:px-4 focus:border-green-400 transition-colors backdrop-blur-sm text-sm sm:text-base"
-              onKeyPress={(e) => e.key === "Enter" && handleJoinWithCode()}
-              maxLength={8}
+                placeholder="Enter game code"
+                value={gameCode}
+                onChange={(e) => setGameCode(e.target.value)}
+                className="w-32 sm:w-64 md:w-80 bg-black/30 border-gray-600 text-white placeholder-gray-400 rounded-xl h-10 sm:h-12 px-3 sm:px-4 focus:border-green-400 transition-colors backdrop-blur-sm text-sm sm:text-base"
+                onKeyPress={(e) => e.key === "Enter" && handleJoinWithCode()}
+                maxLength={8}
               />
 
               {gameCode.length > 0 && (
-              <motion.div
-                initial={{ opacity: 0, scale: 0.8 }}
-                animate={{ opacity: 1, scale: 1 }}
-                transition={{ duration: 0.2 }}
-              >
-                <Button
-                onClick={handleJoinWithCode}
-                disabled={joiningGame === "code"}
-                className="bg-green-400 hover:bg-green-500 text-black px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.8 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.2 }}
                 >
-                {joiningGame === "code" ? "Joining..." : "Join"}
-                </Button>
-              </motion.div>
+                  <Button
+                    onClick={handleJoinWithCode}
+                    disabled={joiningGame === "code"}
+                    className="bg-green-400 hover:bg-green-500 text-black px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                  >
+                    {joiningGame === "code" ? "Joining..." : "Join"}
+                  </Button>
+                </motion.div>
               )}
             </motion.div>
-            </motion.div>
+          </motion.div>
 
           {/* Steps Progress Circle */}
           <motion.div
@@ -364,28 +400,44 @@ export default function WalkPage() {
               <div className="bg-black/30 backdrop-blur-md rounded-3xl p-8 md:p-12 lg:p-16 border border-gray-600/50 shadow-2xl">
                 <div className="flex items-center justify-center">
                   <div className="relative w-48 h-48 md:w-56 md:h-56">
-          
-
                     {/* Progress circle */}
-                    {/* <svg className="absolute inset-0 w-full h-full transform -rotate-90" viewBox="0 0 100 100">
-                      <circle
-                        cx="50"
-                        cy="50"
-                        r="45"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="3"
-                        className="text-green-400"
-                        strokeDasharray={`${(stepsData.stepsForLastUpdate )}`}
-                        strokeLinecap="round"
-                      />
-                    </svg> */}
-                   
 
                     {/* Center content */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-                     <DailyProgressBar stepsForLastUpdate={stepsData.stepsForLastUpdate} />
+                      <DailyProgressBar
+                        stepsForLastUpdate={stepsData.stepsForLastUpdate}
+                        onRefresh={refreshSteps}
+                        isRefreshing={refreshingSteps}
+                      />
 
+                      {/* Remove the following section since it's now integrated into DailyProgressBar
+                    <p className="text-xs text-gray-400 mt-2">
+                      Click sneaker to refresh steps
+                    </p>
+                    <div className="mb-4">
+                      <button
+                        onClick={refreshSteps}
+                        disabled={refreshingSteps}
+                        className="relative group transition-all duration-300 hover:scale-110 disabled:opacity-50"
+                      >
+                        <Image
+                          src="/images/sneaker.svg"
+                          alt="Update Steps"
+                          width={40}
+                          height={40}
+                          className={`${
+                            refreshingSteps ? "animate-spin" : ""
+                          } group-hover:brightness-110`}
+                        />
+                        {refreshingSteps && (
+                          <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="animate-spin rounded-full h-6 w-6 border-2 border-green-400 border-t-transparent"></div>
+                          </div>
+                        )}
+                      </button>
+                      
+                    </div>
+                    */}
                     </div>
                   </div>
                 </div>
