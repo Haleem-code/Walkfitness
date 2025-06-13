@@ -1,43 +1,46 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { useSession } from "next-auth/react"
-import Image from "next/image"
-import { Copy, Flame, Trophy, Star } from "lucide-react"
-import { motion } from "framer-motion"
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
-import TopNavbar from "@/components/TopNav"
+import { useEffect, useState } from "react";
+import { useSession, signOut } from "next-auth/react";
+import Image from "next/image";
+import { Copy, Flame, Trophy, Star } from "lucide-react";
+import { motion } from "framer-motion";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
+import TopNavbar from "@/components/TopNav";
+import { useRouter } from "next/navigation";
 
 interface StreakData {
-  currentStreak: number
-  longestStreak: number
-  streakXP: number
-  lastStreakDate: string | null
+  currentStreak: number;
+  longestStreak: number;
+  streakXP: number;
+  lastStreakDate: string | null;
 }
 
 interface UserStats {
-  completedGames: string
-  totalXP: number
-  ranking: string
-  referrals: string
+  completedGames: string;
+  totalXP: number;
+  ranking: string;
+  referrals: string;
 }
 
 const ProfilePage = () => {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession();
   const [streakData, setStreakData] = useState<StreakData>({
     currentStreak: 0,
     longestStreak: 0,
     streakXP: 0,
     lastStreakDate: null,
-  })
+  });
   const [userStats, setUserStats] = useState<UserStats>({
     completedGames: "-",
     totalXP: 0,
     ranking: "",
     referrals: "-",
-  })
-  const [loading, setLoading] = useState(true)
+  });
+  const [loading, setLoading] = useState(true);
+  const router = useRouter();
+  const [isSigningOut, setIsSigningOut] = useState(false);
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
@@ -46,7 +49,7 @@ const ProfilePage = () => {
       y: 0,
       transition: { duration: 0.6 },
     },
-  }
+  };
 
   const staggerContainer = {
     hidden: { opacity: 0 },
@@ -56,45 +59,73 @@ const ProfilePage = () => {
         staggerChildren: 0.1,
       },
     },
-  }
+  };
 
   useEffect(() => {
     if (session) {
-      fetchStreakData()
+      fetchStreakData();
     }
-  }, [session])
+  }, [session]);
 
   const fetchStreakData = async () => {
     try {
-      setLoading(true)
-      const response = await fetch("/api/streak")
+      setLoading(true);
+      const response = await fetch("/api/streak");
 
       if (response.ok) {
-        const data = await response.json()
-        setStreakData(data)
+        const data = await response.json();
+        setStreakData(data);
       } else {
-        console.error("Failed to fetch streak data:", await response.json())
+        console.error("Failed to fetch streak data:", await response.json());
       }
     } catch (error) {
-      console.error("Error fetching streak data:", error)
+      console.error("Error fetching streak data:", error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const formatXP = (xp: number) => {
     if (xp >= 1000000) {
-      return `${(xp / 1000000).toFixed(1)}M`
+      return `${(xp / 1000000).toFixed(1)}M`;
     }
     if (xp >= 1000) {
-      return `${(xp / 1000).toFixed(1)}K`
+      return `${(xp / 1000).toFixed(1)}K`;
     }
-    return xp.toString()
-  }
+    return xp.toString();
+  };
 
   const copyReferralCode = () => {
-    navigator.clipboard.writeText("REF123456")
+    navigator.clipboard.writeText("REF123456");
     // You could add a toast notification here
+  };
+
+  const handleDisconnectFitbit = async () => {
+    if (isSigningOut) return;
+
+    setIsSigningOut(true);
+    try {
+      await signOut({
+        callbackUrl: "/authpage",
+        redirect: true,
+      });
+    } catch (error) {
+      console.error("Error signing out:", error);
+      setIsSigningOut(false);
+    }
+  };
+
+  if (status === "loading") {
+    return (
+      <div className="flex justify-center items-center min-h-screen">
+        Loading...
+      </div>
+    );
+  }
+
+  if (status === "unauthenticated") {
+    router.push("/authpage");
+    return null;
   }
 
   return (
@@ -126,7 +157,12 @@ const ProfilePage = () => {
 
       <div className="relative z-10 min-h-screen">
         {/* Header Section */}
-        <motion.div className="px-4 py-6 md:px-6 lg:px-8" initial="hidden" animate="visible" variants={fadeInUp}>
+        <motion.div
+          className="px-4 py-6 md:px-6 lg:px-8"
+          initial="hidden"
+          animate="visible"
+          variants={fadeInUp}
+        >
           <TopNavbar />
         </motion.div>
 
@@ -153,21 +189,34 @@ const ProfilePage = () => {
                       />
                     </div>
                   </div>
-                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">{session?.user?.name || "User"}</h1>
-                  <p className="text-gray-400 text-sm">{session?.user?.email}</p>
+                  <h1 className="text-2xl md:text-3xl font-bold text-white mb-2">
+                    {session?.user?.name || "User"}
+                  </h1>
+                  <p className="text-gray-400 text-sm">
+                    {session?.user?.email}
+                  </p>
                 </div>
               </div>
             </div>
           </motion.div>
 
           {/* Stats Grid */}
-          <motion.div className="mb-8" initial="hidden" animate="visible" variants={staggerContainer}>
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Your Stats</h2>
+          <motion.div
+            className="mb-8"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">
+              Your Stats
+            </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <motion.div variants={fadeInUp}>
                 <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
-                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">{userStats.completedGames}</div>
+                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">
+                      {userStats.completedGames}
+                    </div>
                     <div className="text-sm text-gray-400">Completed Games</div>
                   </CardContent>
                 </Card>
@@ -187,7 +236,9 @@ const ProfilePage = () => {
               <motion.div variants={fadeInUp}>
                 <Card className="bg-black/30 backdrop-blur-md border-red-500/30 hover:border-red-500/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
-                    <div className="text-2xl md:text-3xl font-bold text-red-400 mb-2">#{userStats.ranking}</div>
+                    <div className="text-2xl md:text-3xl font-bold text-red-400 mb-2">
+                      #{userStats.ranking}
+                    </div>
                     <div className="text-sm text-gray-400">Ranking</div>
                   </CardContent>
                 </Card>
@@ -196,7 +247,9 @@ const ProfilePage = () => {
               <motion.div variants={fadeInUp}>
                 <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
-                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">{userStats.referrals}</div>
+                    <div className="text-2xl md:text-3xl font-bold text-white mb-2">
+                      {userStats.referrals}
+                    </div>
                     <div className="text-sm text-gray-400">Referrals</div>
                   </CardContent>
                 </Card>
@@ -205,20 +258,31 @@ const ProfilePage = () => {
           </motion.div>
 
           {/* Streak Stats */}
-          <motion.div className="mb-8" initial="hidden" animate="visible" variants={staggerContainer}>
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Streak Performance</h2>
+          <motion.div
+            className="mb-8"
+            initial="hidden"
+            animate="visible"
+            variants={staggerContainer}
+          >
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">
+              Streak Performance
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <motion.div variants={fadeInUp}>
                 <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-500/30 hover:border-orange-500/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center mb-3">
                       <Flame className="h-6 w-6 text-orange-400 mr-2" />
-                      <span className="text-sm text-orange-200 font-medium">Current Streak</span>
+                      <span className="text-sm text-orange-200 font-medium">
+                        Current Streak
+                      </span>
                     </div>
                     {loading ? (
                       <div className="h-8 w-12 bg-orange-400/20 animate-pulse rounded mx-auto" />
                     ) : (
-                      <div className="text-3xl font-bold text-orange-400">{streakData.currentStreak}</div>
+                      <div className="text-3xl font-bold text-orange-400">
+                        {streakData.currentStreak}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -229,12 +293,16 @@ const ProfilePage = () => {
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center mb-3">
                       <Trophy className="h-6 w-6 text-yellow-400 mr-2" />
-                      <span className="text-sm text-yellow-200 font-medium">Best Streak</span>
+                      <span className="text-sm text-yellow-200 font-medium">
+                        Best Streak
+                      </span>
                     </div>
                     {loading ? (
                       <div className="h-8 w-12 bg-yellow-400/20 animate-pulse rounded mx-auto" />
                     ) : (
-                      <div className="text-3xl font-bold text-yellow-400">{streakData.longestStreak}</div>
+                      <div className="text-3xl font-bold text-yellow-400">
+                        {streakData.longestStreak}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -245,12 +313,16 @@ const ProfilePage = () => {
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center mb-3">
                       <Star className="h-6 w-6 text-green-400 mr-2" />
-                      <span className="text-sm text-green-200 font-medium">Streak XP</span>
+                      <span className="text-sm text-green-200 font-medium">
+                        Streak XP
+                      </span>
                     </div>
                     {loading ? (
                       <div className="h-8 w-16 bg-green-400/20 animate-pulse rounded mx-auto" />
                     ) : (
-                      <div className="text-3xl font-bold text-green-400">{formatXP(streakData.streakXP)}</div>
+                      <div className="text-3xl font-bold text-green-400">
+                        {formatXP(streakData.streakXP)}
+                      </div>
                     )}
                   </CardContent>
                 </Card>
@@ -265,13 +337,19 @@ const ProfilePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.8 }}
           >
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Referral Code</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">
+              Referral Code
+            </h2>
             <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
-                    <div className="text-lg font-semibold text-white mb-1">Share & Earn</div>
-                    <div className="text-sm text-gray-400">Invite friends to earn rewards</div>
+                    <div className="text-lg font-semibold text-white mb-1">
+                      Share & Earn
+                    </div>
+                    <div className="text-sm text-gray-400">
+                      Invite friends to earn rewards
+                    </div>
                   </div>
                   <Button
                     variant="outline"
@@ -293,21 +371,33 @@ const ProfilePage = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 1.0 }}
           >
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Settings</h2>
+            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">
+              Settings
+            </h2>
             <Card className="bg-black/30 backdrop-blur-md border-gray-600/50">
               <CardContent className="p-6">
-                <h3 className="text-lg font-semibold text-white mb-4">Step Provider</h3>
+                <h3 className="text-lg font-semibold text-white mb-4">
+                  Step Provider
+                </h3>
                 <div className="space-y-3">
                   <Button
                     variant="outline"
                     className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-green-400 py-7 rounded-xl transition-all duration-300"
                   >
-                    <Image src="/images/google.svg" alt="Google" width={20} height={20} className="mr-3" />
+                    <Image
+                      src="/images/google.svg"
+                      alt="Google"
+                      width={20}
+                      height={20}
+                      className="mr-3"
+                    />
                     Continue with Google
                   </Button>
 
                   <Button
                     variant="outline"
+                    onClick={handleDisconnectFitbit}
+                    disabled={loading}
                     className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-red-400 py-7 rounded-xl transition-all duration-300"
                   >
                     <Image
@@ -317,7 +407,7 @@ const ProfilePage = () => {
                       height={40}
                       className="h-8 w-auto"
                     />
-                    Disconnect Fitbit
+                    {loading ? "Disconnecting..." : "Disconnect Fitbit"}
                   </Button>
                 </div>
               </CardContent>
@@ -345,7 +435,7 @@ const ProfilePage = () => {
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default ProfilePage
+export default ProfilePage;

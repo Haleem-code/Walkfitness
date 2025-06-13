@@ -110,6 +110,23 @@ export const {
       console.log("Session:", session);
       return session;
     },
+
+    async signOut({ token }) {
+      
+      try {
+        if (token?.userId) {
+          await connectToDb();
+          // Optionally remove access token from database
+          await User.findOneAndUpdate(
+            { email: token.userId },
+            { $unset: { googleAccessToken: 1 } }
+          );
+        }
+      } catch (err) {
+        console.error("Error during signout:", err);
+      }
+      return true;
+    },
   },
 
   // Add debug mode
@@ -118,13 +135,14 @@ export const {
   // Session configuration
   session: {
     strategy: "jwt",
-    maxAge: 7 * 60 * 60, // 7 hours (in seconds)
+    maxAge: 30 * 24 * 60 * 60, // 30 days
   },
 
   // Pages configuration
   pages: {
     signIn: "/authpage",
     error: "/authpage",
+    signOut: "/authpage",
   },
 });
 
