@@ -71,7 +71,7 @@ export const {
             await connectToDb();
 
             // Initialize user in database
-            let existingUser = await User.findOne({ email: token.userId.toowerCase() });
+            let existingUser = await User.findOne({ email: token.userId.toLowerCase() });
             if (!existingUser) {
               existingUser = new User({
                 username: user?.name || "Fitbit User",

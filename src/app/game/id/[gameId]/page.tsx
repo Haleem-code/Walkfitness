@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { Button } from "@/components/ui/button"
 import DailyProgressBar from "@/components/DailyProgressBar"
+import GameLeaderboard from "@/components/game-leaderboard"
 import TopNavbar from "@/components/TopNav"
 import { motion } from "framer-motion"
 import { Trophy, Users, Calendar, Target, Clock, DollarSign } from "lucide-react"
@@ -79,6 +80,12 @@ export default function GamePage() {
       const data = await res.json();
       if (res.status === 200) {
         setUserSteps(data.totalSteps || 0);
+        // Also set the stepsData state
+        setStepsData({
+          totalSteps: data.totalSteps || 0,
+          stepsForLastUpdate: data.stepsForLastUpdate || 0,
+          lastSevenDaysSteps: data.lastSevenDaysSteps || []
+        });
       }
     } catch (error) {
       console.error('Error fetching user steps:', error);
@@ -146,8 +153,9 @@ export default function GamePage() {
   };
 
   const getUserProgressPercentage = () => {
-    if (!game || !userSteps) return 0;
-    return Math.min(100, Math.round((userSteps / game.gameSteps) * 100));
+    if (!game) return 0;
+    const steps = stepsData?.stepsForLastUpdate || userSteps || 0;
+    return Math.min(100, Math.round((steps / game.gameSteps) * 100));
   };
 
   if (loading) {
@@ -410,7 +418,9 @@ export default function GamePage() {
                     <div className="relative w-24 h-24 mx-auto mb-4">
                       <Image src="/images/sneaker.svg" alt="Steps" width={96} height={96} />
                     </div>
-                    <div className="text-3xl font-bold mb-2">{userSteps.toLocaleString()}</div>
+                    <div className="text-3xl font-bold mb-2">
+                      {(stepsData?.stepsForLastUpdate || userSteps || 0).toLocaleString()}
+                    </div>
                     <div className="text-sm text-gray-400 mb-4">Total Steps</div>
                     <div className="bg-gray-700/50 rounded-full h-2 mb-2">
                       <div className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500" style={{ width: `${userProgressPercentage}%` }} />
@@ -418,72 +428,16 @@ export default function GamePage() {
                     <div className="text-sm text-gray-400">{userProgressPercentage}% of target reached</div>
                   </div>
 
-                  {/* Daily Progress Bar */}
-                  <div className="mt-6">
-                    <h4 className="text-sm font-semibold mb-2 text-gray-300">Daily Progress</h4>
-                    <DailyProgressBar stepsForLastUpdate={stepsData ? stepsData.stepsForLastUpdate : 0} />
-                  </div>
                 </div>
               </motion.div>
             </div>
 
             {/* Right Column - Leaderboard */}
             <div className="lg:col-span-2">
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeInUp}
-              >
-                <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    Leaderboard
-                  </h3>
-                  <div className="space-y-3">
-                    {leaderboard.length > 0 ? leaderboard.map((participant, index) => (
-                      <motion.div
-                        key={participant.id || participant.email || index}
-                        className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.02] ${participant.email === userEmail
-                          ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30'
-                          : 'bg-gray-700/30 hover:bg-gray-700/50'
-                          }`}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 flex items-center justify-center rounded-full font-bold ${index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' :
-                            index === 1 ? 'bg-gradient-to-r from-gray-300 to-gray-500 text-black' :
-                              index === 2 ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black' :
-                                'bg-gray-600/50 text-white'
-                            }`}>
-                            {getRankIcon(index + 1)}
-                          </div>
-                          <div>
-                            <div className="font-semibold">
-                              {participant.name || participant.email?.split('@')[0] || `User${index + 1}`}
-                              {participant.email === userEmail && (
-                                <span className="ml-2 text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full">You</span>
-                              )}
-                            </div>
-                            <div className="text-sm text-gray-400">{participant.email || 'No email'}</div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold">{(participant.steps || 0).toLocaleString()}</div>
-                          <div className="text-sm text-gray-400">steps</div>
-                        </div>
-                      </motion.div>
-                    )) : (
-                      <div className="text-center py-12">
-                        <Trophy className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                        <p className="text-gray-400 text-lg">No participants yet</p>
-                        <p className="text-gray-500 text-sm">Be the first to join and start tracking your steps!</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              </motion.div>
+             {/* Right Column - Leaderboard */}
+<div className="lg:col-span-2">
+  <GameLeaderboard gameId={Array.isArray(gameId) ? gameId[0] : gameId} userEmail={userEmail} />
+</div>
             </div>
           </div>
         </div>
