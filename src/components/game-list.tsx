@@ -85,7 +85,7 @@ export default function GamesList({ games, type }: GamesListProps) {
         <div className="col-span-2">Steps</div>
         <div className="col-span-2">Players</div>
         <div className="col-span-1">Entry</div>
-        <div className="col-span-1"></div>
+        <div className="col-span-1"/>
       </div>
 
       {/* Games */}
@@ -150,7 +150,7 @@ export default function GamesList({ games, type }: GamesListProps) {
                 {type === "sponsored" ? (
                   <Badge className="bg-green-400 text-black text-xs px-2 py-1 font-semibold">FREE</Badge>
                 ) : (
-                  <Badge className="bg-purple-600 text-white text-xs px-2 py-1">${game.entryFee}</Badge>
+                  <Badge className="bg-purple-600 text-white text-xs px-2 py-1">{game.entryFee} ETH</Badge>
                 )}
               </div>
 

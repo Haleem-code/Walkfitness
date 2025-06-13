@@ -347,7 +347,7 @@ export default function GamePage() {
             <motion.div variants={fadeInUp}>
               <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50 text-center">
                 <DollarSign className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-                <div className="text-2xl font-bold mb-1">{game.entryPrice > 0 ? `$${game.entryPrice}` : 'Free'}</div>
+                <div className="text-2xl font-bold mb-1">{game.entryPrice > 0 ? `${game.entryPrice} ETH` : 'Free'}</div>
                 <div className="text-sm text-gray-400">Entry Fee</div>
               </div>
             </motion.div>

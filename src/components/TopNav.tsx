@@ -27,7 +27,7 @@ const TopNavbar: FC = () => {
 
   return (
     <>
-      <nav className="fixed top-0 left-0 right-0 flex justify-between items-center p-4 z-10">
+      <nav className="fixed top-0 left-0 right-0 flex justify-between items-center p-4 z-10 ">
         <div className="flex items-center">
           <Image
             src="/images/logo2.svg"

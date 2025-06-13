@@ -1,6 +1,6 @@
-import { connectToDb } from "./utils.js";
-import { User } from "./models.js";
-import { updateStepData } from "./updateSteps.js";
+import { connectToDb } from "./utils";
+import { User } from "./models";
+import { updateStepData } from "./updateSteps";
 
 export async function updateAllUsersSteps() {
   await connectToDb();

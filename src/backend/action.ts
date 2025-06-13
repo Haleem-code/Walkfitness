@@ -151,7 +151,7 @@ export const createGame = async (
 			entryPrice: entryPrice || 0,
 			gameType,
 			creator,
-			participants: [creator],
+			participants: [],
 			createdAt: new Date(),
 			startDate: startDateObj,
 			endDate: endDateObj,

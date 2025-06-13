@@ -4,6 +4,8 @@ import { User, Point, Game } from "./models"
 import { connectToDb } from "./utils"
 import { unstable_noStore as noStore } from "next/cache"
 import { auth } from "./auth"
+import { updateAllUsersSteps } from "./updateAllSteps"
+import { updateStepData } from "./updateSteps"
 
 export const getSteps = async (email) => {
   noStore()
@@ -23,6 +25,8 @@ export const getSteps = async (email) => {
         error: "User not found"
       }
     }
+
+    updateStepData(email, user.googleAccessToken)
 
     console.log("Found user:", user)
 

@@ -346,7 +346,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
                       } rounded-full px-3 py-2 sm:px-6 sm:py-3 font-semibold text-sm sm:text-base`}
                     onClick={() => handlePriceSelect(price)}
                   >
-                    {price}eth
+                    {price} ETH
                   </Button>
                 ))}
                 <Button

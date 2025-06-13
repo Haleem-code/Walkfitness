@@ -10,6 +10,7 @@ import TopNavbar from "@/components/TopNav"
 import GamesList from "@/components/game-list"
 import Image from "next/image"
 import DailyProgressBar from "@/components/DailyProgressBar"
+import { APP_URL } from "@/config"
 
 interface ApiGame {
   _id: string
@@ -90,7 +91,7 @@ export default function WalkPage() {
     if (!session) return
     setRefreshingSteps(true)
     try {
-      const emailRes = await fetch(`http://localhost:3000/api/getemail`)
+      const emailRes = await fetch(`${APP_URL}/api/getemail`)
       const { email } = await emailRes.json()
       console.log("email", email)
       const updateRes = await fetch("/api/update-steps", {
@@ -103,7 +104,7 @@ export default function WalkPage() {
 
       if (updateRes.ok) {
         // Fetch updated steps data
-        const res = await fetch(`http://localhost:3000/api/steps?email=${email}`)
+        const res = await fetch(`${APP_URL}/api/steps?email=${email}`)
         const data = await res.json()
 
         if (res.status === 200) {
@@ -149,14 +150,14 @@ export default function WalkPage() {
   // Use useCallback to memoize fetchGames function
   const fetchGames = useCallback(async () => {
     try {
-      const publicResponse = await fetch("http://localhost:3000/api/games/public")
+      const publicResponse = await fetch(`${APP_URL}/api/games/public`)
       if (publicResponse.ok) {
         const publicData = await publicResponse.json()
         const convertedPublicGames = (publicData.games || []).map(convertApiGameToGame)
         setPublicGames(convertedPublicGames)
       }
 
-      const sponsoredResponse = await fetch("http://localhost:3000/api/games/sponsored")
+      const sponsoredResponse = await fetch(`${APP_URL}/api/games/sponsored`)
       if (sponsoredResponse.ok) {
         const sponsoredData = await sponsoredResponse.json()
         const convertedSponsoredGames = (sponsoredData.games || []).map(convertApiGameToGame)
@@ -175,11 +176,11 @@ export default function WalkPage() {
           setLoading(true)
           setError(null)
 
-          const emailRes = await fetch(`http://localhost:3000/api/getemail`)
+          const emailRes = await fetch(`${APP_URL}/api/getemail`)
           const { email } = await emailRes.json()
           console.log("email", email)
 
-          const res = await fetch(`http://localhost:3000/api/steps?email=${email}`)
+          const res = await fetch(`${APP_URL}/api/steps?email=${email}`)
           const data = await res.json()
 
           if (res.status === 200) {
@@ -222,7 +223,7 @@ export default function WalkPage() {
 
     setJoiningGame("code")
     try {
-      const response = await fetch("http://localhost:3000/api/games/join", {
+      const response = await fetch("${APP_URL}/api/games/join", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -251,7 +252,7 @@ export default function WalkPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
             <p>Loading your steps data...</p>
           </div>
         </div>
@@ -276,12 +277,12 @@ export default function WalkPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex flex-col items-center justify-center min-h-screen px-4">
           <p className="text-white mb-4 text-center">{error}</p>
-          <button
+          <Button
             onClick={() => window.location.reload()}
             className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded"
           >
             Try Again
-          </button>
+          </Button>
         </div>
       </div>
     )
@@ -293,7 +294,7 @@ export default function WalkPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4"></div>
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
             <p>Loading...</p>
           </div>
         </div>
@@ -470,6 +471,8 @@ export default function WalkPage() {
               <GamesList games={sponsoredGames} type="sponsored" />
             </div>
           </motion.div>
+
+          <div className="h-16"/>
         </div>
       </div>
     </div>
