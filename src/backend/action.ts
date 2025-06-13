@@ -42,9 +42,9 @@ interface GameData {
 	image?: string;
 }
 
-type ApiResponse<T = Record<string, never>> =
-	| ({ success: true } & T)
-	| { error: string; [key: string]: unknown };
+export type ApiResponse<T> =
+	({ success: true , message?: string} & T) | {error: string}
+	
 
 export const updateSteps = async (
 	stepsData: StepsData,
@@ -170,7 +170,7 @@ export const createGame = async (
 
 		const tx = new Transaction().add(instruction);
 		const signature = await sendAndConfirmTransaction(connection, tx, [kp]);
-		console.log(signature)
+		console.log(signature);
 
 		await newGame.save();
 		console.log("Game created and saved to db");

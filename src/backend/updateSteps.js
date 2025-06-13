@@ -2,146 +2,112 @@ import { connectToDb } from "./utils";
 import { User, Steps } from "./models";
 
 export async function updateStepData(email, accessToken) {
-  await connectToDb();
-
-  function getEndOfDayMillis() {
-    const now = new Date();
-    const endOfDay = new Date(
-      now.getFullYear(),
-      now.getMonth(),
-      now.getDate() + 1,
-      0,
-      0,
-      0,
-      -1
-    );
-    return endOfDay.getTime();
+  if (!email || !accessToken) {
+    throw new Error("Email and access token are required");
   }
-
-  function setToStartOfDay(date) {
-    return new Date(date.getFullYear(), date.getMonth(), date.getDate());
-  }
-
-  function normalizeDateToStartOfDay(date) {
-    const localDate = new Date(date);
-    return new Date(
-      localDate.getFullYear(),
-      localDate.getMonth(),
-      localDate.getDate()
-    );
-  }
-
-  const user = await User.findOne({ email });
-
-  if (!user) {
-    console.log("User not found");
-    return;
-  }
-
-  const lastStepUpdate = user.lastStepUpdate || new Date();
 
   try {
-    const todayResponse = await fetch(
-      "https://api.fitbit.com/1/user/-/activities/steps/date/today/1d.json",
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-    console.log("response", todayResponse);
+    await connectToDb();
 
-    const previousDay = new Date();
-    previousDay.setDate(previousDay.getDate() - 1);
-    const formattedPreviousDay = previousDay.toISOString().split("T")[0];
-
-    // Fetch previous day's data
-    const previousDayResponse = await fetch(
-      `https://api.fitbit.com/1/user/-/activities/steps/date/${formattedPreviousDay}/1d.json`,
-      {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }
-    );
-
-    console.log("response", previousDayResponse);
-
-    if (todayResponse.ok && previousDayResponse.ok) {
-      const todayData = await todayResponse.json();
-      const previousDayData = await previousDayResponse.json();
-      const stepsData = {
-        today: {
-          date: setToStartOfDay(new Date()),
-          steps: todayData["activities-steps"][0]?.value || 0,
-        },
-        previousDay: {
-          date: setToStartOfDay(previousDay),
-          steps: previousDayData["activities-steps"][0]?.value || 0,
-        },
-      };
-      console.log("Fetched steps data:", stepsData);
-
-      let newTotalSteps = Number(user.totalSteps);
-
-      const localDayDate = normalizeDateToStartOfDay(stepsData.today.date);
-      const localLastStepUpdate = normalizeDateToStartOfDay(lastStepUpdate);
-
-      if (localDayDate.getTime() > localLastStepUpdate.getTime()) {
-        // New day has started, add the previous day's steps to the total
-        newTotalSteps = user.totalSteps + Number ( stepsData.previousDay.steps);
-
-        // Update user's total steps, last step update, and steps for the last update
-        user.totalSteps = newTotalSteps;
-        user.lastStepUpdate = new Date();
-        user.stepsForLastUpdate = stepsData.today.steps; // Store today's steps for further comparisons
-        await user.save();
-
-        // Update or create an entry in the Steps schema
-        const existingSteps = await Steps.findOne({ email: email });
-        if (existingSteps) {
-          existingSteps.totalSteps = newTotalSteps;
-          existingSteps.stepsForLastUpdate = stepsData.today.steps;
-          await existingSteps.save();
-        } else {
-          const newSteps = new Steps({
-            email: email,
-            totalSteps: newTotalSteps,
-            stepsForLastUpdate: stepsData.today.steps,
-          });
-          await newSteps.save();
-        }
-
-        console.log(
-          "Steps data updated with previous day steps:",
-          newTotalSteps
-        );
-      } else {
-        // If it's still the same day, update only the steps for the last update
-        user.stepsForLastUpdate = stepsData.today.steps;
-        await user.save();
-
-        const existingSteps = await Steps.findOne({ email: email });
-        if (existingSteps) {
-          existingSteps.stepsForLastUpdate = stepsData.today.steps;
-          await existingSteps.save();
-        } else {
-          const newSteps = new Steps({
-            email: email,
-            totalSteps: user.totalSteps, // Total steps remain the same
-            stepsForLastUpdate: stepsData.today.steps,
-          });
-          await newSteps.save();
-        }
-
-        console.log(
-          "Steps for the current day have been updated, but total steps remain unchanged."
-        );
-      }
-    } else {
-      console.log("Failed to fetch steps data");
+    // Find user in database
+    const user = await User.findOne({ email });
+    if (!user) {
+      throw new Error(`User with email ${email} not found`);
     }
+
+    // Get current date and previous day
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(yesterday.getDate() - 1);
+    
+    // Format dates for Fitbit API (YYYY-MM-DD)
+    const formatDate = (date) => date.toISOString().split('T')[0];
+    const todayStr = formatDate(today);
+    const yesterdayStr = formatDate(yesterday);
+
+    // Fetch today's steps
+    const todayResponse = await fetch(
+      `https://api.fitbit.com/1/user/-/activities/steps/date/${todayStr}/1d.json`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    if (!todayResponse.ok) {
+      const error = await todayResponse.json().catch(() => ({}));
+      throw new Error(`Failed to fetch today's steps: ${JSON.stringify(error)}`);
+    }
+
+    // Fetch yesterday's steps
+    const yesterdayResponse = await fetch(
+      `https://api.fitbit.com/1/user/-/activities/steps/date/${yesterdayStr}/1d.json`,
+      {
+        headers: { Authorization: `Bearer ${accessToken}` },
+      }
+    );
+
+    if (!yesterdayResponse.ok) {
+      const error = await yesterdayResponse.json().catch(() => ({}));
+      throw new Error(`Failed to fetch yesterday's steps: ${JSON.stringify(error)}`);
+    }
+
+    // Parse responses
+    const todayData = await todayResponse.json();
+    const yesterdayData = await yesterdayResponse.json();
+    
+    const todaySteps = Number.parseInt(todayData["activities-steps"]?.[0]?.value || '0', 10);
+    const yesterdaySteps = Number.parseInt(yesterdayData["activities-steps"]?.[0]?.value || '0', 10);
+    
+    // Normalize dates to compare just the date part
+    const normalizeDate = (date) => {
+      const d = new Date(date);
+      d.setHours(0, 0, 0, 0);
+      return d;
+    };
+
+    const lastUpdate = user.lastStepUpdate ? normalizeDate(user.lastStepUpdate) : null;
+    const todayNormalized = normalizeDate(today);
+
+    // If last update was before today, add yesterday's steps to total
+    if (!lastUpdate || lastUpdate < todayNormalized) {
+      user.totalSteps = (user.totalSteps || 0) + yesterdaySteps;
+    }
+
+    // Update user's steps and last update time
+    user.stepsForLastUpdate = todaySteps;
+    user.lastStepUpdate = today;
+    
+    // Update or create Steps document
+    await Steps.findOneAndUpdate(
+      { email },
+      { 
+        $set: { 
+          totalSteps: user.totalSteps,
+          stepsForLastUpdate: todaySteps,
+          $push: {
+            lastSevenDaysSteps: {
+              date: today,
+              steps: todaySteps
+            }
+          }
+        },
+        $setOnInsert: { email }
+      },
+      { upsert: true, new: true }
+    );
+
+    // Save user updates
+    await user.save();
+    
+    return {
+      success: true,
+      todaySteps,
+      yesterdaySteps,
+      totalSteps: user.totalSteps
+    };
+    
   } catch (error) {
-    console.log("Error fetching steps data:", error);
+    console.error('Error in updateStepData:', error);
+    throw error; // Re-throw to be handled by the caller
   }
 }

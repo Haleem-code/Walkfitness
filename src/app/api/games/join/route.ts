@@ -1,7 +1,7 @@
 // app/api/games/join/route.js
 import { NextResponse } from "next/server";
 import { auth } from "@/backend/auth";
-import { joinGame, joinGameById } from "@/backend/action";
+import { type ApiResponse, joinGame, joinGameById } from "@/backend/action";
 import { connectToDb, decrypt } from "@/backend/utils";
 import { Program } from "@coral-xyz/anchor";
 import idl from "@/lib/idl.json";
@@ -16,8 +16,7 @@ import {
 } from "@solana/web3.js";
 import { NEXT_PUBLIC_RPC_URL } from "@/config";
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
-import { nanoid } from "nanoid";
-import { Game, Wallet } from "@/backend/models";
+import { Game, type IGame, Wallet } from "@/backend/models";
 
 export const dynamic = "force-dynamic";
 
@@ -108,7 +107,7 @@ export async function POST(req: Request) {
 			);
 		}
 
-		let result;
+		let result: ApiResponse<{ game: IGame }>;
 
 		if (gameCode) {
 			// Join private game with code
