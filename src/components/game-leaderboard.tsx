@@ -33,7 +33,7 @@ export default function GameLeaderboard({ gameId, userEmail, className = "" }: G
         // Make sure gameId is properly formatted for the API call
         const formattedGameId = gameId.toString().trim()
 
-        const response = await fetch(`/api/games/${formattedGameId}/leaderboard`)
+        const response = await fetch(`/api/games/leaderboard/${formattedGameId}`)
 
         if (!response.ok) {
           console.error(`API error: ${response.status} ${response.statusText}`)

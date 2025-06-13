@@ -65,12 +65,22 @@ export async function POST(req: Request) {
 
 		const kp = Keypair.fromSecretKey(bs58.decode(decrypt(wallet.key)));
 
+		const balance = await connection.getBalance(kp.publicKey);
+
+		if (balance < game.entryPrice * LAMPORTS_PER_SOL) {
+			return NextResponse.json(
+				{ error: "Not enough ETH to join the game" },
+				{ status: 400 },
+			);
+		}
+
 		const creatorWallet = await Wallet.findOne({
 			userId: game.creator,
-    
 		});
 
-    const creatorKp = Keypair.fromSecretKey(bs58.decode(decrypt(creatorWallet.key)));
+		const creatorKp = Keypair.fromSecretKey(
+			bs58.decode(decrypt(creatorWallet.key)),
+		);
 
 		console.log(creatorWallet);
 
@@ -85,7 +95,7 @@ export async function POST(req: Request) {
 
 		const gameAccount = gameAcounts[0];
 
-    console.log(gameAccount);
+		console.log(gameAccount);
 
 		const instruction = await walkfit.methods
 			.joinGame()
