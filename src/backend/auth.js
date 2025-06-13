@@ -1,7 +1,7 @@
 import NextAuth from "next-auth";
 import "dotenv/config";
-import { connectToDb, generateWalletAddress } from "./utils";
-import { User, Point, Game } from "./models";
+import { connectToDb, } from "./utils";
+import { User } from "./models";
 import { updateStepData } from "./updateSteps";
 
 export const {
@@ -112,7 +112,7 @@ export const {
     },
 
     async signOut({ token }) {
-      
+
       try {
         if (token?.userId) {
           await connectToDb();
@@ -135,7 +135,7 @@ export const {
   // Session configuration
   session: {
     strategy: "jwt",
-    maxAge: 30 * 24 * 60 * 60, // 30 days
+    maxAge: 7 * 60 * 60, // 7 hours
   },
 
   // Pages configuration
