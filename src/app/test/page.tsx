@@ -3,8 +3,7 @@ import { auth } from "@/backend/auth";
 export default async function test() {
   try {
     const apiUrl = process.env.API_URL ;
-    // ||
-    //  "http://localhost:3000/";
+  
     console.log(`Fetching email from: ${apiUrl}/api/getemail`); // Log the API URL
 
     const emailRes = await fetch(`${apiUrl}/api/getemail`);
