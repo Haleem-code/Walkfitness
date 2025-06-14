@@ -26,7 +26,7 @@ export const getSteps = async (email) => {
       }
     }
 
-    updateStepData(email, user.googleAccessToken)
+    
 
     console.log("Found user:", user)
 
