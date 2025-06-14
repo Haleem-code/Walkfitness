@@ -163,6 +163,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
         if (formData.gameType === "private" && responseData.inviteCode) {
           setInviteCode(responseData.inviteCode)
         } else {
+          setInviteCode(responseData.inviteCode)
           // For public and sponsored games, show success state for 8 seconds then navigate
           setTimeout(() => {
             router.push("/walk")

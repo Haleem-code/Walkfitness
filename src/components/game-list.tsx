@@ -30,7 +30,7 @@ export default function GamesList({ games, type }: GamesListProps) {
 
   const handleJoinGame = async (gameId: string) => {
     try {
-      const response = await fetch(`/api/games/join`, {
+      const response = await fetch("/api/games/join", {
         method: "POST",
         body: JSON.stringify({ gameId }),
         headers: {

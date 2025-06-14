@@ -1,6 +1,5 @@
 // next.config.mjs
 import nextPWA from "next-pwa";
-import { APP_URL } from "./src/config";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -9,7 +8,7 @@ const nextConfig = {
   },
   env: {
     AUTH_TRUST_HOST: "true",
-    NEXTAUTH_URL: APP_URL, 
+    NEXTAUTH_URL: "https://walkfit.fly.dev", 
   },
   images: {
     remotePatterns: [

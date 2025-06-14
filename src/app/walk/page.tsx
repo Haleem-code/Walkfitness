@@ -223,7 +223,7 @@ export default function WalkPage() {
 
     setJoiningGame("code")
     try {
-      const response = await fetch("${APP_URL}/api/games/join", {
+      const response = await fetch(`${APP_URL}/api/games/join`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
