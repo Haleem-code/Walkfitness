@@ -10,6 +10,7 @@ import { useToast } from "@/hooks/use-toast"
 import { Loader2 } from "lucide-react"
 import { useForm } from "react-hook-form"
 import { useSession } from "next-auth/react"
+import { APP_URL } from "@/config"
 
 interface JoinGameModalProps {
   isOpen: boolean
@@ -55,7 +56,7 @@ const JoinGameModal = ({ isOpen, onClose }: JoinGameModalProps) => {
       const gameCode = data.code.trim()
 
       // First, fetch the game details
-      const response = await fetch(`https://walkfit.vercel.app/api/games/${gameCode}`)
+      const response = await fetch(`${APP_URL}/api/games/${gameCode}`)
 
       if (!response.ok) {
         throw new Error("Game not found. Please check the code and try again.")
@@ -64,7 +65,7 @@ const JoinGameModal = ({ isOpen, onClose }: JoinGameModalProps) => {
       const game = await response.json()
 
       // Join the game
-      const joinResponse = await fetch(`https://walkfit.vercel.app/api/games/${gameCode}/join`, {
+      const joinResponse = await fetch(`${APP_URL}/api/games/${gameCode}/join`, {
         method: "POST",
       })
 
