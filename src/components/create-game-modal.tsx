@@ -187,7 +187,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
     window.location.href = '/walk'
   }
 
-  if (gameCreated && formData.gameType === "private") {
+  if (gameCreated) {
     return (
       <div className="fixed inset-0 bg-gradient-to-b from-indigo-900 via-purple-900 to-black flex flex-col items-center justify-center px-4">
         <div className="max-w-md w-full bg-gray-800/80 backdrop-blur-sm rounded-3xl p-8 text-center">

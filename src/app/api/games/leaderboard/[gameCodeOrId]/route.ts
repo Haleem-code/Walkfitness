@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDb } from "@/backend/utils";
 import { Game, User, type IGame } from "@/backend/models";
+import { isValidObjectId } from "mongoose";
 
 export const dynamic = "force-dynamic";
 
@@ -14,21 +15,26 @@ export interface LeaderboardEntry {
 
 export async function GET(
 	request: Request,
-	{ params }: { params: { gameId: string } },
+	{ params }: { params: { gameCodeOrId: string } },
 ) {
 	try {
 		await connectToDb();
 
-		const { gameId } = params;
+		const { gameCodeOrId } = params;
 
 		// Find the game by ID
-		const game = await Game.findById(gameId);
+		const game = await Game.findOne({
+			$or: [
+				{ _id: isValidObjectId(gameCodeOrId) ? gameCodeOrId : null },
+				{ code: gameCodeOrId }
+			]
+		});
 
 		if (!game) {
 			return NextResponse.json(
 				{ success: false, error: "Game not found" },
 				{ status: 404 },
-			);
+			);	
 		}
 
 		// Get all users who are participants in the game

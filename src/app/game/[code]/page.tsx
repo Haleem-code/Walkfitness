@@ -2,10 +2,12 @@
 
 import { useCallback, useEffect, useState } from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import { useQuery } from '@tanstack/react-query';
 import { getGameByCode } from "@/backend/data"
 import { notFound } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import DailyProgressBar from "@/components/DailyProgressBar"
+import GameLeaderboard from "@/components/game-leaderboard"
 import TopNavbar from "@/components/TopNav"
 import { motion } from "framer-motion"
 import { Trophy, Users, Calendar, Target, Clock, DollarSign } from "lucide-react"
@@ -20,14 +22,60 @@ interface StepsData {
 export default function GamePage() {
   const { code } = useParams();
   const router = useRouter();
-  const [game, setGame] = useState(null);
-  const [leaderboard, setLeaderboard] = useState([]);
-  const [participants, setParticipants] = useState([]);
-  const [stepsData, setStepsData] = useState<StepsData | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState('');
-  const [userEmail, setUserEmail] = useState('');
- const [userSteps, setUserSteps] = useState(0);
+  const [userSteps, setUserSteps] = useState(0);
+
+  // Fetch user email
+  const { data: userEmailData } = useQuery({
+    queryKey: ['userEmail'],
+    queryFn: async () => {
+      const response = await fetch('/api/getemail');
+      const data = await response.json();
+      return data.email as string;
+    },
+  });
+
+  // Fetch game data
+  const {
+    data: gameData,
+    isLoading: isLoadingGame,
+    error: gameError
+  } = useQuery({
+    queryKey: ['game', code],
+    queryFn: async () => {
+      if (!code) throw new Error('Game code is required');
+      const response = await fetch(`/api/games/${code}`);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to fetch game data');
+      }
+      return response.json();
+    },
+    enabled: !!code,
+  });
+
+
+  // Fetch steps data
+  const {
+    data: stepsData,
+    isLoading: isLoadingSteps
+  } = useQuery({
+    queryKey: ['steps', userEmailData, code],
+    queryFn: async () => {
+      if (!userEmailData || !code) throw new Error('User email and game code are required');
+      const response = await fetch(`/api/users/${userEmailData}/games/${code}/steps`);
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || 'Failed to fetch steps data');
+      }
+      return response.json();
+    },
+    enabled: !!userEmailData && !!code,
+  });
+
+  const game = gameData?.game;
+
+  const loading = isLoadingGame || isLoadingSteps;
+  const error = gameError?.message || '';
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: {
@@ -47,81 +95,22 @@ export default function GamePage() {
     },
   }
 
-    useEffect(() => {
-    fetchUserEmail();
-    if (code) {
-      fetchGameData();
-      fetchLeaderboard();
-    }
-  }, [code]);
-
-
-  const fetchUserEmail = async () => {
-    try {
-      const response = await fetch('/api/getemail');
-      const data = await response.json();
-      if (data.email) {
-        setUserEmail(data.email);
-      }
-    } catch (err) {
-      console.error('Error fetching user email:', err);
-    }
-  };
-
-  const fetchGameData = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/games/${code}`);
-      const data = await response.json();
-      
-      if (data.error) {
-        setError(data.error);
-      } else {
-        setGame(data.game);
-        setParticipants(data.participants || []);
-      }
-    } catch (err) {
-      setError('Failed to fetch game data');
-    } finally {
-      setLoading(false);
-    }
-  }, [code]);
-
-  useEffect(() => {
-    fetchUserEmail();
-    if (code) {
-      fetchGameData();
-      fetchLeaderboard();
-    }
-  }, [code, fetchGameData]);
-
   const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString();
   };
 
   const getGameStatus = () => {
     if (!game) return '';
-    
+
     const now = new Date();
     const startDate = new Date(game.startDate);
     const endDate = new Date(game.endDate);
-    
+
     if (now < startDate) return 'Not Started';
     if (now > endDate) return 'Ended';
     return 'Active';
   };
 
-  const fetchLeaderboard = useCallback(async () => {
-    try {
-      const response = await fetch(`/api/games/${code}/leaderboard`);
-      const data = await response.json();
-
-      if (data.success) {
-        setLeaderboard(data.leaderboard || []);
-      }
-    } catch (err) {
-      console.error('Error fetching leaderboard:', err);
-    }
-  }, [code]);
 
 
   const getGameTypeColor = (type) => {
@@ -340,7 +329,7 @@ export default function GamePage() {
             <motion.div variants={fadeInUp}>
               <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50 text-center">
                 <DollarSign className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
-                <div className="text-2xl font-bold mb-1">{game.entryPrice > 0 ? `$${game.entryPrice}` : 'Free'}</div>
+                <div className="text-2xl font-bold mb-1">{game.entryPrice > 0 ? `${game.entryPrice} ETH` : 'Free'}</div>
                 <div className="text-sm text-gray-400">Entry Fee</div>
               </div>
             </motion.div>
@@ -382,7 +371,7 @@ export default function GamePage() {
                     )}
                     <div className="flex justify-between items-center">
                       <span className="text-gray-400">Entry Fee</span>
-                      <span>{game.entryPrice > 0 ? `$${game.entryPrice}` : "Free"}</span>
+                      <span>{game.entryPrice > 0 ? `${game.entryPrice} ETH` : "Free"}</span>
                     </div>
                   </div>
                 </div>
@@ -419,70 +408,26 @@ export default function GamePage() {
                   </div>
 
                   {/* Daily Progress Bar */}
-                   
-                    <div className="mt-4 text-center text-sm text-gray-400">
-                      Connect your fitness tracker to update your steps
-                    </div>
+
+                  <div className="mt-4 text-center text-sm text-gray-400">
+                    Connect your fitness tracker to update your steps
                   </div>
+                </div>
               </motion.div>
             </div>
 
             {/* Right Column - Leaderboard */}
-           <div className="lg:col-span-2">
+            <div className="lg:col-span-2">
               <motion.div
                 initial="hidden"
                 animate="visible"
                 variants={fadeInUp}
               >
-                <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-yellow-400" />
-                    Leaderboard
-                  </h3>
-                  <div className="space-y-3">
-                    {leaderboard.length > 0 ? leaderboard.map((participant, index) => (
-                      <motion.div
-                        key={participant.id || participant.email || index}
-                        className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.02] ${participant.email === userEmail
-                          ? 'bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30'
-                          : 'bg-gray-700/30 hover:bg-gray-700/50'
-                          }`}
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        transition={{ delay: index * 0.1 }}
-                      >
-                        <div className="flex items-center gap-4">
-                          <div className={`w-10 h-10 flex items-center justify-center rounded-full font-bold ${index === 0 ? 'bg-gradient-to-r from-yellow-400 to-yellow-600 text-black' :
-                            index === 1 ? 'bg-gradient-to-r from-gray-300 to-gray-500 text-black' :
-                              index === 2 ? 'bg-gradient-to-r from-amber-400 to-amber-600 text-black' :
-                                'bg-gray-600/50 text-white'
-                            }`}>
-                            {getRankIcon(index + 1)}
-                          </div>
-                          <div>
-                            <div className="font-semibold">
-                              {participant.name || participant.email?.split('@')[0] || `User${index + 1}`}
-                              {participant.email === userEmail && (
-                                <span className="ml-2 text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full">You</span>
-                              )}
-                            </div>
-                            <div className="text-sm text-gray-400">{participant.email || 'No email'}</div>
-                          </div>
-                        </div>
-                        <div className="text-right">
-                          <div className="text-lg font-bold">{(participant.steps || 0).toLocaleString()}</div>
-                          <div className="text-sm text-gray-400">steps</div>
-                        </div>
-                      </motion.div>
-                    )) : (
-                      <div className="text-center py-12">
-                        <Trophy className="w-16 h-16 text-gray-600 mx-auto mb-4" />
-                        <p className="text-gray-400 text-lg">No participants yet</p>
-                        <p className="text-gray-500 text-sm">Be the first to join and start tracking your steps!</p>
-                      </div>
-                    )}
-                  </div>
-                </div>
+                <GameLeaderboard
+                  gameIdOrCode={code as string}
+                  userEmail={userEmailData}
+                  className="h-full"
+                />
               </motion.div>
             </div>
           </div>

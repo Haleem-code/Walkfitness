@@ -113,7 +113,7 @@ export default function GamePage() {
 
   const fetchLeaderboard = useCallback(async () => {
     try {
-      const response = await fetch(`/api/games/${gameId}/leaderboard`);
+      const response = await fetch(`/api/games/leaderboard/${gameId}`);
       const data = await response.json();
 
       if (data.success) {
@@ -436,7 +436,7 @@ export default function GamePage() {
             <div className="lg:col-span-2">
              {/* Right Column - Leaderboard */}
 <div className="lg:col-span-2">
-  <GameLeaderboard gameId={Array.isArray(gameId) ? gameId[0] : gameId} userEmail={userEmail} />
+  <GameLeaderboard gameIdOrCode={Array.isArray(gameId) ? gameId[0] : gameId} userEmail={userEmail} />
 </div>
             </div>
           </div>

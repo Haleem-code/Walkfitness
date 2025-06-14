@@ -13,12 +13,12 @@ interface LeaderboardEntry {
 }
 
 interface GameLeaderboardProps {
-  gameId: string
+  gameIdOrCode: string
   userEmail?: string
   className?: string
 }
 
-export default function GameLeaderboard({ gameId, userEmail, className = "" }: GameLeaderboardProps) {
+export default function GameLeaderboard({ gameIdOrCode: gameId, userEmail, className = "" }: GameLeaderboardProps) {
   const [leaderboard, setLeaderboard] = useState<LeaderboardEntry[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
