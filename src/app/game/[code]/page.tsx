@@ -379,43 +379,33 @@ export default function GamePage() {
 
               {/* Your Progress */}
               <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeInUp}
-              >
-                <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-green-400" />
-                    Your Progress
-                  </h3>
-                  <div className="text-center">
-                    <div className="relative w-24 h-24 mx-auto mb-4">
-                      <Image src="/images/sneaker.svg" alt="Steps" width={96} height={96} />
-                    </div>
-                    <div className="text-3xl font-bold mb-2">
-                      {(stepsData ? stepsData.stepsForLastUpdate : 0).toLocaleString()}
-                    </div>
-                    <div className="text-sm text-gray-400 mb-4">Total Steps</div>
-                    <div className="bg-gray-700/50 rounded-full h-2 mb-2">
-                      <div
-                        className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500"
-                        style={{ width: `${userProgressPercentage}%` }}
-                      />
-                    </div>
-                    <div className="text-sm text-gray-400">
-                      {userProgressPercentage}% of target reached
-                    </div>
-                  </div>
-
-                  {/* Daily Progress Bar */}
-
-                  <div className="mt-4 text-center text-sm text-gray-400">
-                    Connect your fitness tracker to update your steps
-                  </div>
-                </div>
-              </motion.div>
-            </div>
-
+                             initial="hidden"
+                             animate="visible"
+                             variants={fadeInUp}
+                           >
+                             <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50">
+                               <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
+                                 <Trophy className="w-5 h-5 text-green-400" />
+                                 Your Progress
+                               </h3>
+                               <div className="text-center">
+                                 <div className="relative w-24 h-24 mx-auto mb-4">
+                                   <Image src="/images/sneaker.svg" alt="Steps" width={96} height={96} />
+                                 </div>
+                                 <div className="text-3xl font-bold mb-2">
+                                   {(stepsData?.stepsForLastUpdate || userSteps || 0).toLocaleString()}
+                                 </div>
+                                 <div className="text-sm text-gray-400 mb-4">Total Steps</div>
+                                 <div className="bg-gray-700/50 rounded-full h-2 mb-2">
+                                   <div className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500" style={{ width: `${userProgressPercentage}%` }} />
+                                 </div>
+                                 <div className="text-sm text-gray-400">{userProgressPercentage}% of target reached</div>
+                               </div>
+             
+                             </div>
+                           </motion.div>
+                         </div>
+             
             {/* Right Column - Leaderboard */}
             <div className="lg:col-span-2">
               <motion.div
