@@ -94,7 +94,7 @@ export default function WalkPage() {
       const emailRes = await fetch(`${APP_URL}/api/getemail`)
       const { email } = await emailRes.json()
       console.log("email", email)
-      const updateRes = await fetch("/api/update-steps", {
+      const updateRes = await fetch(`${APP_URL}/api/update-steps`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

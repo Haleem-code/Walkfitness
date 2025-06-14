@@ -12,6 +12,7 @@ import { SessionProvider } from "next-auth/react";
 import { WalletProvider } from "@/providers/WalletConnect";
 import { NetworkProvider } from "@/hooks/useNetwork";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { APP_URL } from "@/config";
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -45,7 +46,7 @@ export default function RootLayout({ children }: LayoutProps) {
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const response = await fetch("/api/getpoints");
+        const response = await fetch(`${APP_URL}/api/getpoints`);
         const data = await response.json();
         setPointData(data.points || 0);
       } catch (error) {

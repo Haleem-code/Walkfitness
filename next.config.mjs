@@ -3,13 +3,13 @@ import nextPWA from "next-pwa";
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  output: "standalone",
+  
   typescript: {
     ignoreBuildErrors: true,
+    
   },
-  env: {
-    AUTH_TRUST_HOST: "true",
-    NEXTAUTH_URL: process.env.NEXTAUTH_URI, 
-  },
+
   images: {
     remotePatterns: [
       {
@@ -20,9 +20,11 @@ const nextConfig = {
   },
 };
 
-export default nextPWA({
-  dest: "public",
-  register: true,
-  skipWaiting: true,
-  disable: process.env.NODE_ENV === "development",
-})(nextConfig);
+export default nextConfig;
+
+// export default nextPWA({
+//   dest: "public",
+//   register: true,
+//   skipWaiting: true,
+//   disable: process.env.NODE_ENV === "development",
+// })(nextConfig);

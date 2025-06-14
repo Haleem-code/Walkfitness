@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react"
 import { Trophy, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
+import { APP_URL } from "@/config"
 
 interface LeaderboardEntry {
   email: string
@@ -33,7 +34,7 @@ export default function GameLeaderboard({ gameIdOrCode: gameId, userEmail, class
         // Make sure gameId is properly formatted for the API call
         const formattedGameId = gameId.toString().trim()
 
-        const response = await fetch(`/api/games/leaderboard/${formattedGameId}`)
+        const response = await fetch(`${APP_URL}/api/games/leaderboard/${formattedGameId}`)
 
         if (!response.ok) {
           console.error(`API error: ${response.status} ${response.statusText}`)

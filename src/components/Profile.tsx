@@ -9,6 +9,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import TopNavbar from "@/components/TopNav";
 import { useRouter } from "next/navigation";
+import { APP_URL } from "@/config";
 
 interface StreakData {
   currentStreak: number;
@@ -70,7 +71,7 @@ const ProfilePage = () => {
   const fetchStreakData = async () => {
     try {
       setLoading(true);
-      const response = await fetch("/api/streak");
+      const response = await fetch(`${APP_URL}/api/streak`);
 
       if (response.ok) {
         const data = await response.json();

@@ -18,7 +18,7 @@ const AuthPageWithStreak = () => {
 
   const checkStreak = useCallback(async () => {
     try {
-      const response = await fetch("/api/streak", {
+      const response = await fetch(`${APP_URL}/api/streak`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

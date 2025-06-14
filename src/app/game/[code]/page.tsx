@@ -12,6 +12,7 @@ import TopNavbar from "@/components/TopNav"
 import { motion } from "framer-motion"
 import { Trophy, Users, Calendar, Target, Clock, DollarSign } from "lucide-react"
 import Image from "next/image"
+import { APP_URL } from '@/config';
 
 interface StepsData {
   totalSteps: number
@@ -28,7 +29,7 @@ export default function GamePage() {
   const { data: userEmailData } = useQuery({
     queryKey: ['userEmail'],
     queryFn: async () => {
-      const response = await fetch('/api/getemail');
+      const response = await fetch(`${APP_URL}/api/getemail`);
       const data = await response.json();
       return data.email as string;
     },
@@ -43,7 +44,7 @@ export default function GamePage() {
     queryKey: ['game', code],
     queryFn: async () => {
       if (!code) throw new Error('Game code is required');
-      const response = await fetch(`/api/games/${code}`);
+      const response = await fetch(`${APP_URL}/api/games/${code}`);
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to fetch game data');
@@ -62,7 +63,7 @@ export default function GamePage() {
     queryKey: ['steps', userEmailData, code],
     queryFn: async () => {
       if (!userEmailData || !code) throw new Error('User email and game code are required');
-      const response = await fetch(`/api/users/${userEmailData}/games/${code}/steps`);
+      const response = await fetch(`${APP_URL}/api/users/${userEmailData}/games/${code}/steps`);
       if (!response.ok) {
         const error = await response.json();
         throw new Error(error.error || 'Failed to fetch steps data');

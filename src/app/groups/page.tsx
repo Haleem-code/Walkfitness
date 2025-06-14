@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input"
 import Image from "next/image"
 import TopNavbar from "@/components/TopNav"
 import { useToast } from "@/hooks/use-toast"
+import { APP_URL } from "@/config"
 
 export default function ComingSoon() {
   const [email, setEmail] = useState("")
@@ -33,7 +34,7 @@ export default function ComingSoon() {
       const formData = new FormData()
       formData.append("email", email.trim())
 
-      const response = await fetch("/api/waitlist", {
+      const response = await fetch(`${APP_URL}/api/waitlist`, {
         method: "POST",
         body: formData,
       })
