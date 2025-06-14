@@ -207,7 +207,7 @@ export default function ComingSoon() {
             transition={{ delay: 1.2 }}
           >
             <p className="text-gray-400 text-sm mb-2">Expected Launch</p>
-            <p className="text-2xl font-bold text-purple-400">Q2 2024</p>
+            <p className="text-2xl font-bold text-purple-400">Q4 2025</p>
           </motion.div>
         </div>
 
