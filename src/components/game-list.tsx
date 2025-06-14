@@ -5,7 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
-import { APP_URL } from "@/config"
+
 
 interface Game {
   id: string
@@ -31,7 +31,7 @@ export default function GamesList({ games, type }: GamesListProps) {
 
   const handleJoinGame = async (gameId: string) => {
     try {
-      const response = await fetch(`${APP_URL}/api/games/join`, {
+      const response = await fetch(`/api/games/join`, {
         method: "POST",
         body: JSON.stringify({ gameId }),
         headers: {

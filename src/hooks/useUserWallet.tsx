@@ -24,7 +24,7 @@ export const useUserWallet = () => {
             }
 
             try {
-                const response = await fetch(`${APP_URL}/api/wallet`);
+                const response = await fetch(`/api/wallet`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch wallet');
                 }

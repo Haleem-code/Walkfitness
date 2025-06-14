@@ -10,7 +10,7 @@ import TopNavbar from "@/components/TopNav";
 import BottomNav from "@/components/BottomNav";
 import { WalletProvider } from "@/providers/WalletConnect";
 import { NetworkProvider } from "@/hooks/useNetwork";
-import { APP_URL } from "@/config";
+;
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -38,7 +38,7 @@ export default function ClientLayout({ children }: ClientLayoutProps) {
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const response = await fetch(`${APP_URL}/api/getpoints`);
+        const response = await fetch(`/api/getpoints`);
         const data = await response.json();
         setPointData(data.points || 0);
       } catch (error) {

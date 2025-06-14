@@ -23,6 +23,9 @@ RUN \
 FROM base AS builder
 WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
+# Copy .env.production for build
+COPY .env.production .env.production
+# Copy the rest of the files
 COPY . .
 
 # Next.js collects completely anonymous telemetry data about general usage.

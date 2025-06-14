@@ -10,7 +10,7 @@ import TopNavbar from "@/components/TopNav"
 import GamesList from "@/components/game-list"
 import Image from "next/image"
 import DailyProgressBar from "@/components/DailyProgressBar"
-import { APP_URL } from "@/config"
+
 
 interface ApiGame {
   _id: string
@@ -91,10 +91,10 @@ export default function WalkPage() {
     if (!session) return
     setRefreshingSteps(true)
     try {
-      const emailRes = await fetch(`${APP_URL}/api/getemail`)
+      const emailRes = await fetch(`/api/getemail`)
       const { email } = await emailRes.json()
       console.log("email", email)
-      const updateRes = await fetch(`${APP_URL}/api/update-steps`, {
+      const updateRes = await fetch(`/api/update-steps`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -104,7 +104,7 @@ export default function WalkPage() {
 
       if (updateRes.ok) {
         // Fetch updated steps data
-        const res = await fetch(`${APP_URL}/api/steps?email=${email}`)
+        const res = await fetch(`/api/steps?email=${email}`)
         const data = await res.json()
 
         if (res.status === 200) {
@@ -150,14 +150,14 @@ export default function WalkPage() {
   // Use useCallback to memoize fetchGames function
   const fetchGames = useCallback(async () => {
     try {
-      const publicResponse = await fetch(`${APP_URL}/api/games/public`)
+      const publicResponse = await fetch(`/api/games/public`)
       if (publicResponse.ok) {
         const publicData = await publicResponse.json()
         const convertedPublicGames = (publicData.games || []).map(convertApiGameToGame)
         setPublicGames(convertedPublicGames)
       }
 
-      const sponsoredResponse = await fetch(`${APP_URL}/api/games/sponsored`)
+      const sponsoredResponse = await fetch(`/api/games/sponsored`)
       if (sponsoredResponse.ok) {
         const sponsoredData = await sponsoredResponse.json()
         const convertedSponsoredGames = (sponsoredData.games || []).map(convertApiGameToGame)
@@ -176,11 +176,11 @@ export default function WalkPage() {
           setLoading(true)
           setError(null)
 
-          const emailRes = await fetch(`${APP_URL}/api/getemail`)
+          const emailRes = await fetch(`/api/getemail`)
           const { email } = await emailRes.json()
           console.log("email", email)
 
-          const res = await fetch(`${APP_URL}/api/steps?email=${email}`)
+          const res = await fetch(`/api/steps?email=${email}`)
           const data = await res.json()
 
           if (res.status === 200) {
@@ -223,7 +223,7 @@ export default function WalkPage() {
 
     setJoiningGame("code")
     try {
-      const response = await fetch(`${APP_URL}/api/games/join`, {
+      const response = await fetch(`/api/games/join`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

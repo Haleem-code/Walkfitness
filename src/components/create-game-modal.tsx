@@ -10,7 +10,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
 import { Label } from "@/components/ui/label"
 import Image from "next/image"
 import { useRouter } from "next/navigation"
-import { APP_URL } from "@/config"
+
 
 interface CreateGameModalProps {
   onClose: () => void
@@ -151,7 +151,7 @@ export default function CreateGameModal({ onClose, onGameCreated }: CreateGameMo
         formDataToSend.append("banner", formData.banner)
       }
 
-      const response = await fetch(`${APP_URL}/api/games/create-games`, {
+      const response = await fetch(`/api/games/create-games`, {
         method: "POST",
         body: formDataToSend,
       })

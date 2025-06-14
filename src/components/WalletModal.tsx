@@ -134,7 +134,7 @@ export function WalletModal({
 
         try {
             const amount = Number.parseFloat(data.withdrawAmount);
-            const response = await fetch(`${APP_URL}/api/wallet/withdraw`, {
+            const response = await fetch(`/api/wallet/withdraw`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
