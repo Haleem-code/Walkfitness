@@ -28,6 +28,8 @@ async function handleGET() {
 
 			console.log(address, "->", key);
 
+			
+
 			wallet = await Wallet.create({
 				userId: session.user.email,
 				address,

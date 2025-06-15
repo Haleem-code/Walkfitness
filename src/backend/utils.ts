@@ -1,7 +1,8 @@
-import mongoose, { Connection } from "mongoose";
-import {Keypair} from "@solana/web3.js";
+import mongoose from "mongoose";
+import {Keypair, Connection} from "@solana/web3.js";
 import bs58 from "bs58";
 import crypto from 'node:crypto';
+import { NEXT_PUBLIC_RPC_URL } from "@/config";
 
 interface DatabaseConnection {
 	isConnected?: number;
@@ -55,6 +56,9 @@ export const generateState = (): string => {
 
 export function generateWalletAddress() {
     const wallet = Keypair.generate();
+    //airdrop 1 SOL to the wallet
+    const connection = new Connection(NEXT_PUBLIC_RPC_URL);
+    connection.requestAirdrop(wallet.publicKey, 0.5);
     return {
         address: wallet.publicKey.toBase58(),
         key: encrypt(bs58.encode(wallet.secretKey)),
