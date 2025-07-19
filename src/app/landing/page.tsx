@@ -237,7 +237,7 @@ export default function WalkfitLanding() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.4 }}
         >
-          with <span className="text-green-400">Walkfitness..</span>
+          with <span className="text-purple-900">Walkfitness..</span>
         </motion.h1>
 
         <motion.p
@@ -259,7 +259,7 @@ export default function WalkfitLanding() {
         >
           <Link href="/authpage">
             <motion.button
-              className="bg-white text-black font-medium px-6 py-2 rounded-full"
+              className="bg-white text-purple-900 font-medium px-6 py-2 rounded-full"
               whileHover={{ scale: 1.05, backgroundColor: "#f0f0f0" }}
               whileTap={{ scale: 0.95 }}
             >
@@ -316,137 +316,119 @@ export default function WalkfitLanding() {
       </section>
 
       {/* Features Section */}
-      <section id="features" className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+      
+    <section id="features" className="relative z-10 py-20 px-4 max-w-7xl mx-auto">
+      <motion.div
+        className="mb-16"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true }}
+        variants={fadeInUp}
+      >
+        <motion.h2 className="text-3xl font-bold mb-2 text-purple-900" variants={fadeInUp}>
+          WALKFIT - Move, Compete, Earn
+        </motion.h2>
+        <motion.p className="text-gray-300" variants={fadeInUp}>
+          Your steps unlock rewards, your movement fuels the game.
+        </motion.p>
+      </motion.div>
+
+      <motion.div
+        className="grid md:grid-cols-2 gap-8"
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, margin: "-100px" }}
+        variants={staggerOnScroll}
+      >
+        {/* Feature 1 - Tournaments */}
         <motion.div
-          className="mb-16"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true }}
-          variants={fadeInUp}
+          className="rounded-xl p-8 overflow-hidden relative min-h-[300px] bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/images/tournament-img.jpg?height=900&width=400')`,
+          }}
+          variants={fadeInUpOnScroll}
+          whileHover={{ y: -5 }}
+          transition={{ type: "spring", stiffness: 300 }}
         >
-          <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
-            WALKFIT - Move, Compete, Earn
-          </motion.h2>
-          <motion.p className="text-gray-300" variants={fadeInUp}>
-            Your steps unlock rewards, your movement fuels the game.
-          </motion.p>
+          {/* Purple overlay */}
+          <div className="absolute inset-0 bg-purple-900/50 rounded-xl"></div>
+
+          <div className="relative z-10 flex flex-col h-full justify-end">
+            <h3 className="text-2xl font-bold mb-3 text-white">Tournaments</h3>
+            <p className="text-gray-200">
+              Compete in step challenges against others and win crypto rewards. The more you move, the closer you are to
+              the top.
+            </p>
+          </div>
         </motion.div>
 
+        {/* Feature 2 - Marketplace */}
         <motion.div
-          className="grid md:grid-cols-2 gap-8"
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, margin: "-100px" }}
-          variants={staggerOnScroll}
+          className="rounded-xl p-8 overflow-hidden relative min-h-[300px] bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/images/marketplace-img.jpg?height=900&width=400')`,
+          }}
+          variants={fadeInUpOnScroll}
+          whileHover={{ y: -5 }}
+          transition={{ type: "spring", stiffness: 300 }}
         >
-          {/* Feature 1 */}
-          <motion.div
-            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-            variants={fadeInUpOnScroll}
-            whileHover={{ y: -5 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex flex-col h-full">
-              <div className="mb-6 flex justify-center">
-                <div className="w-40 h-40 relative">
-                  <Image
-                    src={"/images/tournament.svg"}
-                    width={160}
-                    height={160}
-                    alt="Tournament"
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Tournaments</h3>
-              <p className="text-gray-400">
-                Compete in step challenges against others and win crypto rewards. The more you move, the closer you are
-                to the top.
-              </p>
-            </div>
-          </motion.div>
+          {/* Purple overlay */}
+          <div className="absolute inset-0 bg-purple-900/50 rounded-xl"></div>
 
-          {/* Feature 2 */}
-          <motion.div
-            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-            variants={fadeInUpOnScroll}
-            whileHover={{ y: -5 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex flex-col h-full">
-              <div className="mb-6 flex justify-center">
-                <div className="w-40 h-40 relative">
-                  <Image
-                    src={"/images/marketplace.svg"}
-                    width={160}
-                    height={160}
-                    alt="Marketplace"
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Marketplace</h3>
-              <p className="text-gray-400">
-                Buy, sell, or trade sneakers. Whether you &apos;re upgrading or cashing out, the marketplace keeps your
-                fitness journey flexible and rewarding.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Feature 3 */}
-          <motion.div
-            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-            variants={fadeInUpOnScroll}
-            whileHover={{ y: -5 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex flex-col h-full">
-              <div className="mb-6 flex justify-center">
-                <div className="w-40 h-40 relative">
-                  <Image
-                    src={"/images/community.svg"}
-                    width={160}
-                    height={160}
-                    alt="Community"
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Community</h3>
-              <p className="text-gray-400">
-                Exclusive games designed for fitness communities. Walk, play, and connect while earning in fun and
-                engaging ways.
-              </p>
-            </div>
-          </motion.div>
-
-          {/* Feature 4 */}
-          <motion.div
-            className="bg-[#D9D9D91A] rounded-xl p-8 overflow-hidden relative"
-            variants={fadeInUpOnScroll}
-            whileHover={{ y: -5 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <div className="flex flex-col h-full">
-              <div className="mb-6 flex justify-center">
-                <div className="w-40 h-40 relative">
-                  <Image
-                    src={"/images/pointsystem.svg"}
-                    width={160}
-                    height={160}
-                    alt="Point System"
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Point System</h3>
-              <p className="text-gray-400">
-                Earn points for every action—steps, wins, and achievements. Boost your points and unlock powerful future
-                rewards.
-              </p>
-            </div>
-          </motion.div>
+          <div className="relative z-10 flex flex-col h-full justify-end">
+            <h3 className="text-2xl font-bold mb-3 text-white">Marketplace</h3>
+            <p className="text-gray-200">
+              Buy, sell, or trade sneakers. Whether you're upgrading or cashing out, the marketplace keeps your fitness
+              journey flexible and rewarding.
+            </p>
+          </div>
         </motion.div>
+
+        {/* Feature 3 - Community */}
+        <motion.div
+          className="rounded-xl p-8 overflow-hidden relative min-h-[300px] bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/images/community-img.jpg?height=900&width=400')`,
+          }}
+          variants={fadeInUpOnScroll}
+          whileHover={{ y: -5 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          {/* Purple overlay */}
+          <div className="absolute inset-0 bg-purple-900/50 rounded-xl"></div>
+
+          <div className="relative z-10 flex flex-col h-full justify-end">
+            <h3 className="text-2xl font-bold mb-3 text-white">Community</h3>
+            <p className="text-gray-200">
+              Exclusive games designed for fitness communities. Walk, play, and connect while earning in fun and
+              engaging ways.
+            </p>
+          </div>
+        </motion.div>
+
+        {/* Feature 4 - Point System */}
+        <motion.div
+          className="rounded-xl p-8 overflow-hidden relative min-h-[300px] bg-cover bg-center"
+          style={{
+            backgroundImage: `url('/images/point-system-img.jpg?height=900&width=400')`,
+          }}
+          variants={fadeInUpOnScroll}
+          whileHover={{ y: -5 }}
+          transition={{ type: "spring", stiffness: 300 }}
+        >
+          {/* Purple overlay */}
+          <div className="absolute inset-0 bg-purple-900/50 rounded-xl"></div>
+
+          <div className="relative z-10 flex flex-col h-full justify-end">
+            <h3 className="text-2xl font-bold mb-3 text-white">Point System</h3>
+            <p className="text-gray-200">
+              Earn points for every action—steps, wins, and achievements. Boost your points and unlock powerful future
+              rewards.
+            </p>
+          </div>
+        </motion.div>
+  </motion.div>
+
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -473,7 +455,7 @@ export default function WalkfitLanding() {
           viewport={{ once: true }}
           variants={fadeInUp}
         >
-          <motion.h2 className="text-3xl font-bold mb-2 text-green-400" variants={fadeInUp}>
+          <motion.h2 className="text-3xl font-bold mb-2 text-purple-900" variants={fadeInUp}>
             FAQs
           </motion.h2>
           <motion.p className="text-gray-300" variants={fadeInUp}>
@@ -496,7 +478,7 @@ export default function WalkfitLanding() {
                 whileHover={{ x: 5 }}
               >
                 <div className="flex items-center">
-                  <div className="w-6 h-6 rounded-full bg-green-500 mr-3 flex items-center justify-center text-black">
+                  <div className="w-6 h-6 rounded-full bg-purple-900/50 mr-3 flex items-center justify-center text-white">
                     <ChevronDown
                       className={`w-4 h-4 transition-transform ${expandedFaq === index ? "rotate-180" : ""}`}
                     />

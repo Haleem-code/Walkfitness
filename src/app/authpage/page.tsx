@@ -239,10 +239,10 @@ const AuthPageWithStreak = () => {
               </motion.div>
 
               {/* Google Connect Button */}
-              <motion.div className="mb-4" variants={fadeInUp}>
+             <motion.div className="mb-8" variants={fadeInUp}>
                 <motion.button
                   type="button"
-                  onClick={() => signIn("google", { callbackUrl: "/authpage" })}
+                  onClick={handleLogin}
                   onMouseEnter={() => setIsButtonHovered(true)}
                   onMouseLeave={() => setIsButtonHovered(false)}
                   className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"
