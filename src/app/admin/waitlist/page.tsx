@@ -9,6 +9,7 @@ import { Users, Mail, Calendar, Download, Search } from "lucide-react"
 import { format } from "date-fns"
 import { useToast } from "@/hooks/use-toast"
 
+
 interface WaitlistUser {
   _id: string
   email: string
@@ -36,7 +37,7 @@ export default function WaitlistAdmin() {
 
   const fetchWaitlistData = async () => {
     try {
-      const response = await fetch("/api/waitlist")
+      const response = await fetch(`/api/waitlist`)
       const result = await response.json()
 
       if (result.success) {

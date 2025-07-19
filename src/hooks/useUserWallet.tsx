@@ -1,3 +1,4 @@
+import { APP_URL } from '@/config';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 
@@ -23,7 +24,7 @@ export const useUserWallet = () => {
             }
 
             try {
-                const response = await fetch('/api/wallet');
+                const response = await fetch(`/api/wallet`);
                 if (!response.ok) {
                     throw new Error('Failed to fetch wallet');
                 }

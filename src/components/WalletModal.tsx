@@ -12,6 +12,7 @@ import { useForm } from 'react-hook-form';
 import { NEXT_PUBLIC_RPC_URL } from '@/config';
 import { DepositQRCode } from './DepositQRCode';
 import { useUserWallet } from '@/hooks/useUserWallet';
+import { APP_URL } from '@/config';
 
 interface WalletModalProps {
     isOpen: boolean;
@@ -133,7 +134,7 @@ export function WalletModal({
 
         try {
             const amount = Number.parseFloat(data.withdrawAmount);
-            const response = await fetch('/api/wallet/withdraw', {
+            const response = await fetch(`/api/wallet/withdraw`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

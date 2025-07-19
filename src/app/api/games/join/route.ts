@@ -1,4 +1,3 @@
-// app/api/games/join/route.js
 import { NextResponse } from "next/server";
 import { auth } from "@/backend/auth";
 import { type ApiResponse, joinGame, joinGameById } from "@/backend/action";

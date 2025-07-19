@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { useSession } from "next-auth/react"
 import { LoaderCircle, Copy, CheckCircle } from "lucide-react"
 
+
 export default function ReferralPage() {
   const { data: session, status } = useSession()
   const [loading, setLoading] = useState(true)
@@ -40,7 +41,7 @@ export default function ReferralPage() {
   const fetchReferralData = async (showLoading = true) => {
     try {
       if (showLoading) setLoading(true)
-      const res = await fetch("/api/referral")
+      const res = await fetch(`/api/referral`)
       if (!res.ok) {
         setLoading(false)
         return
@@ -65,7 +66,7 @@ export default function ReferralPage() {
 
     try {
       setSubmitting(true)
-      const res = await fetch("/api/referral", {
+      const res = await fetch(`/api/referral`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ referrerId: inputRefCode }),

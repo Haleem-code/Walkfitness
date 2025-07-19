@@ -6,6 +6,7 @@ import { Badge } from "@/components/ui/badge"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
 
+
 interface Game {
   id: string
   name: string
@@ -30,7 +31,7 @@ export default function GamesList({ games, type }: GamesListProps) {
 
   const handleJoinGame = async (gameId: string) => {
     try {
-      const response = await fetch("/api/games/join", {
+      const response = await fetch(`/api/games/join`, {
         method: "POST",
         body: JSON.stringify({ gameId }),
         headers: {

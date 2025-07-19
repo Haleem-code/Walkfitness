@@ -45,7 +45,7 @@ export default function RootLayout({ children }: LayoutProps) {
   useEffect(() => {
     const fetchPoints = async () => {
       try {
-        const response = await fetch("/api/getpoints");
+        const response = await fetch(`/api/getpoints`);
         const data = await response.json();
         setPointData(data.points || 0);
       } catch (error) {

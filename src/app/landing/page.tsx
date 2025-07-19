@@ -19,6 +19,7 @@ import {
   DialogFooter,
 } from "@/components/ui/dialog"
 
+
 export default function WalkfitLanding() {
   const [expandedFaq, setExpandedFaq] = useState<number | null>(0)
   const [showGetStartedDialog, setShowGetStartedDialog] = useState(false)
@@ -49,7 +50,7 @@ export default function WalkfitLanding() {
       const formData = new FormData()
       formData.append("email", email.trim())
 
-      const response = await fetch("/api/waitlist", {
+      const response = await fetch(`/api/waitlist`, {
         method: "POST",
         body: formData,
       })

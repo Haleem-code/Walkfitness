@@ -7,7 +7,7 @@ import Image from "next/image"
 import { motion } from "framer-motion"
 import Link from "next/link"
 import StreakNotification from "@/components/streak-notification"
-import { APP_URL } from "@/config"
+
 
 const AuthPageWithStreak = () => {
   const [isButtonHovered, setIsButtonHovered] = useState(false)
@@ -18,7 +18,7 @@ const AuthPageWithStreak = () => {
 
   const checkStreak = useCallback(async () => {
     try {
-      const response = await fetch("/api/streak", {
+      const response = await fetch(`/api/streak`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -89,7 +89,7 @@ const AuthPageWithStreak = () => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch(`${APP_URL}/api/fitbitLogin`, {
+      const response = await fetch(`/api/fitbitLogin`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

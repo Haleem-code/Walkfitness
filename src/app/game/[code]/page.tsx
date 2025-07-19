@@ -13,6 +13,7 @@ import { motion } from "framer-motion"
 import { Trophy, Users, Calendar, Target, Clock, DollarSign } from "lucide-react"
 import Image from "next/image"
 
+
 interface StepsData {
   totalSteps: number
   lastSevenDaysSteps: number[]
@@ -28,7 +29,7 @@ export default function GamePage() {
   const { data: userEmailData } = useQuery({
     queryKey: ['userEmail'],
     queryFn: async () => {
-      const response = await fetch('/api/getemail');
+      const response = await fetch(`/api/getemail`);
       const data = await response.json();
       return data.email as string;
     },

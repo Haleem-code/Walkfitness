@@ -4,6 +4,7 @@ import { useEffect, useState } from "react"
 import { Trophy, Search } from "lucide-react"
 import { Input } from "@/components/ui/input"
 
+
 interface LeaderboardEntry {
   email: string
   name: string
