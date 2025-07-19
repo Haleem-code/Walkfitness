@@ -379,7 +379,7 @@ export default function WalkfitLanding() {
           <div className="relative z-10 flex flex-col h-full justify-end">
             <h3 className="text-2xl font-bold mb-3 text-white">Marketplace</h3>
             <p className="text-gray-200">
-              Buy, sell, or trade sneakers. Whether you're upgrading or cashing out, the marketplace keeps your fitness
+              Buy, sell, or trade sneakers. Whether you&apos;re upgrading or cashing out, the marketplace keeps your fitness
               journey flexible and rewarding.
             </p>
           </div>
