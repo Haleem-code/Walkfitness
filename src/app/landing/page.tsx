@@ -187,16 +187,16 @@ export default function WalkfitLanding() {
           </motion.div>
 
           <div className="hidden md:flex space-x-6 border border-gray-700 rounded-full px-6 py-4">
-            <Link href="#features" className="hover:text-green-400 transition-colors">
+            <Link href="#features" className="hover:text-purple-900 transition-colors">
               Tournaments
             </Link>
-            <a href="#features" className="hover:text-green-400 transition-colors">
+            <a href="#features" className="hover:text-purple-900transition-colors">
               Community
             </a>
-            <a href="#features" className="hover:text-green-400 transition-colors">
+            <a href="#features" className="hover:text-purple-900 transition-colors">
               Marketplace
             </a>
-            <a href="#faqs" className="hover:text-green-400 transition-colors">
+            <a href="#faqs" className="hover:text-purple-900 transition-colors">
               FAQs
             </a>
           </div>
@@ -730,7 +730,7 @@ export default function WalkfitLanding() {
       <Dialog open={showGetStartedDialog} onOpenChange={setShowGetStartedDialog}>
         <DialogContent className="bg-black border border-purple-600 text-white max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-green-400">Welcome to Walkfit</DialogTitle>
+            <DialogTitle className="text-2xl font-bold text-purple-900">Welcome to Walkfit</DialogTitle>
             <DialogDescription className="text-gray-300">
               Follow these simple steps to begin your fitness journey
             </DialogDescription>
@@ -789,7 +789,7 @@ export default function WalkfitLanding() {
           <DialogFooter>
             <Link href="/authpage" className="text-white">
               <Button
-                className="w-full bg-green-500 hover:bg-green-600 text-black font-medium"
+                className="w-full bg-purple-900 hover:bg-purple-900/30 text-black font-medium"
                 onClick={() => setShowGetStartedDialog(false)}
               >
                 Got it!

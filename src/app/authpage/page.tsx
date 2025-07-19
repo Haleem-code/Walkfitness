@@ -211,13 +211,13 @@ const AuthPageWithStreak = () => {
             {/* Welcome text */}
             <motion.div className="text-center mb-8" variants={fadeInUp}>
               <h1 className="text-2xl md:text-3xl lg:text-4xl font-bold mb-4">
-                Welcome to <span className="text-green-400">Walkfit</span>
+                Welcome to <span className="text-purple-900">Walkfit</span>
               </h1>
             </motion.div>
 
             {/* Auth Card */}
             <motion.div
-              className="bg-black/60 backdrop-blur-sm rounded-2xl border border-green-400/30 p-6 md:p-8 w-full"
+              className="bg-black/60 backdrop-blur-sm rounded-2xl border border-purple-900/30 p-6 md:p-8 w-full"
               variants={fadeInUp}
               whileHover={{
                 borderColor: "rgba(206, 255, 103, 0.5)",
@@ -245,7 +245,7 @@ const AuthPageWithStreak = () => {
                   onClick={handleLogin}
                   onMouseEnter={() => setIsButtonHovered(true)}
                   onMouseLeave={() => setIsButtonHovered(false)}
-                  className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"
+                  className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-purple-900 rounded-xl transition-all duration-300 relative overflow-hidden group"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   style={{
@@ -255,7 +255,7 @@ const AuthPageWithStreak = () => {
                   }}
                 >
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-purple-600/10"
+                    className="absolute inset-0 bg-gradient-to-r from-purple-400/10 to-purple-600/10"
                     initial={{ x: "-100%" }}
                     whileHover={{ x: "100%" }}
                     transition={{ duration: 0.6 }}
@@ -275,7 +275,7 @@ const AuthPageWithStreak = () => {
                   </div>
 
                   <motion.div
-                    className="absolute inset-0 border-2 border-green-400 rounded-xl"
+                    className="absolute inset-0 border-2 border-purple-400 rounded-xl"
                     initial={{ opacity: 0 }}
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
@@ -294,7 +294,7 @@ const AuthPageWithStreak = () => {
                   onClick={handleLogin}
                   onMouseEnter={() => setIsButtonHovered(true)}
                   onMouseLeave={() => setIsButtonHovered(false)}
-                  className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-green-400 rounded-xl transition-all duration-300 relative overflow-hidden group"
+                  className="w-full bg-black/80 text-white p-4 md:p-6 border-2 border-purple-900 rounded-xl transition-all duration-300 relative overflow-hidden group"
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                   style={{
@@ -304,7 +304,7 @@ const AuthPageWithStreak = () => {
                   }}
                 >
                   <motion.div
-                    className="absolute inset-0 bg-gradient-to-r from-green-400/10 to-purple-600/10"
+                    className="absolute inset-0 bg-gradient-to-r from-purple-400/10 to-purple-600/10"
                     initial={{ x: "-100%" }}
                     whileHover={{ x: "100%" }}
                     transition={{ duration: 0.6 }}
@@ -324,7 +324,7 @@ const AuthPageWithStreak = () => {
                   </div>
 
                   <motion.div
-                    className="absolute inset-0 border-2 border-green-400 rounded-xl"
+                    className="absolute inset-0 border-2 border-purple-400 rounded-xl"
                     initial={{ opacity: 0 }}
                     whileHover={{ opacity: 1 }}
                     transition={{ duration: 0.3 }}
