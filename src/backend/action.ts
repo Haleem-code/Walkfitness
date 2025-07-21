@@ -545,3 +545,62 @@ export const getUserStreak = async (userId) => {
 		};
 	}
 };
+
+
+
+
+/////
+export const getJoinedGamesByUser = async (
+	email: string,
+): Promise<ApiResponse<{ games: IGame[] }>> => {
+	if (!email) {
+		return { error: "Email is required" };
+	}
+
+	try {
+		await connectToDb();
+		
+		// Find all games where the user is a participant
+		const games = await Game.find({ 
+			participants: { $in: [email] } 
+		}).sort({ createdAt: -1 }); // Sort by newest first
+
+		return { 
+			success: true, 
+			games: games.map(game => game.toObject()) 
+		};
+	} catch (err) {
+		console.error("Error fetching joined games:", err);
+		return { error: "Failed to fetch joined games" };
+	}
+};
+
+// Alternative function to get only active joined games
+export const getActiveJoinedGamesByUser = async (
+	email: string,
+): Promise<ApiResponse<{ games: IGame[] }>> => {
+	if (!email) {
+		return { error: "Email is required" };
+	}
+
+	try {
+		await connectToDb();
+		
+		const currentDate = new Date();
+		
+		// Find all games where the user is a participant AND the game is still active
+		const games = await Game.find({ 
+			participants: { $in: [email] },
+			endDate: { $gt: currentDate }, // Game hasn't ended yet
+			startDate: { $lte: currentDate } // Game has started
+		}).sort({ createdAt: -1 });
+
+		return { 
+			success: true, 
+			games: games.map(game => game.toObject()) 
+		};
+	} catch (err) {
+		console.error("Error fetching active joined games:", err);
+		return { error: "Failed to fetch active joined games" };
+	}
+}

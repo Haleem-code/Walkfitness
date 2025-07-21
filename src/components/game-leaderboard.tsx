@@ -86,7 +86,7 @@ export default function GameLeaderboard({ gameIdOrCode: gameId, userEmail, class
           Leaderboard
         </h3>
         <div className="flex justify-center items-center py-12">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400" />
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-900" />
         </div>
       </div>
     )
@@ -133,7 +133,7 @@ export default function GameLeaderboard({ gameIdOrCode: gameId, userEmail, class
               key={entry.email}
               className={`flex items-center justify-between p-4 rounded-xl transition-all duration-300 hover:scale-[1.02] ${
                 entry.email === userEmail
-                  ? "bg-gradient-to-r from-green-500/20 to-blue-500/20 border border-green-400/30"
+                  ? "bg-gradient-to-r from-purple-500/20 to-purple-500/20 border border-purple-900/30"
                   : "bg-gray-700/30 hover:bg-gray-700/50"
               }`}
             >
@@ -145,7 +145,7 @@ export default function GameLeaderboard({ gameIdOrCode: gameId, userEmail, class
                       : index === 1
                         ? "bg-gradient-to-r from-gray-300 to-gray-500 text-black"
                         : index === 2
-                          ? "bg-gradient-to-r from-amber-400 to-amber-600 text-black"
+                          ? "bg-gradient-to-r from-purple-400 to-purple-600 text-black"
                           : "bg-gray-600/50 text-white"
                   }`}
                 >
@@ -155,7 +155,7 @@ export default function GameLeaderboard({ gameIdOrCode: gameId, userEmail, class
                   <div className="font-semibold flex items-center">
                     {entry.name || entry.email.split("@")[0]}
                     {entry.email === userEmail && (
-                      <span className="ml-2 text-xs bg-green-400/20 text-green-400 px-2 py-1 rounded-full">You</span>
+                      <span className="ml-2 text-xs bg-purple-900 text-white px-2 py-1 rounded-full">You</span>
                     )}
                   </div>
                   <div className="text-sm text-gray-400">{entry.email}</div>

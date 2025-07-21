@@ -1,5 +1,4 @@
 "use client"
-
 import { useSession } from "next-auth/react"
 import { useState, useEffect, useCallback } from "react"
 import { motion } from "framer-motion"
@@ -10,7 +9,6 @@ import TopNavbar from "@/components/TopNav"
 import GamesList from "@/components/game-list"
 import Image from "next/image"
 import DailyProgressBar from "@/components/DailyProgressBar"
-
 
 interface ApiGame {
   _id: string
@@ -64,8 +62,10 @@ export default function WalkPage() {
   const [refreshingSteps, setRefreshingSteps] = useState(false)
   const [publicGames, setPublicGames] = useState<Game[]>([])
   const [sponsoredGames, setSponsoredGames] = useState<Game[]>([])
+  const [joinedGames, setJoinedGames] = useState<Game[]>([])
   const [gameCode, setGameCode] = useState("")
   const [joiningGame, setJoiningGame] = useState<string | null>(null)
+  const [activeGameFilter, setActiveGameFilter] = useState<"public" | "sponsored" | "active">("public")
   const router = useRouter()
 
   const fadeInUp = {
@@ -94,6 +94,7 @@ export default function WalkPage() {
       const emailRes = await fetch(`/api/getemail`)
       const { email } = await emailRes.json()
       console.log("email", email)
+
       const updateRes = await fetch(`/api/update-steps`, {
         method: "POST",
         headers: {
@@ -106,7 +107,6 @@ export default function WalkPage() {
         // Fetch updated steps data
         const res = await fetch(`/api/steps?email=${email}`)
         const data = await res.json()
-
         if (res.status === 200) {
           setStepsData(data)
           setUser((prev) => (prev ? { ...prev, steps: data?.totalSteps || 0 } : null))
@@ -132,6 +132,7 @@ export default function WalkPage() {
         banner = `/images/${apiGame.image}` // Assuming images are stored in the public/images directory
       }
     }
+
     return {
       id: apiGame._id,
       name: apiGame.name,
@@ -163,6 +164,18 @@ export default function WalkPage() {
         const convertedSponsoredGames = (sponsoredData.games || []).map(convertApiGameToGame)
         setSponsoredGames(convertedSponsoredGames)
       }
+
+      const joinedResponse = await fetch(`/api/games/joined`)
+      if (joinedResponse.ok) {
+        const joinedData = await joinedResponse.json()
+        const convertedJoinedGames = (joinedData.games || []).map(convertApiGameToGame)
+        setJoinedGames(convertedJoinedGames)
+      }
+
+
+
+
+
     } catch (error) {
       console.error("Failed to fetch games:", error)
     }
@@ -232,7 +245,6 @@ export default function WalkPage() {
       })
 
       const data = await response.json()
-
       if (data.error) {
         alert(data.error)
       } else {
@@ -246,13 +258,27 @@ export default function WalkPage() {
     }
   }
 
+  // Function to get filtered games based on active filter
+  const getFilteredGames = () => {
+    switch (activeGameFilter) {
+      case "public":
+        return publicGames
+      case "sponsored":
+        return sponsoredGames
+      case "active":
+        return joinedGames.filter(game => game.isActive)
+      default:
+        return publicGames
+    }
+  }
+
   if (loading) {
     return (
       <div className="min-h-screen bg-black text-white overflow-hidden">
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4" />
             <p>Loading your steps data...</p>
           </div>
         </div>
@@ -279,7 +305,7 @@ export default function WalkPage() {
           <p className="text-white mb-4 text-center">{error}</p>
           <Button
             onClick={() => window.location.reload()}
-            className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded"
+            className="bg-purple-400 hover:bg-purple-500 text-black font-bold py-2 px-4 rounded"
           >
             Try Again
           </Button>
@@ -294,7 +320,7 @@ export default function WalkPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4" />
             <p>Loading...</p>
           </div>
         </div>
@@ -306,10 +332,10 @@ export default function WalkPage() {
     <div className="min-h-screen bg-black text-white overflow-hidden relative">
       {/* Background with purple gradient at top */}
       <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
-
+      
       {/* Blurred background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1blur-sm">
           <Image
             src="/images/footer-sneak.png"
             width={400}
@@ -318,7 +344,7 @@ export default function WalkPage() {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1blur-sm">
           <Image
             src="/images/blue-sneak.png"
             width={400}
@@ -347,7 +373,7 @@ export default function WalkPage() {
             <motion.div variants={fadeInUp}>
               <Button
                 onClick={() => router.push("/createGame")}
-                className="bg-green-400 hover:bg-green-500 text-black font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                className="bg-purple-400 hover:bg-purple-500 text-white font-semibold px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl transition-all duration-300 hover:scale-105 text-sm sm:text-base"
               >
                 Create Game
               </Button>
@@ -367,11 +393,10 @@ export default function WalkPage() {
                 placeholder="Enter game code"
                 value={gameCode}
                 onChange={(e) => setGameCode(e.target.value)}
-                className="w-32 sm:w-64 md:w-80 bg-black/30 border-gray-600 text-white placeholder-gray-400 rounded-xl h-10 sm:h-12 px-3 sm:px-4 focus:border-green-400 transition-colors backdrop-blur-sm text-sm sm:text-base"
+                className="w-32 sm:w-64 md:w-80 bg-black/30 border-gray-600 text-white placeholder-gray-400 rounded-xl h-10 sm:h-12 px-3 sm:px-4 focus:border-purple-400 transition-colors backdrop-blur-sm text-sm sm:text-base"
                 onKeyPress={(e) => e.key === "Enter" && handleJoinWithCode()}
                 maxLength={8}
               />
-
               {gameCode.length > 0 && (
                 <motion.div
                   initial={{ opacity: 0, scale: 0.8 }}
@@ -381,7 +406,7 @@ export default function WalkPage() {
                   <Button
                     onClick={handleJoinWithCode}
                     disabled={joiningGame === "code"}
-                    className="bg-green-400 hover:bg-green-500 text-black px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-sm sm:text-base"
+                    className="bg-purple-400 hover:bg-purple-500 text-black px-4 py-2 h-10 sm:px-6 sm:py-3 sm:h-12 rounded-xl font-semibold transition-all duration-300 hover:scale-105 text-sm sm:text-base"
                   >
                     {joiningGame === "code" ? "Joining..." : "Join"}
                   </Button>
@@ -402,7 +427,6 @@ export default function WalkPage() {
                 <div className="flex items-center justify-center">
                   <div className="relative w-48 h-48 md:w-56 md:h-56">
                     {/* Progress circle */}
-
                     {/* Center content */}
                     <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
                       <DailyProgressBar
@@ -410,35 +434,6 @@ export default function WalkPage() {
                         onRefresh={refreshSteps}
                         isRefreshing={refreshingSteps}
                       />
-
-                      {/* Remove the following section since it's now integrated into DailyProgressBar
-                    <p className="text-xs text-gray-400 mt-2">
-                      Click sneaker to refresh steps
-                    </p>
-                    <div className="mb-4">
-                      <button
-                        onClick={refreshSteps}
-                        disabled={refreshingSteps}
-                        className="relative group transition-all duration-300 hover:scale-110 disabled:opacity-50"
-                      >
-                        <Image
-                          src="/images/sneaker.svg"
-                          alt="Update Steps"
-                          width={40}
-                          height={40}
-                          className={`${
-                            refreshingSteps ? "animate-spin" : ""
-                          } group-hover:brightness-110`}
-                        />
-                        {refreshingSteps && (
-                          <div className="absolute inset-0 flex items-center justify-center">
-                            <div className="animate-spin rounded-full h-6 w-6 border-2 border-green-400 border-t-transparent"></div>
-                          </div>
-                        )}
-                      </button>
-                      
-                    </div>
-                    */}
                     </div>
                   </div>
                 </div>
@@ -446,29 +441,60 @@ export default function WalkPage() {
             </div>
           </motion.div>
 
-          {/* Public Games */}
-          <motion.div
-            className="mb-8"
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-          >
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Public Games</h2>
-            <div className="space-y-4">
-              <GamesList games={publicGames} type="public" />
-            </div>
-          </motion.div>
-
-          {/* Sponsored Games */}
+          {/* Games Section with Filter Buttons */}
           <motion.div
             className="mb-20"
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.8 }}
+            transition={{ duration: 0.6, delay: 0.6 }}
           >
-            <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">Sponsored Games</h2>
+            {/* Games Header with Filter Buttons */}
+            <div className="flex items-center justify-between mb-6">
+              <h2 className="text-xl md:text-2xl font-bold text-white">Games</h2>
+              
+              {/* Filter Buttons */}
+              <div className="flex items-center gap-2 by">
+                <button
+                  onClick={() => setActiveGameFilter("public")}
+                  className={`px-4 py-2 text-xs font-medium rounded-lg transition-all duration-300 ${
+                    activeGameFilter === "public"
+                      ? "bg-purple-900 text-white"
+                      : "bg-black/30 text-white hover:bg-black/50 hover:text-white"
+                  }`}
+                >
+                  Public
+                </button>
+                <button
+                  onClick={() => setActiveGameFilter("sponsored")}
+                  className={`px-4 py-2 text-xs font-medium rounded-lg transition-all duration-300 ${
+                    activeGameFilter === "sponsored"
+                      ? "bg-purple-900 text-white"
+                      : "bg-black/30 text-white hover:bg-black/50 hover:text-white"
+                  }`}
+                >
+                  Sponsored
+                </button>
+                <button
+                  onClick={() => setActiveGameFilter("active")}
+                  className={`px-4 py-2 text-xs font-medium rounded-lg transition-all duration-300 ${
+                    activeGameFilter === "active"
+                      ? "bg-purple-900 text-white"
+                      : "bg-black/30 text-white hover:bg-black/50 hover:text-white"
+                  }`}
+                >
+                  Active
+                </button>
+              </div>
+            </div>
+
+            {/* Games List */}
             <div className="space-y-4">
-              <GamesList games={sponsoredGames} type="sponsored" />
+              <GamesList 
+                games={getFilteredGames()} 
+                type={activeGameFilter === "sponsored" ? "sponsored" : "public"} 
+                joinedGameIds={joinedGames.map(game => game.id)} 
+
+              />
             </div>
           </motion.div>
 

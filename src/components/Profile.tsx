@@ -136,7 +136,7 @@ const ProfilePage = () => {
 
       {/* Blurred background decorative elements */}
       <div className="fixed inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1 blur-sm">
           <Image
             src="/images/footer-sneak.png"
             width={400}
@@ -145,7 +145,7 @@ const ProfilePage = () => {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1 blur-sm">
           <Image
             src="/images/blue-sneak.png"
             width={400}
@@ -180,7 +180,7 @@ const ProfilePage = () => {
               <div className="bg-black/30 backdrop-blur-md rounded-3xl p-8 border border-gray-600/50 shadow-2xl">
                 <div className="flex flex-col items-center text-center">
                   <div className="relative mb-6">
-                    <div className="w-32 h-32 rounded-full border-4 border-green-400 overflow-hidden shadow-lg">
+                    <div className="w-32 h-32 rounded-full border-4 border-purple-400 overflow-hidden shadow-lg">
                       <Image
                         src={session?.user?.image || "/images/profileImg.svg"}
                         alt="Profile"
@@ -213,7 +213,7 @@ const ProfilePage = () => {
             </h2>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
               <motion.div variants={fadeInUp}>
-                <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
+                <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-purple-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="text-2xl md:text-3xl font-bold text-white mb-2">
                       {userStats.completedGames}
@@ -224,7 +224,7 @@ const ProfilePage = () => {
               </motion.div>
 
               <motion.div variants={fadeInUp}>
-                <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
+                <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-purple-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="text-2xl md:text-3xl font-bold text-white mb-2">
                       {formatXP(userStats.totalXP + streakData.streakXP)}
@@ -246,7 +246,7 @@ const ProfilePage = () => {
               </motion.div>
 
               <motion.div variants={fadeInUp}>
-                <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
+                <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-purple-400/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="text-2xl md:text-3xl font-bold text-white mb-2">
                       {userStats.referrals}
@@ -270,18 +270,18 @@ const ProfilePage = () => {
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <motion.div variants={fadeInUp}>
-                <Card className="bg-gradient-to-br from-orange-500/20 to-red-500/20 border-orange-500/30 hover:border-orange-500/50 transition-all duration-300">
+                <Card className="bg-purple-500/20 border-purple-500/30 hover:border-purple-500/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center mb-3">
-                      <Flame className="h-6 w-6 text-orange-400 mr-2" />
-                      <span className="text-sm text-orange-200 font-medium">
+                      <Flame className="h-6 w-6 text-white mr-2" />
+                      <span className="text-sm text-white font-medium">
                         Current Streak
                       </span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-12 bg-orange-400/20 animate-pulse rounded mx-auto" />
+                      <div className="h-8 w-12 bg-purple-400/20 animate-pulse rounded mx-auto" />
                     ) : (
-                      <div className="text-3xl font-bold text-orange-400">
+                      <div className="text-3xl font-bold text-white">
                         {streakData.currentStreak}
                       </div>
                     )}
@@ -290,18 +290,18 @@ const ProfilePage = () => {
               </motion.div>
 
               <motion.div variants={fadeInUp}>
-                <Card className="bg-gradient-to-br from-yellow-500/20 to-orange-500/20 border-yellow-500/30 hover:border-yellow-500/50 transition-all duration-300">
+                <Card className="bg-purple-500/20 border-purple-500/30 hover:border-purple-500/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center mb-3">
-                      <Trophy className="h-6 w-6 text-yellow-400 mr-2" />
-                      <span className="text-sm text-yellow-200 font-medium">
+                      <Trophy className="h-6 w-6 text-white mr-2" />
+                      <span className="text-sm text-white font-medium">
                         Best Streak
                       </span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-12 bg-yellow-400/20 animate-pulse rounded mx-auto" />
+                      <div className="h-8 w-12 bg-purple-400/20 animate-pulse rounded mx-auto" />
                     ) : (
-                      <div className="text-3xl font-bold text-yellow-400">
+                      <div className="text-3xl font-bold text-white">
                         {streakData.longestStreak}
                       </div>
                     )}
@@ -310,18 +310,18 @@ const ProfilePage = () => {
               </motion.div>
 
               <motion.div variants={fadeInUp}>
-                <Card className="bg-gradient-to-br from-green-500/20 to-emerald-500/20 border-green-500/30 hover:border-green-500/50 transition-all duration-300">
+                <Card className="bg-purple-500/20 border-purple-500/30 hover:border-purple-500/50 transition-all duration-300">
                   <CardContent className="p-6 text-center">
                     <div className="flex items-center justify-center mb-3">
-                      <Star className="h-6 w-6 text-green-400 mr-2" />
-                      <span className="text-sm text-green-200 font-medium">
+                      <Star className="h-6 w-6 text-white mr-2" />
+                      <span className="text-sm text-white font-medium">
                         Streak XP
                       </span>
                     </div>
                     {loading ? (
-                      <div className="h-8 w-16 bg-green-400/20 animate-pulse rounded mx-auto" />
+                      <div className="h-8 w-16 bg-purple-400/20 animate-pulse rounded mx-auto" />
                     ) : (
-                      <div className="text-3xl font-bold text-green-400">
+                      <div className="text-3xl font-bold text-white">
                         {formatXP(streakData.streakXP)}
                       </div>
                     )}
@@ -341,7 +341,7 @@ const ProfilePage = () => {
             <h2 className="text-xl md:text-2xl font-bold mb-6 text-white">
               Referral Code
             </h2>
-            <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-green-400/50 transition-all duration-300">
+            <Card className="bg-black/30 backdrop-blur-md border-gray-600/50 hover:border-purple-400/50 transition-all duration-300">
               <CardContent className="p-6">
                 <div className="flex items-center justify-between">
                   <div>
@@ -355,7 +355,7 @@ const ProfilePage = () => {
                   <Button
                     variant="outline"
                     onClick={copyReferralCode}
-                    className="bg-green-400 hover:bg-green-500 text-black border-none font-semibold px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105"
+                    className="bg-purple-400 hover:bg-purple-500 text-white border-none font-semibold px-6 py-2 rounded-xl transition-all duration-300 hover:scale-105"
                   >
                     <Copy className="h-4 w-4 mr-2" />
                     Copy Code
@@ -383,7 +383,7 @@ const ProfilePage = () => {
                 <div className="space-y-3">
                   <Button
                     variant="outline"
-                    className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-green-400 py-7 rounded-xl transition-all duration-300"
+                    className="w-full bg-transparent border-gray-600 text-white hover:text-white hover:bg-purple-400/50 hover:border-purple-400 py-7 rounded-xl transition-all duration-300"
                   >
                     <Image
                       src="/images/google.svg"
@@ -399,7 +399,7 @@ const ProfilePage = () => {
                     variant="outline"
                     onClick={handleDisconnectFitbit}
                     disabled={loading}
-                    className="w-full bg-transparent border-gray-600 text-white hover:bg-gray-800/50 hover:border-red-400 py-7 rounded-xl transition-all duration-300"
+                    className="w-full bg-transparent border-gray-600 text-white hover:text-white hover:bg-purple-400/50 hover:border-purple-400 py-7 rounded-xl transition-all duration-300"
                   >
                     <Image
                       src="/images/fitbit.svg"

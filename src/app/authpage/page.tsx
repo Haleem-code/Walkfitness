@@ -159,7 +159,7 @@ const AuthPageWithStreak = () => {
 
         {/* Background decorative elements */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 1, y: 20 }}
           animate={{ opacity: 0.7, y: 0 }}
           transition={{ duration: 1, delay: 0.5 }}
           className="absolute top-10 md:top-20 -right-5 md:-right-2 w-48 h-48 md:w-72 lg:w-96 md:h-72 lg:h-96 md:block"
@@ -227,7 +227,7 @@ const AuthPageWithStreak = () => {
             >
               <motion.div className="text-center mb-6 md:mb-8" variants={fadeInUp}>
                 <div className="inline-flex items-center bg-purple-900/50 rounded-full px-3 md:px-4 py-2 mb-4 md:mb-6 border border-purple-500/50">
-                  <span className="bg-green-500 text-xs px-2 py-0.5 rounded-full mr-2 text-black font-medium">
+                  <span className="bg-purple-900 text-xs px-2 py-0.5 rounded-full mr-2 text-black font-medium">
                     SYNC
                   </span>
                   <span className="text-xs md:text-sm text-gray-300">Connect your accounts</span>
@@ -352,14 +352,14 @@ const AuthPageWithStreak = () => {
                 By connecting your account, you agree to our{" "}
                 <Link
                   href="#"
-                  className="text-green-400 hover:text-green-300 transition-colors underline decoration-green-400/50 hover:decoration-green-300"
+                  className="text-purple-900 hover:text-purple-300 transition-colors underline decoration-purple-400/50 hover:decoration-purple-300"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
                   href="/privacy"
-                  className="text-green-400 hover:text-green-300 transition-colors underline decoration-green-400/50 hover:decoration-green-300"
+                  className="text-purple-900 hover:text-purple-300 transition-colors underline decoration-purple-400/50 hover:decoration-purple-300"
                 >
                   Privacy Policy
                 </Link>

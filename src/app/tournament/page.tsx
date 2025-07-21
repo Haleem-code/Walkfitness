@@ -80,6 +80,16 @@ export default function ComingSoon() {
 
   return (
     <div className="min-h-screen bg-black text-white overflow-hidden">
+       <div className="absolute inset-0 z-0">
+        <Image
+          src="/images/tournament-img.jpg"
+          alt="Tournament Background"
+          fill
+          className="object-cover opacity-1"
+        />
+        <div className="absolute inset-0 bg-black/50" />
+      </div>
+
       {/* Animated background gradient */}
       <motion.div
         className="absolute inset-0 bg-gradient-to-b from-purple-900/40 via-black to-black pointer-events-none"
@@ -98,7 +108,7 @@ export default function ComingSoon() {
       {/* Main Content */} <motion.div className="px-4 py-6 md:px-6 lg:px-8" initial="hidden" animate="visible" variants={fadeInUp}>
                 <TopNavbar />
               </motion.div>
-      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 pt-20">
+      <div className="relative z-10 flex items-center justify-center min-h-screen px-4 -mt-10">
         <div className="text-center max-w-4xl mx-auto">
           {/* Coming Soon Badge */}
           <motion.div
@@ -127,7 +137,7 @@ export default function ComingSoon() {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.4 }}
           >
-            <span className="text-green-400">Compete!</span>
+            <span className="text-purple  -400">Compete!</span>
           </motion.h1>
 
           <motion.p
@@ -171,34 +181,7 @@ export default function ComingSoon() {
             className="absolute -left-20 bottom-0 opacity-10 -z-10"
           />
         </motion.div>
-          {/* Tournament Feature Card */}
-          <motion.div
-            className="bg-[#D9D9D91A] rounded-xl p-8 mb-12 overflow-hidden relative max-w-md mx-auto"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.8 }}
-            whileHover={{ y: -5 }}
-          >
-            <div className="flex flex-col h-full">
-              <div className="mb-6 flex justify-center">
-                <div className="w-32 h-32 relative">
-                  <Image
-                    src={"/images/tournament.svg"}
-                    width={128}
-                    height={128}
-                    alt="Tournament"
-                    className="w-full h-full"
-                  />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold mb-3">Tournaments</h3>
-              <p className="text-gray-400">
-                Compete in step challenges against others and win crypto rewards. The more you move, the closer you are
-                to the top.
-              </p>
-            </div>
-            
-          </motion.div>
+         
 
           {/* Launch Timeline */}
           <motion.div
@@ -215,117 +198,7 @@ export default function ComingSoon() {
         
       </div>
 
-      {/* Waitlist Section */}
-      <section className="relative z-10 py-20 px-4 max-w-4xl mx-auto">
-        {/* Background Image */}
-        <div className="absolute inset-0 z-0">
-          <Image
-            src="/images/hero-bg.svg"
-            alt="Hero Background"
-            fill
-            className="object-cover opacity-20"
-          />
-          <div className="absolute inset-0 bg-purple-900/40" />
-        </div>
-
-        {/* Content */}
-        <motion.div
-          className="text-center relative z-10 py-12"
-          initial={{ opacity: 0, y: 40 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, margin: "-100px" }}
-          transition={{ duration: 0.8 }}
-        >
-          <motion.h2
-            className="text-4xl font-bold mb-4"
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-          >
-            Be the First to <span className="text-purple-400">Compete</span>
-          </motion.h2>
-
-          {!hasJoinedWaitlist ? (
-            <>
-              <motion.form
-                onSubmit={handleWaitlistSubmit}
-                className="flex flex-col sm:flex-row gap-2 max-w-md mx-auto mt-8"
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.4 }}
-              >
-                <Input
-                  type="email"
-                  placeholder="Your email"
-                  className="bg-black/50 border-gray-700 text-white"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  disabled={isLoading}
-                  required
-                />
-                <Button type="submit" className="bg-white text-black hover:bg-gray-200" disabled={isLoading}>
-                  {isLoading ? "Joining..." : "Join waitlist"}
-                </Button>
-              </motion.form>
-
-              <motion.p
-                className="text-sm text-gray-400 mt-6"
-                initial={{ opacity: 0 }}
-                whileInView={{ opacity: 1 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.6, delay: 0.6 }}
-              >
-                Get notified when tournaments go live - walkfit team
-              </motion.p>
-            </>
-          ) : (
-            <motion.div
-              className="mt-8"
-              initial={{ opacity: 0, scale: 0.8 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5 }}
-            >
-              <motion.div
-                className="flex items-center justify-center mb-4"
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-              >
-                <CheckCircle className="w-16 h-16 text-green-400" />
-              </motion.div>
-
-              <motion.h3
-                className="text-2xl font-bold text-green-400 mb-2"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.3 }}
-              >
-                You&apos;re in the tournament queue! 🏆
-              </motion.h3>
-
-              <motion.p
-                className="text-gray-300 mb-4"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-              >
-                We&apos;ll notify you as soon as tournaments launch. Get ready to compete and win crypto rewards!
-              </motion.p>
-
-              <motion.p
-                className="text-sm text-gray-400"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.5 }}
-              >
-                Follow us on social media for tournament updates
-              </motion.p>
-            </motion.div>
-          )}
-        </motion.div>
-      </section>
+      
 
     </div>
   )

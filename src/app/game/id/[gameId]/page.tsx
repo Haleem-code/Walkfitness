@@ -21,6 +21,7 @@ export default function GamePage() {
   const router = useRouter();
   const [game, setGame] = useState(null);
   const [leaderboard, setLeaderboard] = useState([]);
+  const [refreshingSteps, setRefreshingSteps] = useState(false);
   const [stepsData, setStepsData] = useState<StepsData | null>(null);
   const [participants, setParticipants] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -164,7 +165,7 @@ export default function GamePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-purple-600/30 via-purple-900/20 to-black" />
         <div className="relative z-10 flex items-center justify-center min-h-screen">
           <div className="text-white text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-green-400 mx-auto mb-4" />
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-400 mx-auto mb-4" />
             <p>Loading game...</p>
           </div>
         </div>
@@ -182,7 +183,7 @@ export default function GamePage() {
             <p className="text-gray-400 mb-4">{error || 'This game does not exist or you do not have access to it.'}</p>
             <Button
               onClick={() => router.push('/walk')}
-              className="bg-green-400 hover:bg-green-500 text-black font-bold py-2 px-4 rounded-xl transition-all duration-300"
+              className="bg-purple-400 hover:bg-purple-500 text-black font-bold py-2 px-4 rounded-xl transition-all duration-300"
             >
               Back to Walk Page
             </Button>
@@ -209,7 +210,7 @@ export default function GamePage() {
 
       {/* Decorative background elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1 blur-sm">
           <Image
             src="/images/footer-sneak.png"
             width={400}
@@ -218,7 +219,7 @@ export default function GamePage() {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
+        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1 blur-sm">
           <Image
             src="/images/blue-sneak.png"
             width={400}
@@ -239,14 +240,6 @@ export default function GamePage() {
         >
           <div className="max-w-7xl mx-auto">
             <TopNavbar />
-            <div className="h-8" />
-            <Button
-              variant="ghost"
-              onClick={() => router.push('/walk')}
-              className="text-green-400 hover:text-green-300 hover:bg-transparent mt-4 flex items-center gap-2 px-0"
-            >
-              ← Back to Games
-            </Button>
           </div>
         </motion.div>
 
@@ -263,10 +256,10 @@ export default function GamePage() {
                 <div className="flex-1">
                   <div className="flex items-center gap-4 mb-4 flex-wrap">
                     <h1 className="text-3xl md:text-4xl font-bold">{game.name}</h1>
-                    <span className={`px-4 py-2 rounded-full text-sm font-semibold bg-gradient-to-r ${getGameTypeColor(game.gameType)} text-white`}>
+                    <span className={`px-4 py-2 rounded-full text-sm font-semibold bg-purple-900 ${getGameTypeColor(game.gameType)} text-white`}>
                       {game.gameType.charAt(0)+ game.gameType.slice(1)}
                     </span>
-                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getGameStatus() === 'Active' ? 'bg-green-500/20 text-green-400' :
+                    <span className={`px-3 py-1 rounded-full text-xs font-semibold ${getGameStatus() === 'Active' ? 'bg-purple-500/20 text-purple-400' :
                       getGameStatus() === 'Ended' ? 'bg-red-500/20 text-red-400' :
                         'bg-yellow-500/20 text-yellow-400'
                       }`}>
@@ -277,6 +270,10 @@ export default function GamePage() {
                     {daysRemaining > 0 ? `${daysRemaining} days remaining` : 'Game ended'}
                   </p>
                 </div>
+                      <div className="text-center">
+                    
+                    <div className="text-sm text-gray-400">{userProgressPercentage}% of target reached</div>
+                  </div>
 
                 {/* Progress Circle */}
                 <div className="flex justify-center lg:justify-end">
@@ -306,7 +303,7 @@ export default function GamePage() {
                         fill="none"
                         stroke="currentColor"
                         strokeWidth="6"
-                        className="text-green-400"
+                        className="text-purple-500"
                         strokeDasharray={`${(progressPercentage / 100) * 251} 251`}
                         strokeLinecap="round"
                       />
@@ -319,6 +316,7 @@ export default function GamePage() {
                 </div>
               </div>
             </div>
+      
           </motion.div>
 
           {/* Stats Grid */}
@@ -330,7 +328,6 @@ export default function GamePage() {
           >
             <motion.div variants={fadeInUp}>
               <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50 text-center">
-                <Target className="w-8 h-8 text-green-400 mx-auto mb-3" />
                 <div className="text-2xl font-bold mb-1">{game.gameSteps?.toLocaleString() || 0}</div>
                 <div className="text-sm text-gray-400">Target Steps</div>
               </div>
@@ -338,7 +335,6 @@ export default function GamePage() {
 
             <motion.div variants={fadeInUp}>
               <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50 text-center">
-                <Users className="w-8 h-8 text-blue-400 mx-auto mb-3" />
                 <div className="text-2xl font-bold mb-1">{game.participants?.length || 0}/{game.maxPlayers || 0}</div>
                 <div className="text-sm text-gray-400">Participants</div>
               </div>
@@ -346,15 +342,15 @@ export default function GamePage() {
 
             <motion.div variants={fadeInUp}>
               <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50 text-center">
-                <Clock className="w-8 h-8 text-purple-400 mx-auto mb-3" />
+                
                 <div className="text-2xl font-bold mb-1">{daysRemaining}</div>
-                <div className="text-sm text-gray-400">Days Left</div>
+                <div  className="text-sm text-gray-400">Days Left</div>
               </div>
             </motion.div>
 
             <motion.div variants={fadeInUp}>
               <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50 text-center">
-                <DollarSign className="w-8 h-8 text-yellow-400 mx-auto mb-3" />
+              
                 <div className="text-2xl font-bold mb-1">{game.entryPrice > 0 ? `${game.entryPrice} ETH` : 'Free'}</div>
                 <div className="text-sm text-gray-400">Entry Fee</div>
               </div>
@@ -373,7 +369,7 @@ export default function GamePage() {
               >
                 <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50">
                   <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Calendar className="w-5 h-5 text-green-400" />
+                    <Calendar className="w-5 h-5 text-purple-400" />
                     Game Details
                   </h3>
                   <div className="space-y-3">
@@ -403,33 +399,7 @@ export default function GamePage() {
                 </div>
               </motion.div>
 
-              {/* Your Progress */}
-              <motion.div
-                initial="hidden"
-                animate="visible"
-                variants={fadeInUp}
-              >
-                <div className="bg-black/30 backdrop-blur-md rounded-2xl p-6 border border-gray-600/50">
-                  <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                    <Trophy className="w-5 h-5 text-green-400" />
-                    Your Progress
-                  </h3>
-                  <div className="text-center">
-                    <div className="relative w-24 h-24 mx-auto mb-4">
-                      <Image src="/images/sneaker.svg" alt="Steps" width={96} height={96} />
-                    </div>
-                    <div className="text-3xl font-bold mb-2">
-                      {(stepsData?.stepsForLastUpdate || userSteps || 0).toLocaleString()}
-                    </div>
-                    <div className="text-sm text-gray-400 mb-4">Total Steps</div>
-                    <div className="bg-gray-700/50 rounded-full h-2 mb-2">
-                      <div className="bg-gradient-to-r from-green-400 to-blue-400 h-2 rounded-full transition-all duration-500" style={{ width: `${userProgressPercentage}%` }} />
-                    </div>
-                    <div className="text-sm text-gray-400">{userProgressPercentage}% of target reached</div>
-                  </div>
 
-                </div>
-              </motion.div>
             </div>
 
             {/* Right Column - Leaderboard */}

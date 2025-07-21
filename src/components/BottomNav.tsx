@@ -19,18 +19,18 @@ const BottomNav: React.FC<BottomNavProps> = ({ pendingTaskCount = 0 }) => {
   if (!showNavbar) return null
 
   const navItems = [
-    { name: "Tournament", href: "/tournament", icon: "/images/tournament-icon.svg" },
+    { name: "Tournament", href: "/tournament", icon: "/images/tourn.svg" },
     { name: "Groups", href: "/groups", icon: "/images/group-icon.svg" },
-    { name: "Walk", href: "/walk", icon: "/icons/walk.svg" },
-    { name: "Marketplace", href: "/marketplace", icon: "/icons/marketplace.svg" },
-    { name: "Profile", href: "/profile", icon: "/icons/profile.svg" },
+    { name: "Walk", href: "/walk", icon: "/images/walk.svg" },
+    { name: "Marketplace", href: "/marketplace", icon: "/images/cart.svg" },
+    { name: "Profile", href: "/profile", icon: "/images/profile-icon.svg" },
   ]
 
   const handleMouseOver = (index: number) => setActiveIndex(index)
   const handleMouseOut = () => setActiveIndex(null)
 
   return (
-    <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-600 z-50">
+    <nav className="fixed bottom-0 left-0 right-0 bg-black border-t border-gray-600 z-10 text-purple-900">
       <div className="flex justify-around items-center p-4">
         {navItems.map((item, index) => {
           const isActive = pathname === item.href
@@ -46,13 +46,13 @@ const BottomNav: React.FC<BottomNavProps> = ({ pendingTaskCount = 0 }) => {
               >
                 {isActive ? (
                   // Active state: horizontal layout with green background
-                  <div className="flex flex-col items-center sm:flex sm:flex-row sm:items-center sm:gap-2 bg-[#A0FEA0]/50 text-white px-4 py-2 rounded-full">
-                    <Image src={item.icon || "/placeholder.svg"} alt={item.name} width={20} height={20} />
-                    <span className="hidden sm:block text-sm font-medium">{item.name}</span>
+                  <div className="flex flex-col items-center sm:flex sm:flex-row sm:items-center sm:gap-2 bg-purple-900/30 text-white px-4 py-2 rounded-full">
+                    <Image src={item.icon} alt={item.name} width={20} height={20} />
+                    <span className="hidden sm:block text-sm font-medium text-white">{item.name}</span>
                   </div>
                 ) : (
                   // Inactive state: vertical layout
-                  <div className="flex flex-col items-center text-[#A0FEA0] relative">
+                  <div className="flex flex-col items-center text-[#fff] relative">
                     <Image src={item.icon || "/placeholder.svg"} alt={item.name} width={24} height={24} />
                     <span className="text-xs mt-1">{item.name}</span>
                     {item.name === "Tasks" && pendingTaskCount > 0 && (

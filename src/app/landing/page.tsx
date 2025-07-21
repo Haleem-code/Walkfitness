@@ -295,7 +295,7 @@ export default function WalkfitLanding() {
             width={600}
             height={600}
             alt="Sneaker"
-            className="absolute -right-20 bottom-0 opacity-10 -z-10"
+            className="absolute -right-20 bottom-0 opacity-1 -z-10"
           />
         </motion.div>
 
@@ -311,7 +311,7 @@ export default function WalkfitLanding() {
             width={600}
             height={600}
             alt="Sneaker"
-            className="absolute -left-20 bottom-0 opacity-10 -z-10"
+            className="absolute -left-20 bottom-0 opacity-1 -z-10"
           />
         </motion.div>
       </section>
@@ -428,6 +428,22 @@ export default function WalkfitLanding() {
             </p>
           </div>
         </motion.div>
+        
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.5 }}
+          className="relative w-full"
+        >
+          <Image
+            src={"/images/blue-sneak.png"}
+            width={600}
+            height={600}
+            alt="Sneaker"
+            className="absolute  bottom-0 opacity-1 -z-10"
+          />
+        </motion.div>
   </motion.div>
 
         <motion.div
@@ -515,7 +531,7 @@ export default function WalkfitLanding() {
             width={600}
             height={600}
             alt="Sneaker"
-            className="absolute -right-20 bottom-0 opacity-10 -z-10"
+            className="absolute -right-20 bottom-0 opacity-20 -z-10"
           />
         </motion.div>
 

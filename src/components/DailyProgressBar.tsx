@@ -22,7 +22,7 @@ const DailyProgressBar: React.FC<DailyProgressBarProps> = ({ stepsForLastUpdate,
           value={percentage}
           styles={buildStyles({
             textColor: "#fff",
-            pathColor: "#4ade80",
+            pathColor: "#9855FF",
             trailColor: "#C0B6FF",
           })}
         />
@@ -41,14 +41,14 @@ const DailyProgressBar: React.FC<DailyProgressBarProps> = ({ stepsForLastUpdate,
             />
             {isRefreshing && (
               <div className="absolute inset-0 flex items-center justify-center">
-                <div className="animate-spin rounded-full h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 border-2 border-green-400 border-t-transparent"></div>
+                <div className="animate-spin rounded-full h-6 w-6 sm:h-7 sm:w-7 md:h-8 md:w-8 border-2 border-purple-900 border-t-transparent"></div>
               </div>
             )}
           </div>
         </div>
       </div>
       <div className="text-center mt-2 sm:mt-3 md:mt-4 text-white text-sm sm:text-base">
-        {stepsForLastUpdate.toLocaleString()} / {maxSteps.toLocaleString()} <span className="text-[#4ade80]">steps</span>
+        {stepsForLastUpdate.toLocaleString()} / {maxSteps.toLocaleString()} <span className="text-purple-400">steps</span>
       </div>
       {onRefresh && <p className="text-xs text-gray-400 mt-1">Click sneaker to refresh steps</p>}
     </div>
