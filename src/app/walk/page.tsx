@@ -335,7 +335,7 @@ export default function WalkPage() {
       
       {/* Blurred background decorative elements */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1blur-sm">
+        <div className="absolute right-0 top-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1 blur-sm">
           <Image
             src="/images/footer-sneak.png"
             width={400}
@@ -344,7 +344,7 @@ export default function WalkPage() {
             className="w-full h-full object-contain"
           />
         </div>
-        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-1blur-sm">
+        <div className="absolute left-0 bottom-1/4 w-64 h-64 md:w-96 md:h-96 opacity-5 blur-sm">
           <Image
             src="/images/blue-sneak.png"
             width={400}
@@ -488,7 +488,7 @@ export default function WalkPage() {
             </div>
 
             {/* Games List */}
-            <div className="space-y-4">
+            <div className="space-y-4 backdrop-blur-md">
               <GamesList 
                 games={getFilteredGames()} 
                 type={activeGameFilter === "sponsored" ? "sponsored" : "public"} 
