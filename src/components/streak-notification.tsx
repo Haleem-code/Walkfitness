@@ -73,7 +73,7 @@ export default function StreakNotification({
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/90 to-black/90 border-2 border-green-400/50 shadow-2xl">
+            <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/90 to-black/90 border-2 border-purple-400/50 shadow-2xl">
               <CardContent className="p-8 text-center relative">
                 <Button
                   variant="ghost"
@@ -123,7 +123,7 @@ export default function StreakNotification({
                   transition={{ delay: 0.4 }}
                   className="mb-4"
                 >
-                  <div className="text-4xl font-bold text-green-400 mb-1">{streakCount}</div>
+                  <div className="text-4xl font-bold text-purple-400 mb-1">{streakCount}</div>
                   <div className="text-gray-300 text-sm">{streakCount === 1 ? "Day Streak" : "Days Streak"}</div>
                 </motion.div>
 
@@ -132,9 +132,9 @@ export default function StreakNotification({
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ delay: 0.5 }}
-                  className="bg-green-500/20 border border-green-500/30 rounded-lg p-4 mb-4"
+                  className="bg-purple-500/20 border border-purple-500/30 rounded-lg p-4 mb-4"
                 >
-                  <div className="flex items-center justify-center gap-2 text-green-400">
+                  <div className="flex items-center justify-center gap-2 text-purple-400">
                     <Star className="h-5 w-5" />
                     <span className="text-xl font-bold">+{xpAwarded} XP</span>
                   </div>
@@ -170,9 +170,9 @@ export default function StreakNotification({
                 <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.8 }}>
                   <Button
                     onClick={onClose}
-                    className="w-full bg-green-500 hover:bg-green-600 text-white font-semibold py-3 rounded-lg transition-colors"
+                    className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition-colors"
                   >
-                    Continue to Dashboard
+                    Woohoo!!!
                   </Button>
                 </motion.div>
               </CardContent>
