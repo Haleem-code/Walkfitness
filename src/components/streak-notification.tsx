@@ -73,7 +73,7 @@ export default function StreakNotification({
             exit={{ scale: 0.8, opacity: 0, y: 20 }}
             transition={{ type: "spring", stiffness: 300, damping: 25 }}
           >
-            <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/90 to-black/90 border-2 border-purple-400/50 shadow-2xl">
+            <Card className="w-full max-w-md bg-gradient-to-br from-purple-900/90 to-black/90 border-none shadow-2xl">
               <CardContent className="p-8 text-center relative">
                 <Button
                   variant="ghost"
@@ -100,7 +100,7 @@ export default function StreakNotification({
                         transition={{ delay: 0.5 }}
                         className="absolute -top-2 -right-2 bg-red-500 rounded-full p-1"
                       >
-                        <Trophy className="h-4 w-4 text-white" />
+                        
                       </motion.div>
                     )}
                   </div>
@@ -172,7 +172,7 @@ export default function StreakNotification({
                     onClick={onClose}
                     className="w-full bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 rounded-lg transition-colors"
                   >
-                    Woohoo!!!
+                    Woohoo🤞!!!
                   </Button>
                 </motion.div>
               </CardContent>

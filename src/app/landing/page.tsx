@@ -744,73 +744,73 @@ export default function WalkfitLanding() {
 
       {/* Get Started Dialog */}
       <Dialog open={showGetStartedDialog} onOpenChange={setShowGetStartedDialog}>
-        <DialogContent className="bg-black border border-purple-600 text-white max-w-md">
+        <DialogContent className="bg-transparent border-none text-white max-w-md">
           <DialogHeader>
-            <DialogTitle className="text-2xl font-bold text-purple-900">Welcome to Walkfit</DialogTitle>
-            <DialogDescription className="text-gray-300">
-              Follow these simple steps to begin your fitness journey
-            </DialogDescription>
+        <DialogTitle className="text-2xl font-bold text-purple-400">Welcome to Walkfit</DialogTitle>
+        <DialogDescription className="text-gray-300">
+          Follow these simple steps to begin your fitness journey
+        </DialogDescription>
           </DialogHeader>
 
           <div className="space-y-4 py-4">
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
-                1
-              </div>
-              <div>
-                <h4 className="font-medium text-white">Sign up with Google</h4>
-                <p className="text-sm text-gray-300">
-                  Create your account quickly and securely using your Google credentials.
-                </p>
-              </div>
-            </div>
+        <div className="flex items-start gap-3">
+          <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+            1
+          </div>
+          <div>
+            <h4 className="font-medium text-white">Sign up with Google</h4>
+            <p className="text-sm text-gray-300">
+          Create your account quickly and securely using your Google credentials.
+            </p>
+          </div>
+        </div>
 
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
-                2
-              </div>
-              <div>
-                <h4 className="font-medium text-white">Connect Fitbit</h4>
-                <p className="text-sm text-gray-300">
-                  Authorize Walkfit to access your Fitbit data to track your steps and activities.
-                </p>
-              </div>
-            </div>
+        <div className="flex items-start gap-3">
+          <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+            2
+          </div>
+          <div>
+            <h4 className="font-medium text-white">Connect Fitbit</h4>
+            <p className="text-sm text-gray-300">
+          Authorize Walkfit to access your Fitbit data to track your steps and activities.
+            </p>
+          </div>
+        </div>
 
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
-                3
-              </div>
-              <div>
-                <h4 className="font-medium text-white">Download Fitbit App</h4>
-                <p className="text-sm text-gray-300">
-                  Install the Fitbit app on your mobile device using the same account you connected to Walkfit.
-                </p>
-              </div>
-            </div>
+        <div className="flex items-start gap-3">
+          <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+            3
+          </div>
+          <div>
+            <h4 className="font-medium text-white">Download Fitbit App</h4>
+            <p className="text-sm text-gray-300">
+          Install the Fitbit app on your mobile device using the same account you connected to Walkfit.
+            </p>
+          </div>
+        </div>
 
-            <div className="flex items-start gap-3">
-              <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
-                4
-              </div>
-              <div>
-                <h4 className="font-medium text-white">Start Your Journey</h4>
-                <p className="text-sm text-gray-300">
-                  Join tournaments, compete with friends, and earn rewards as you improve your fitness.
-                </p>
-              </div>
-            </div>
+        <div className="flex items-start gap-3">
+          <div className="bg-purple-600 text-white rounded-full w-6 h-6 flex items-center justify-center flex-shrink-0">
+            4
+          </div>
+          <div>
+            <h4 className="font-medium text-white">Start Your Journey</h4>
+            <p className="text-sm text-gray-300">
+          Join tournaments, compete with friends, and earn rewards as you improve your fitness.
+            </p>
+          </div>
+        </div>
           </div>
 
           <DialogFooter>
-            <Link href="/authpage" className="text-white">
-              <Button
-                className="w-full bg-purple-900 hover:bg-purple-900/30 text-black font-medium"
-                onClick={() => setShowGetStartedDialog(false)}
-              >
-                Got it!
-              </Button>
-            </Link>
+        <Link href="/authpage" className="text-white">
+          <Button
+            className="w-full bg-purple-900 hover:bg-purple-900/30 text-white font-medium"
+            onClick={() => setShowGetStartedDialog(false)}
+          >
+            Got it!
+          </Button>
+        </Link>
           </DialogFooter>
         </DialogContent>
       </Dialog>
